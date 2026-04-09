@@ -293,6 +293,31 @@ tr:hover {
     color: var(--dark);
 }
 
+/* Bulk Copy Button */
+.btn-copy-all {
+    background: #60a5fa20;
+    border: 1px solid #60a5fa40;
+    color: #60a5fa;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.btn-copy-all:hover {
+    background: #60a5fa;
+    color: white;
+}
+
+.btn-copy-all.success {
+    background: #4ade80;
+    color: white;
+    border-color: #22c55e;
+}
+
 /* Drive Links */
 .drive-link {
     display: inline-flex;

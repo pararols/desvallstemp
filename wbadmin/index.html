@@ -95,11 +95,23 @@
                 </table>
             </div>
 
-            <!-- Tabs -->
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('arts')">Arts Generals</button>
-                <button class="tab-btn" onclick="switchTab('residencia')">Residència</button>
-                <button class="tab-btn" onclick="switchTab('paradetes')">Paradetes</button>
+            <div class="tabs-container" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 1rem;">
+                <div class="tabs" style="border-bottom: none; margin-bottom: 0;">
+                    <button class="tab-btn active" onclick="switchTab('arts')">Arts Generals</button>
+                    <button class="tab-btn" onclick="switchTab('residencia')">Residència</button>
+                    <button class="tab-btn" onclick="switchTab('paradetes')">Paradetes</button>
+                </div>
+                <div class="table-controls">
+                    <label for="filter-status" style="font-size: 0.85rem; color: #94a3b8; margin-right: 0.5rem;">Filtra per estat:</label>
+                    <select id="filter-status" class="select-status" style="width: auto; min-width: 150px;">
+                        <option value="Tots">Tots els estats</option>
+                        <option value="Nou">Nou</option>
+                        <option value="Pendent Documentació">Pendent Documentació</option>
+                        <option value="En Procés">En Procés</option>
+                        <option value="Aprovat">Aprovat</option>
+                        <option value="Descartat">Descartat</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Taula Arts -->
@@ -110,7 +122,7 @@
                             <tr>
                                 <th>Data</th>
                                 <th>Artista / CIA</th>
-                                <th>Contacte</th>
+                                <th>Contacte <button class="btn-copy-all" onclick="copyDisplayedEmails('Arts Generals')" title="Copia tots els mails d'aquesta llista">✉️ Còpia Mails</button></th>
                                 <th>Projecte</th>
                                 <th style="width: 25%">Descripció</th>
                                 <th>Tècnica</th>
@@ -134,7 +146,7 @@
                             <tr>
                                 <th>Data</th>
                                 <th>Candidat/a</th>
-                                <th>Contacte</th>
+                                <th>Contacte <button class="btn-copy-all" onclick="copyDisplayedEmails('Residència Artística')" title="Copia tots els mails d'aquesta llista">✉️ Còpia Mails</button></th>
                                 <th>Proposta</th>
                                 <th style="width: 30%">Descripció</th>
                                 <th>Adjunts (Drive)</th>
@@ -157,7 +169,7 @@
                             <tr>
                                 <th>Data</th>
                                 <th>Titular / Marca</th>
-                                <th>Contacte</th>
+                                <th>Contacte <button class="btn-copy-all" onclick="copyDisplayedEmails('Paradetes i Artesania')" title="Copia tots els mails d'aquesta llista">✉️ Còpia Mails</button></th>
                                 <th>Producte i Necessitats</th>
                                 <th style="width: 140px;">Estat</th>
                                 <th>Acció</th>

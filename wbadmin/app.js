@@ -20,6 +20,7 @@ const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgxLlIpn
 // ==========================================
 let appData = [];
 let currentCategoryFilter = 'Arts Generals';
+let currentStatusFilter = 'Tots';
 
 // ==========================================
 // 3. UI TAB SWITCHING
@@ -136,6 +137,52 @@ async function fetchDataFromGoogle() {
 
 document.getElementById('btn-refresh').addEventListener('click', fetchDataFromGoogle);
 
+// Event listener pel filtre d'estat
+document.getElementById('filter-status').addEventListener('change', (e) => {
+    currentStatusFilter = e.target.value;
+    renderAllTables();
+});
+
+// Funció per copiar mails dels regitres visibles
+window.copyDisplayedEmails = async function(category) {
+    const btn = event.currentTarget;
+    const originalText = btn.innerText;
+    
+    // Filtrem les dades que s'estan veient actualment
+    const filtered = appData.filter(r => {
+        const matchCat = r.Categoria === category;
+        const matchStat = (currentStatusFilter === 'Tots') || (r.Estat === currentStatusFilter);
+        return matchCat && matchStat;
+    });
+
+    const emails = filtered
+        .map(r => r.Email)
+        .filter(email => email && email.includes('@'))
+        .join('; ');
+
+    if (!emails) {
+        alert("No hi ha correus per copiar amb el filtre actual.");
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(emails);
+        
+        // Feedback visual
+        btn.innerText = '✅ Copiats!';
+        btn.classList.add('success');
+        
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.classList.remove('success');
+        }, 2000);
+        
+    } catch (err) {
+        console.error('Error copiant al porta-retalls:', err);
+        alert('No s'ha pogut copiar automàticament.');
+    }
+};
+
 // ==========================================
 // 6. RENDERITZAT DE LES TAULES I ESTATS
 // ==========================================
@@ -206,10 +253,19 @@ function linkDrive(url, label) {
 }
 
 function renderAllTables() {
+    // Funció genèrica de filtratge
+    const getFilteredData = (cat) => {
+        return appData.filter(r => {
+            const matchCat = r.Categoria === cat;
+            const matchStat = (currentStatusFilter === 'Tots') || (r.Estat === currentStatusFilter);
+            return matchCat && matchStat;
+        });
+    };
+
     // ARTS
     const tbodyArts = document.getElementById('table-body-arts');
     tbodyArts.innerHTML = '';
-    const artsData = appData.filter(r => r.Categoria === 'Arts Generals');
+    const artsData = getFilteredData('Arts Generals');
     artsData.forEach(r => {
         tbodyArts.innerHTML += `
             <tr>
@@ -229,7 +285,7 @@ function renderAllTables() {
     // RESIDÈNCIA
     const tbodyRes = document.getElementById('table-body-residencia');
     tbodyRes.innerHTML = '';
-    const resData = appData.filter(r => r.Categoria === 'Residència Artística');
+    const resData = getFilteredData('Residència Artística');
     resData.forEach(r => {
         const driveLinks = `
             ${linkDrive(r.Dossier, 'Dossier')}
@@ -254,7 +310,7 @@ function renderAllTables() {
     // PARADETES
     const tbodyPar = document.getElementById('table-body-paradetes');
     tbodyPar.innerHTML = '';
-    const parData = appData.filter(r => r.Categoria === 'Paradetes i Artesania');
+    const parData = getFilteredData('Paradetes i Artesania');
     parData.forEach(r => {
         tbodyPar.innerHTML += `
             <tr>
