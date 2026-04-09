@@ -6,48 +6,19 @@
 // ==========================================
 // 1. CONFIGURACIÓ SUPABASE I GOOGLE
 // ==========================================
-// ALERTA: Has de reemplaçar aquest valors pel teu projecte Supabase real
-const SUPABASE_URL = 'https://teva-url-del-projecte.supabase.co';
-const SUPABASE_KEY = 'la-teva-anon-key-publica';
+const SUPABASE_URL = 'https://ojqhexrqbfwcubyactuj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_eV7n7kB-tnt00ScrveNm-A_gsFBqJtG';
 
-// Es requereix inicialitzar Supabase
-// const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Inicialització de Supabase
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ALERTA: Aquesta és la URL del Apps Script quan programis la funció doGet()
 const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgxLlIpnmTf6nHuZnDPUD2MxnQEuLYSc0URMUrujYr92YlfbCuH4NuFpNZeolcKZY9bA/exec';
 
 // ==========================================
-// 2. DADES MOCK (Fins que connectis tot)
+// 2. ESTAT LOCAL
 // ==========================================
-const mockRows = [
-    {
-        id: '1', Timestamp: '2026-04-10T10:00:00Z', Categoria: 'Arts Generals', 
-        Nom_Representant: 'Anna Garcia', Companyia: 'Cia Les Llums', Email: 'anna@exemple.cat',
-        Titol_Obra: 'Sons de la terra', Modalitat: 'Arts Vives',
-        Dossier_File: 'https://drive.google.com/open?id=test1',
-        Estat: 'Nou'
-    },
-    {
-        id: '2', Timestamp: '2026-04-11T12:30:00Z', Categoria: 'Residència Artística', 
-        Nom_Representant: 'Marc Roca', Email: 'marc.roca@exemple.cat', 
-        Titol_Obra: 'Identitat Fugida',
-        Dossier: 'https://drive.google.com/open?id=test2a', 
-        Portafoli: 'https://drive.google.com/open?id=test2b',
-        Calendari: 'https://drive.google.com/open?id=test2c',
-        Pressupost: 'https://drive.google.com/open?id=test2d',
-        Estat: 'Pendent'
-    },
-    {
-        id: '3', Timestamp: '2026-04-12T16:15:00Z', Categoria: 'Paradetes i Artesania', 
-        Nom_Representant: 'Laura Pou', Companyia: 'Sabons Naturals Laura', Email: 'info@sabonslaura.cat',
-        Descripcio: 'Sabons artesanals vegans de proximitat.', Parcel_les: 1, Electricitat: 'Sí',
-        Estat: 'Aprovat'
-    }
-];
-
-// Estat Local
-let appData = [...mockRows];
-let session = null;
+let appData = [];
 let currentCategoryFilter = 'Arts Generals';
 
 // ==========================================
@@ -70,7 +41,7 @@ function switchTab(tabName) {
 }
 
 // ==========================================
-// 4. AUTENTICACIÓ (Supabase Simulat -> Real)
+// 4. AUTENTICACIÓ SUPABASE (REAL)
 // ==========================================
 const loginScreen = document.getElementById('login-screen');
 const dashboard = document.getElementById('dashboard');
@@ -78,72 +49,77 @@ const btnLogin = document.getElementById('btn-login');
 const btnLogout = document.getElementById('btn-logout');
 const errorMsg = document.getElementById('auth-error');
 
-// Simulació de check login on load
-window.addEventListener('DOMContentLoaded', async () => {
-    // Quan connectis supabase, seria: 
-    // const { data: { session: savedSession } } = await supabase.auth.getSession();
-    
-    const isMockLoggedIn = localStorage.getItem('mockAdminAuth') === 'true';
-    
-    if (isMockLoggedIn) {
-        // user logged in
-        document.getElementById('user-email').innerText = 'admin@desvallscultura.cat';
+// Escoltador d'estat d'autenticació
+supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' || session) {
+        console.log("Sessió iniciada:", session.user.email);
+        document.getElementById('user-email').innerText = session.user.email;
         loginScreen.style.display = 'none';
         dashboard.style.display = 'block';
-        renderAllTables();
-        updateKPIs();
+        fetchDataFromGoogle(); // Carrega dades automàticament en entrar
+    } else if (event === 'SIGNED_OUT') {
+        console.log("Sessió tancada");
+        loginScreen.style.display = 'flex';
+        dashboard.style.display = 'none';
     }
 });
 
 btnLogin.addEventListener('click', async () => {
     const email = document.getElementById('auth-email').value;
-    const pwd = document.getElementById('auth-password').value;
+    const password = document.getElementById('auth-password').value;
     
-    if(!email || !pwd) {
+    if(!email || !password) {
+        errorMsg.innerText = "Si us plau, omple tots els camps.";
         errorMsg.style.display = 'block';
         return;
     }
 
     btnLogin.innerText = 'Verificant...';
+    errorMsg.style.display = 'none';
     
-    // EXEMPLE SUPABASE:
-    // const { data, error } = await supabase.auth.signInWithPassword({ email, password: pwd });
-    // if(error) throw error;
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     
-    // MOCK LOGIN
-    setTimeout(() => {
-        if(email === 'admin@desvallscultura.cat' && pwd === 'admin') {
-            localStorage.setItem('mockAdminAuth', 'true');
-            window.location.reload();
-        } else {
-            errorMsg.innerText = "Simulació MOCK: Utilitza admin@desvallscultura.cat / admin";
-            errorMsg.style.display = 'block';
-            btnLogin.innerText = 'Inicia Sessió';
-        }
-    }, 800);
+    if(error) {
+        console.error("Error Login:", error.message);
+        errorMsg.innerText = "Error d'accés: " + error.message;
+        errorMsg.style.display = 'block';
+        btnLogin.innerText = 'Inicia Sessió';
+    }
 });
 
 btnLogout.addEventListener('click', async () => {
-    // await supabase.auth.signOut();
-    localStorage.removeItem('mockAdminAuth');
-    window.location.reload();
+    await supabaseClient.auth.signOut();
 });
 
 // ==========================================
-// 5. OBTENCIÓ DE DADES DES DE GOOGLE
+// 5. OBTENCIÓ I PERSISTÈNCIA DE DADES
 // ==========================================
-document.getElementById('btn-refresh').addEventListener('click', async () => {
+
+async function fetchDataFromGoogle() {
     const loader = document.getElementById('loader-data');
     loader.style.display = 'inline-block';
     
-    // REAL FETCH
     try {
+        // 1. Obtenim dades de Google
         const response = await fetch(GOOGLE_APP_SCRIPT_URL);
         const googleData = await response.json();
         
-        // Ara mateix fusionem sense Supabase perquè està en mock
+        // 2. Obtenim els estats guardats a Supabase
+        const { data: dbStatuses, error } = await supabaseClient
+            .from('registrations_management')
+            .select('*');
+            
+        if (error) throw error;
+
+        // Crear mapa d'estats per cerca ràpida
+        const statusMap = {};
+        dbStatuses.forEach(row => {
+            statusMap[row.id] = row.status;
+        });
+
+        // 3. Fusionar dades
         appData = googleData.map(row => {
-            row.Estat = 'Nou'; // Per defecte fins que afegim Supabase
+            row.Estat = statusMap[row.id] || 'Nou'; // Si no n'hi ha, per defecte "Nou"
             return row;
         });
         
@@ -152,12 +128,13 @@ document.getElementById('btn-refresh').addEventListener('click', async () => {
         loader.style.display = 'none';
         
     } catch(err) {
-        console.error("Error obtenint de Google:", err);
+        console.error("Error sincronitzant dades:", err);
         loader.style.display = 'none';
-        alert('Hi ha hagut un error connectant amb Google.');
+        alert('Error en la sincronització de dades.');
     }
+}
 
-});
+document.getElementById('btn-refresh').addEventListener('click', fetchDataFromGoogle);
 
 // ==========================================
 // 6. RENDERITZAT DE LES TAULES I ESTATS
@@ -184,16 +161,29 @@ function renderStatusSelect(id, currentStatus) {
 }
 
 window.updateStatus = async function(rowId, newStatus) {
-    // 1. Actualitza localment per render
+    // 1. Actualitza localment per render immediat
     const row = appData.find(r => r.id === rowId);
     if(row) row.Estat = newStatus;
     
     updateKPIs();
-    renderAllTables(); // actualitza colors
+    renderAllTables(); 
 
-    // 2. Aquí cridaries a Supabase per guardar
-    // await supabase.from('registrations_management').upsert({ id: rowId, status: newStatus });
-    console.log(`Guardat: ${rowId} = ${newStatus} a Supabase`);
+    // 2. Guardem a Supabase
+    try {
+        const { error } = await supabaseClient
+            .from('registrations_management')
+            .upsert({ 
+                id: rowId, 
+                status: newStatus,
+                updated_at: new Date().toISOString()
+            });
+            
+        if (error) throw error;
+        console.log(`✅ Guardat a Supabase: ${rowId} = ${newStatus}`);
+    } catch (err) {
+        console.error("Error guardant estat:", err);
+        alert("No s'ha pogut guardar el canvi a la base de dades.");
+    }
 };
 
 // Formatar dates JSON a string bonic
