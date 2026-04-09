@@ -21,6 +21,7 @@ const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgxLlIpn
 let appData = [];
 let currentCategoryFilter = 'Arts Generals';
 let currentStatusFilter = 'Tots';
+let selectedIds = new Set();
 
 // ==========================================
 // 3. UI TAB SWITCHING
@@ -141,6 +142,108 @@ document.getElementById('btn-refresh').addEventListener('click', fetchDataFromGo
 document.getElementById('filter-status').addEventListener('change', (e) => {
     currentStatusFilter = e.target.value;
     renderAllTables();
+});
+
+// ==========================================
+// SELECCIÓ I ACCIONS MASSIVES (BULK)
+// ==========================================
+
+window.toggleSelect = function(id) {
+    if (selectedIds.has(id)) {
+        selectedIds.delete(id);
+    } else {
+        selectedIds.add(id);
+    }
+    updateBulkBar();
+};
+
+window.toggleSelectAll = function(category) {
+    const isChecked = event.target.checked;
+    
+    // Filtrem els que es veuen actualment
+    const visibleRows = appData.filter(r => {
+        const matchCat = r.Categoria === category;
+        const matchStat = (currentStatusFilter === 'Tots') || (r.Estat === currentStatusFilter);
+        return matchCat && matchStat;
+    });
+
+    visibleRows.forEach(r => {
+        if (isChecked) {
+            selectedIds.add(r.id);
+        } else {
+            selectedIds.delete(r.id);
+        }
+    });
+
+    renderAllTables();
+    updateBulkBar();
+};
+
+function updateBulkBar() {
+    const bar = document.getElementById('bulk-actions-bar');
+    const countEl = document.getElementById('bulk-count');
+    
+    if (selectedIds.size > 0) {
+        bar.style.display = 'flex';
+        countEl.innerText = selectedIds.size;
+    } else {
+        bar.style.display = 'none';
+        // Reset "select all" checkboxes
+        document.querySelectorAll('thead input[type="checkbox"]').forEach(cb => cb.checked = false);
+    }
+}
+
+document.getElementById('btn-clear-selection').addEventListener('click', () => {
+    selectedIds.clear();
+    renderAllTables();
+    updateBulkBar();
+});
+
+document.getElementById('btn-apply-bulk').addEventListener('click', async () => {
+    const newStatus = document.getElementById('bulk-status-select').value;
+    const num = selectedIds.size;
+
+    if (!confirm(`Estàs segur que vols canviar a "${newStatus}" els ${num} registres seleccionats?`)) {
+        return;
+    }
+
+    const btn = document.getElementById('btn-apply-bulk');
+    btn.innerText = 'Aplicant...';
+    btn.disabled = true;
+
+    try {
+        const upsertData = Array.from(selectedIds).map(id => ({
+            id: id,
+            status: newStatus,
+            updated_at: new Date().toISOString()
+        }));
+
+        const { error } = await supabaseClient
+            .from('registrations_management')
+            .upsert(upsertData);
+
+        if (error) throw error;
+
+        // Actualitzem local
+        appData.forEach(r => {
+            if (selectedIds.has(r.id)) {
+                r.Estat = newStatus;
+            }
+        });
+
+        alert(`✅ S'han actualitzat ${num} registres correctament.`);
+        selectedIds.clear();
+        renderAllTables();
+        updateKPIs();
+        updateBulkBar();
+
+    } catch (err) {
+        console.error("Error en bulk update:", err);
+        alert("S'ha produït un error en l'actualització massiva.");
+    } finally {
+        btn.innerText = 'Aplica massivament';
+        btn.disabled = false;
+    }
 });
 
 // Funció per copiar mails dels regitres visibles
@@ -267,8 +370,10 @@ function renderAllTables() {
     tbodyArts.innerHTML = '';
     const artsData = getFilteredData('Arts Generals');
     artsData.forEach(r => {
+        const isChecked = selectedIds.has(r.id) ? 'checked' : '';
         tbodyArts.innerHTML += `
             <tr>
+                <td><input type="checkbox" ${isChecked} onchange="toggleSelect('${r.id}')"></td>
                 <td>${formatDate(r.Timestamp)}</td>
                 <td><strong>${r.Companyia || '-'}</strong><br><small>${r.Nom_Representant || ''}</small><br><small style="color:#64748b">${r.Municipi || ''}</small></td>
                 <td><a href="mailto:${r.Email}" style="color:#60a5fa">${r.Email}</a><br><small>${r.Telefon || ''}</small></td>
@@ -287,6 +392,7 @@ function renderAllTables() {
     tbodyRes.innerHTML = '';
     const resData = getFilteredData('Residència Artística');
     resData.forEach(r => {
+        const isChecked = selectedIds.has(r.id) ? 'checked' : '';
         const driveLinks = `
             ${linkDrive(r.Dossier, 'Dossier')}
             ${linkDrive(r.Portafoli, 'Portafoli')}
@@ -295,6 +401,7 @@ function renderAllTables() {
         `;
         tbodyRes.innerHTML += `
             <tr>
+                <td><input type="checkbox" ${isChecked} onchange="toggleSelect('${r.id}')"></td>
                 <td>${formatDate(r.Timestamp)}</td>
                 <td><strong>${r.Nom_Representant || r.Companyia || '-'}</strong><br><small style="color:#64748b">${r.Municipi || ''}</small></td>
                 <td><a href="mailto:${r.Email}" style="color:#60a5fa">${r.Email}</a><br><small>${r.Telefon || ''}</small></td>
@@ -312,8 +419,10 @@ function renderAllTables() {
     tbodyPar.innerHTML = '';
     const parData = getFilteredData('Paradetes i Artesania');
     parData.forEach(r => {
+        const isChecked = selectedIds.has(r.id) ? 'checked' : '';
         tbodyPar.innerHTML += `
             <tr>
+                <td><input type="checkbox" ${isChecked} onchange="toggleSelect('${r.id}')"></td>
                 <td>${formatDate(r.Timestamp)}</td>
                 <td><strong>${r.Companyia || '-'}</strong><br><small>${r.Nom_Representant || ''}</small></td>
                 <td><a href="mailto:${r.Email}" style="color:#60a5fa">${r.Email}</a><br><small>${r.Telefon || ''}</small></td>

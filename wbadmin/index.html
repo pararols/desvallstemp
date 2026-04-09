@@ -94,6 +94,25 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Barra d'Accions Massives -->
+            <div id="bulk-actions-bar" class="bulk-bar" style="display: none;">
+                <div class="bulk-info">
+                    <span id="bulk-count">0</span> registres seleccionats
+                </div>
+                <div class="bulk-controls">
+                    <label>Canvia l'estat a:</label>
+                    <select id="bulk-status-select" class="select-status" style="width: auto;">
+                        <option value="Nou">Nou</option>
+                        <option value="Pendent Documentació">Pendent Documentació</option>
+                        <option value="En Procés">En Procés</option>
+                        <option value="Aprovat">Aprovat</option>
+                        <option value="Descartat">Descartat</option>
+                    </select>
+                    <button id="btn-apply-bulk" class="btn-primary" style="width: auto; padding: 0.5rem 1rem;">Aplica massivament</button>
+                    <button id="btn-clear-selection" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; text-decoration:underline;">Cancel·la</button>
+                </div>
+            </div>
 
             <div class="tabs-container" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 1rem;">
                 <div class="tabs" style="border-bottom: none; margin-bottom: 0;">
@@ -120,6 +139,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <th style="width: 40px;"><input type="checkbox" id="select-all-arts" onclick="toggleSelectAll('Arts Generals')"></th>
                                 <th>Data</th>
                                 <th>Artista / CIA</th>
                                 <th>Contacte <button class="btn-copy-all" onclick="copyDisplayedEmails('Arts Generals')" title="Copia tots els mails d'aquesta llista">✉️ Còpia Mails</button></th>
@@ -144,6 +164,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <th style="width: 40px;"><input type="checkbox" id="select-all-residencia" onclick="toggleSelectAll('Residència Artística')"></th>
                                 <th>Data</th>
                                 <th>Candidat/a</th>
                                 <th>Contacte <button class="btn-copy-all" onclick="copyDisplayedEmails('Residència Artística')" title="Copia tots els mails d'aquesta llista">✉️ Còpia Mails</button></th>
@@ -167,6 +188,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <th style="width: 40px;"><input type="checkbox" id="select-all-paradetes" onclick="toggleSelectAll('Paradetes i Artesania')"></th>
                                 <th>Data</th>
                                 <th>Titular / Marca</th>
                                 <th>Contacte <button class="btn-copy-all" onclick="copyDisplayedEmails('Paradetes i Artesania')" title="Copia tots els mails d'aquesta llista">✉️ Còpia Mails</button></th>

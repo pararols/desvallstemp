@@ -337,6 +337,49 @@ tr:hover {
     color: white;
 }
 
+/* Bulk Actions Bar */
+.bulk-bar {
+    background: #1e293b;
+    border: 2px solid var(--primary);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.bulk-info {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.bulk-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bulk-controls label {
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+/* Custom Checkbox styles */
+input[type="checkbox"] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+}
+
 /* Refresh Control */
 .refresh-bar {
     display: flex;
