@@ -48,6 +48,7 @@ const mockRows = [
 // Estat Local
 let appData = [...mockRows];
 let session = null;
+let currentCategoryFilter = 'Arts Generals';
 
 // ==========================================
 // 3. UI TAB SWITCHING
@@ -56,8 +57,16 @@ function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.data-tab').forEach(tab => tab.classList.remove('active'));
     
-    event.target.classList.add('active');
+    if(event && event.target) {
+        event.target.classList.add('active');
+    }
     document.getElementById(`tab-${tabName}`).classList.add('active');
+
+    if (tabName === 'arts') currentCategoryFilter = 'Arts Generals';
+    if (tabName === 'residencia') currentCategoryFilter = 'Residència Artística';
+    if (tabName === 'paradetes') currentCategoryFilter = 'Paradetes i Artesania';
+
+    updateKPIs();
 }
 
 // ==========================================
@@ -272,13 +281,29 @@ function renderAllTables() {
 }
 
 function updateKPIs() {
-    const total = appData.length;
-    const noves = appData.filter(r => r.Estat === 'Nou' || r.Estat === 'Pendent Documentació').length;
-    const aprovades = appData.filter(r => r.Estat === 'Aprovat').length;
-    const process = appData.filter(r => r.Estat === 'En Procés').length;
+    const cats = {
+        'Arts Generals': 'arts',
+        'Residència Artística': 'res',
+        'Paradetes i Artesania': 'para'
+    };
 
-    document.getElementById('kpi-total').innerText = total;
-    document.getElementById('kpi-noves').innerText = noves;
-    document.getElementById('kpi-aprovades').innerText = aprovades;
-    document.getElementById('kpi-proces').innerText = process;
+    Object.keys(cats).forEach(catName => {
+        const prefix = cats[catName];
+        const data = appData.filter(r => r.Categoria === catName);
+        
+        const total = data.length;
+        const noves = data.filter(r => r.Estat === 'Nou' || r.Estat === 'Pendent Documentació').length;
+        const process = data.filter(r => r.Estat === 'En Procés').length;
+        const aprovades = data.filter(r => r.Estat === 'Aprovat').length;
+
+        document.getElementById(`stats-${prefix}-total`).innerText = total;
+        document.getElementById(`stats-${prefix}-noves`).innerText = noves;
+        document.getElementById(`stats-${prefix}-proces`).innerText = process;
+        document.getElementById(`stats-${prefix}-aprovades`).innerText = aprovades;
+    });
+
+    const titleEl = document.getElementById('kpi-title-h2');
+    if (titleEl) {
+        titleEl.innerText = 'Resum de Sol·licituds 2026';
+    }
 }

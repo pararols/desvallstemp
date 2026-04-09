@@ -51,30 +51,48 @@
         <div class="container">
             <div class="refresh-bar">
                 <div style="display: flex; gap: 1rem; align-items: center;">
-                    <h2 style="margin: 0;">Resum de Sol·licituds 2026</h2>
+                    <h2 style="margin: 0;" id="kpi-title-h2">Resum: Arts Generals 2026</h2>
                     <button id="btn-refresh" class="btn-primary" style="padding: 0.4rem 1rem; width: auto; font-size: 0.85rem;">↻ Recarregar Dades de Google</button>
                     <span class="loader-data" id="loader-data">Carregant dades...</span>
                 </div>
             </div>
 
-            <!-- KPIs -->
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-title">Total Sol·licituds</div>
-                    <div class="kpi-value" id="kpi-total">-</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-title">Pendents (Noves)</div>
-                    <div class="kpi-value" id="kpi-noves" style="color: #60a5fa;">-</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-title">Aprovades</div>
-                    <div class="kpi-value" id="kpi-aprovades" style="color: #4ade80;">-</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-title">En Procés</div>
-                    <div class="kpi-value" id="kpi-proces" style="color: #facc15;">-</div>
-                </div>
+            <!-- Resum per Categories -->
+            <div class="stats-overview">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Secció</th>
+                            <th>Total</th>
+                            <th>Noves / Pendent</th>
+                            <th>En Procés</th>
+                            <th>Aprovades</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summary-body">
+                        <tr>
+                            <td style="text-align: left;">Arts Generals</td>
+                            <td id="stats-arts-total">-</td>
+                            <td id="stats-arts-noves" style="color: #60a5fa;">-</td>
+                            <td id="stats-arts-proces" style="color: #facc15;">-</td>
+                            <td id="stats-arts-aprovades" style="color: #4ade80;">-</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">Residència Artística</td>
+                            <td id="stats-res-total">-</td>
+                            <td id="stats-res-noves" style="color: #60a5fa;">-</td>
+                            <td id="stats-res-proces" style="color: #facc15;">-</td>
+                            <td id="stats-res-aprovades" style="color: #4ade80;">-</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">Paradetes i Artesania</td>
+                            <td id="stats-para-total">-</td>
+                            <td id="stats-para-noves" style="color: #60a5fa;">-</td>
+                            <td id="stats-para-proces" style="color: #facc15;">-</td>
+                            <td id="stats-para-aprovades" style="color: #4ade80;">-</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <!-- Tabs -->

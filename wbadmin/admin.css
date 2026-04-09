@@ -148,32 +148,47 @@ body {
     padding: 2rem;
 }
 
-/* KPIs */
-.kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.kpi-card {
+/* Stats Overview */
+.stats-overview {
     background: var(--dark-muted);
-    padding: 1.5rem;
     border-radius: 8px;
     border: 1px solid var(--border);
+    margin-bottom: 2rem;
+    overflow: hidden;
 }
 
-.kpi-title {
-    font-size: 0.85rem;
+.stats-overview table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stats-overview th, .stats-overview td {
+    padding: 1.25rem 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.stats-overview th {
+    background: rgba(0,0,0,0.1);
     color: #94a3b8;
+    font-size: 0.8rem;
     text-transform: uppercase;
-    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
 }
 
-.kpi-value {
-    font-size: 2rem;
+.stats-overview tr:last-child td {
+    border-bottom: none;
+}
+
+.stats-overview td {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.stats-overview td:first-child {
     font-weight: 700;
-    color: var(--white);
+    color: var(--primary);
+    background: rgba(18, 162, 152, 0.05);
 }
 
 /* Tabs */
