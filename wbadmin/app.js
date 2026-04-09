@@ -215,12 +215,14 @@ function renderAllTables() {
         tbodyArts.innerHTML += `
             <tr>
                 <td>${formatDate(r.Timestamp)}</td>
-                <td><strong>${r.Companyia}</strong><br><small>${r.Nom_Representant}</small></td>
-                <td>${r.Email}</td>
-                <td><strong>${r.Titol_Obra}</strong><br><small>${r.Modalitat}</small></td>
+                <td><strong>${r.Companyia || '-'}</strong><br><small>${r.Nom_Representant || ''}</small><br><small style="color:#64748b">${r.Municipi || ''}</small></td>
+                <td><a href="mailto:${r.Email}" style="color:#60a5fa">${r.Email}</a><br><small>${r.Telefon || ''}</small></td>
+                <td><strong>${r.Titol_Obra || '-'}</strong><br><small>${r.Modalitat || ''}</small></td>
+                <td><div style="font-size: 0.85em; max-height: 100px; overflow-y: auto; padding-right: 5px;">${r.Descripcio ? r.Descripcio.replace(/\\n/g, '<br>') : '-'}</div></td>
+                <td><small><strong>Espai:</strong> <span style="white-space: pre-wrap;">${r.Espai_m2 || '-'}</span><br><strong>Llum:</strong> ${r.Electrica_W || '-'}<br><strong>Equip:</strong> ${r.Persones_Equip || '-'} pers.<br><strong>Dietes:</strong> ${r.Dietes || '-'}</small></td>
                 <td>${linkDrive(r.Dossier_File, 'Dossier')}</td>
                 <td>${renderStatusSelect(r.id, r.Estat)}</td>
-                <td>${generateMailto(r.Email, r.Companyia, r.Categoria)}</td>
+                <td>${generateMailto(r.Email, r.Companyia || r.Nom_Representant, r.Categoria)}</td>
             </tr>
         `;
     });
@@ -239,12 +241,13 @@ function renderAllTables() {
         tbodyRes.innerHTML += `
             <tr>
                 <td>${formatDate(r.Timestamp)}</td>
-                <td><strong>${r.Nom_Representant}</strong></td>
-                <td>${r.Email}</td>
-                <td><strong>${r.Titol_Obra}</strong></td>
+                <td><strong>${r.Nom_Representant || r.Companyia || '-'}</strong><br><small style="color:#64748b">${r.Municipi || ''}</small></td>
+                <td><a href="mailto:${r.Email}" style="color:#60a5fa">${r.Email}</a><br><small>${r.Telefon || ''}</small></td>
+                <td><strong>${r.Titol_Obra || '-'}</strong></td>
+                <td><div style="font-size: 0.85em; max-height: 100px; overflow-y: auto; padding-right: 5px;">${r.Descripcio ? r.Descripcio.replace(/\\n/g, '<br>') : '-'}</div></td>
                 <td style="display:flex; flex-wrap:wrap; gap:5px;">${driveLinks || '-'}</td>
                 <td>${renderStatusSelect(r.id, r.Estat)}</td>
-                <td>${generateMailto(r.Email, r.Nom_Representant, r.Categoria)}</td>
+                <td>${generateMailto(r.Email, r.Nom_Representant || r.Companyia, r.Categoria)}</td>
             </tr>
         `;
     });
@@ -257,11 +260,12 @@ function renderAllTables() {
         tbodyPar.innerHTML += `
             <tr>
                 <td>${formatDate(r.Timestamp)}</td>
-                <td><strong>${r.Companyia}</strong><br><small>${r.Nom_Representant}</small></td>
-                <td>${r.Email}</td>
-                <td><small>${r.Descripcio}</small><br><strong>Parcel·les:</strong> ${r.Parcel_les} | <strong>Llum:</strong> ${r.Electricitat}</td>
+                <td><strong>${r.Companyia || '-'}</strong><br><small>${r.Nom_Representant || ''}</small></td>
+                <td><a href="mailto:${r.Email}" style="color:#60a5fa">${r.Email}</a><br><small>${r.Telefon || ''}</small></td>
+                <td><div style="font-size: 0.85em; margin-bottom: 5px;">${r.Descripcio || '-'}</div>
+                    <small><strong>Llocs:</strong> ${r.Parcel_les || 1} | <strong>Llum:</strong> ${r.Electricitat || '-'} | <strong>Food:</strong> ${r.Carnet_Alimentari || '-'}</small></td>
                 <td>${renderStatusSelect(r.id, r.Estat)}</td>
-                <td>${generateMailto(r.Email, r.Nom_Representant, 'Paradeta')}</td>
+                <td>${generateMailto(r.Email, r.Nom_Representant || r.Companyia, 'Paradeta')}</td>
             </tr>
         `;
     });
