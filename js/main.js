@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // MOCK URL: Aquest URL s'hauria de substituir per l'URL del Deploy del teu Google Apps Script
     // Desplega l'script "google-apps-script-code.js" a Google Apps Script i substitueix l'URL aquí.
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxlz1CV4Lnc4ZmMf0-e5Tg64gZbFqJ5W9mhqDqp8qlHJ2fc4t7qDlD4zAvOi4lO8MaJ9Q/exec'; 
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmQ3xCgRaCZdjqIdH49yBUVWOwIp3OFt7DmOkgIM-5mbGfxe6ftbib2HD2OMbh3uIR/exec'; 
 
     if(form) {
         form.addEventListener('submit', async (e) => {
@@ -121,6 +121,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 navLinks.classList.remove('active');
                 mobileMenuIcon.classList.remove('active');
             });
+        });
+    }
+
+    // 6. Welcome Lletres Modal
+    const welcomeModal = document.getElementById('welcomeLletresModal');
+    const closeLletresModal = document.getElementById('closeLletresModal');
+
+    if (welcomeModal && !localStorage.getItem('lletresModalSeen')) {
+        // Show after a small delay for better UX
+        setTimeout(() => {
+            welcomeModal.style.display = 'flex';
+            // Trigger reflow for transition
+            welcomeModal.offsetHeight;
+            welcomeModal.style.opacity = '1';
+            const modalContent = welcomeModal.querySelector('div');
+            if (modalContent) modalContent.style.transform = 'translateY(0)';
+        }, 1000);
+    }
+
+    if (closeLletresModal && welcomeModal) {
+        closeLletresModal.addEventListener('click', () => {
+            welcomeModal.style.opacity = '0';
+            const modalContent = welcomeModal.querySelector('div');
+            if (modalContent) modalContent.style.transform = 'translateY(-20px)';
+            
+            setTimeout(() => {
+                welcomeModal.style.display = 'none';
+                localStorage.setItem('lletresModalSeen', 'true');
+            }, 500);
         });
     }
 });

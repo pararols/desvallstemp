@@ -1,91 +1,201 @@
-/** 
- * DESVALLS CULTURA - GOOGLE SHEETS BACKEND CONNECTOR (MULTI-SHEET VERSION)
- * 
- * INSTRUCCIONS PELS ADMINISTRADORS (PAS A PAS):
- * 1. Obre el teu full de càlcul de Google (Google Sheets).
- * 2. Ves al menú superior: "Extensions" > "Apps Script".
- * 3. S'obrirà una nova pestanya amb un editor de codi. 
- * 4. Esborra tot el que hi hagi i enganxa EXACTAMENT tot aquest codi.
- * 5. Fes clic a la icona del disquet (Guardar) i posa-li de nom "Backend Pluja Art".
- * 6. Fes clic al botó blau: "Desplega" (Deploy) > "Nou Desplegament" (New deployment).
- * 7. Tria el tipus: "Aplicació Web" (Web App).
- * 8. Descripció: "Versió 2 - Pestanyes Separades".
- * 9. Executar com: "Tu" (Me).
- * 10. Qui té accés: "Qualsevol" (Anyone). IMPORTANT!
- * 11. Fes clic a "Desplega". Si et demana autorització, accepta tots els permisos.
- * 12. COPIA LA "URL de l'aplicació web" que et donarà (acaba en /exec).
- * 13. Enganxa aquesta URL a la línia 272 de l'arxiu HTML (participa-pluja-art.html).
- */
-
-function doPost(e) {
+function logError(msg) {
   try {
     var doc = SpreadsheetApp.getActiveSpreadsheet();
-    var data = e.parameter;
+    var sheet = doc.getSheetByName("DEBUG_LOGS");
+    if(!sheet) sheet = doc.insertSheet("DEBUG_LOGS");
+    sheet.appendRow([new Date(), msg]);
+  } catch(e) {}
+}
+
+function doPost(e) {
+  logError("Inici doPost. postData: " + (e.postData ? "SI" : "NO"));
+  try {
+    var doc = SpreadsheetApp.getActiveSpreadsheet();
+    var data;
     
-    // TRIEM EL FULL SEGONS LA CATEGORIA (Si no n'hi ha, usem un genèric)
-    var categoryName = data.Categoria || "Inscripcions2026";
-    var sheet = doc.getSheetByName(categoryName);
-    
-    // Si el full no existeix, el creem automàticament
-    if(!sheet) {
-      sheet = doc.insertSheet(categoryName);
+    if (e.postData && e.postData.contents) {
+      logError("Rebent JSON: " + e.postData.contents.substring(0, 100) + "...");
+      data = JSON.parse(e.postData.contents);
+    } else {
+      logError("Rebent parameters estàndard: " + JSON.stringify(e.parameter).substring(0,100));
+      data = e.parameter;
     }
     
-    // Obtenim els encapçalaments actuals del full triat
+    // 1. SEGURETAT: PROTECCIÓ HONEPOT
+    if (data.website_hp && data.website_hp.length > 0) {
+      return ContentService.createTextOutput("Bot detected").setMimeType(ContentService.MimeType.TEXT);
+    }
+
+    // 2. SEGURETAT: LLISTA BLANCA DE CATEGORIES
+    var ALLOWED_CATEGORIES = ["Arts Generals", "Residència Artística", "Paradetes i Artesania", "Associat"];
+    var categoryName = data.Categoria || "Inscripcions2026";
+    
+    if (ALLOWED_CATEGORIES.indexOf(categoryName) === -1 && categoryName !== "Inscripcions2026") {
+       return ContentService.createTextOutput(JSON.stringify({"result":"error", "error": "Invalid category"}))
+             .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var sheet = doc.getSheetByName(categoryName);
+    if(!sheet) sheet = doc.insertSheet(categoryName);
+    
+    // 3. GESTIÓ DE FITXERS (DRIVE) - Suport per a múltiples fitxers i noms únics
+    var fileLinks = {};
+    if (data.files && typeof data.files === 'object') {
+      var folder = getOrCreateFolder("Dossiers Pluja Art 2026");
+      var userIdentifier = (data.DNI_URL || data.Email || "ANON").toString().replace(/[^a-z0-9]/gi, '_');
+
+      for (var fieldName in data.files) {
+        var fileInfo = data.files[fieldName];
+        if (fileInfo.data && fileInfo.name) {
+          var baseName = fieldName + "_" + userIdentifier + "_" + fileInfo.name;
+          var uniqueName = getUniqueFileName(folder, baseName);
+          
+          logError("Creant fitxer únic: " + uniqueName);
+          var decodedData = Utilities.base64Decode(fileInfo.data);
+          var blob = Utilities.newBlob(decodedData, fileInfo.type || "application/octet-stream", uniqueName);
+          var file = folder.createFile(blob);
+          fileLinks[fieldName] = file.getUrl();
+        }
+      }
+    }
+
+    // Obtenim encapçalaments
     var headers = [];
     if (sheet.getLastRow() > 0) {
       headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     } else {
-      headers = ["Data d'Alta"]; // Columna inicial per defecte
+      headers = ["Data d'Alta"];
     }
     
-    // Identifiquem totes les claus (camps) que ens arriben del formulari
     var keys = Object.keys(data);
-    
-    // Si ens arriben camps que no tenen columna, les afegim al moment
     var newHeadersFound = false;
     for (var i = 0; i < keys.length; i++) {
+        if (keys[i] === "files" || keys[i] === "website_hp") continue;
         if (headers.indexOf(keys[i]) === -1) {
             headers.push(keys[i]);
             newHeadersFound = true;
         }
     }
     
-    // Si hem afegit columnes, actualitzem la fila 1 (els títols) amb estil
+    for (var fieldName in fileLinks) {
+      var linkHeader = "URL_" + fieldName;
+      if (headers.indexOf(linkHeader) === -1) {
+        headers.push(linkHeader);
+        newHeadersFound = true;
+      }
+    }
+
     if (newHeadersFound || sheet.getLastRow() === 0) {
        sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-       sheet.getRange(1, 1, 1, headers.length)
-            .setFontWeight("bold")
-            .setBackground("#12a298")
-            .setFontColor("white")
-            .setVerticalAlignment("middle")
-            .setHorizontalAlignment("center");
-       sheet.setFrozenRows(1); // Deixem la primera fila fixa
+       sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#12a298").setFontColor("white");
+       sheet.setFrozenRows(1);
     }
     
-    // Preparem la fila de dades respectant l'ordre de les columnes
     var rowData = new Array(headers.length).fill("");
-    rowData[0] = new Date(); // Registre de temps
+    rowData[0] = new Date();
     
     for (var i = 1; i < headers.length; i++) {
         var headerName = headers[i];
-        if (data[headerName] !== undefined) {
-            rowData[i] = data[headerName];
+        if (headerName.indexOf("URL_") === 0) {
+          var fieldKey = headerName.substring(4);
+          rowData[i] = fileLinks[fieldKey] || "";
+        } else if (data[headerName] !== undefined) {
+            rowData[i] = data[headerName].toString().replace(/<[^>]*>?/gm, '').trim();
         }
     }
     
-    // Afegim la fila al full corresponent
     sheet.appendRow(rowData);
     
-    // Resposta d'èxit per al navegador
-    return ContentService
-          .createTextOutput(JSON.stringify({"result":"success", "category": categoryName}))
+    return ContentService.createTextOutput(JSON.stringify({"result":"success", "links": fileLinks}))
           .setMimeType(ContentService.MimeType.JSON);
           
   } catch (error) {
-    // Resposta d'error
-    return ContentService
-          .createTextOutput(JSON.stringify({"result":"error", "error": error.toString()}))
+    logError("ERROR CRÍTIC: " + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({"result":"error", "error": error.toString()}))
           .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getUniqueFileName(folder, fileName) {
+  var name = fileName;
+  var extension = "";
+  if (fileName.indexOf(".") !== -1) {
+    extension = fileName.substring(fileName.lastIndexOf("."));
+    name = fileName.substring(0, fileName.lastIndexOf("."));
+  }
+  
+  var finalName = fileName;
+  var counter = 1;
+  while (folder.getFilesByName(finalName).hasNext()) {
+    finalName = name + "_v" + counter + extension;
+    counter++;
+  }
+  return finalName;
+}
+
+function getOrCreateFolder(folderName) {
+  var folders = DriveApp.getFoldersByName(folderName);
+  if (folders.hasNext()) {
+    return folders.next();
+  } else {
+    return DriveApp.createFolder(folderName);
+  }
+}
+
+// =========================================================================
+// NOU: FUNCIÓ PER LLEGIR TOTES LES DADES DES DEL DASHBOARD WBADMIN
+// =========================================================================
+function doGet(e) {
+  try {
+    var doc = SpreadsheetApp.getActiveSpreadsheet();
+    var categories = ["Arts Generals", "Residència Artística", "Paradetes i Artesania"];
+    var allData = [];
+    
+    for (var c = 0; c < categories.length; c++) {
+      var catName = categories[c];
+      var sheet = doc.getSheetByName(catName);
+      
+      if (sheet) {
+        var data = sheet.getDataRange().getValues();
+        if (data.length > 1) {
+          var headers = data[0];
+          
+          for (var i = 1; i < data.length; i++) {
+            var rowData = data[i];
+            var obj = {};
+            
+            // Generem ID únic amagant el nom de la pestanya i numero de fila
+            obj['id'] = catName.substring(0,4) + "_" + i; 
+            obj['Categoria'] = catName; // Forcem la categoria
+            
+            for (var j = 0; j < headers.length; j++) {
+              // Mapeig específic d'URLs per fer-ho fàcil de llegir al JS
+              var headObj = headers[j];
+              var valueObj = rowData[j];
+              
+              if (headObj === "Data d'Alta") headObj = "Timestamp";
+              if (headObj === "URL_Dossier_File") headObj = "Dossier_File";
+              if (headObj === "URL_Dossier") headObj = "Dossier";
+              if (headObj === "URL_Portafoli") headObj = "Portafoli";
+              if (headObj === "URL_Calendari") headObj = "Calendari";
+              if (headObj === "URL_Pressupost") headObj = "Pressupost";
+              
+              obj[headObj] = valueObj;
+            }
+            allData.push(obj);
+          }
+        }
+      }
+    }
+    
+    // Configurar per permetre CORS correctament
+    var output = ContentService.createTextOutput(JSON.stringify(allData))
+      .setMimeType(ContentService.MimeType.JSON);
+    
+    return output;
+    
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({"error": err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }
