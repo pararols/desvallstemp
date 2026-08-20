@@ -1,0 +1,22 @@
+{
+  "name": "Guia Sonora Pluja d'Art 2026",
+  "short_name": "Guia Sonora",
+  "description": "Guia sonora i accessible per a persones amb discapacitat visual a la Fira Pluja d'Art 2026 de Sant Jordi Desvalls",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#050811",
+  "theme_color": "#ffe600",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "../img/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "../img/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

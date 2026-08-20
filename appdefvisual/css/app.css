@@ -1,0 +1,619 @@
+/* ========================================================
+   GUIA SONORA ACCESSIBLE · PLUJA D'ART 2026
+   Full d'Estils d'Accessibilitat Visual
+   Compliment WCAG 2.2 Nivell AAA
+   ======================================================== */
+
+:root {
+    /* Paleta d'Alt Contrast per defecte (Negre / Groc / Blanc / Cian) */
+    --bg-main: #050811;
+    --bg-surface: #101726;
+    --bg-card: #182235;
+    --bg-highlight: #23324d;
+    
+    --text-main: #ffffff;
+    --text-muted: #cbd5e1;
+    --text-accent: #ffe600; /* Groc d'alta visibilitat */
+    
+    --color-primary: #ffe600;
+    --color-primary-contrast: #000000;
+    --color-secondary: #00f0ff;
+    --color-alert: #ff4757;
+    --color-success: #2ed573;
+    --color-wc: #a55eea;
+
+    --border-main: #3b4d6b;
+    --border-focus: #ffe600;
+    --focus-ring: 4px solid #ffe600;
+    
+    --font-scale: 1rem;
+    --border-radius-lg: 20px;
+    --border-radius-md: 14px;
+    --border-radius-sm: 8px;
+    --shadow-deep: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+/* Mode Clar d'Alt Contrast */
+body.light-theme {
+    --bg-main: #ffffff;
+    --bg-surface: #f1f5f9;
+    --bg-card: #e2e8f0;
+    --bg-highlight: #cbd5e1;
+    
+    --text-main: #000000;
+    --text-muted: #1e293b;
+    --text-accent: #0f172a;
+    
+    --color-primary: #000000;
+    --color-primary-contrast: #ffffff;
+    --color-secondary: #0284c7;
+    --color-alert: #dc2626;
+    --color-success: #16a34a;
+    
+    --border-main: #475569;
+    --border-focus: #000000;
+    --focus-ring: 4px solid #000000;
+}
+
+/* Escales de mida de lletra */
+body.font-large {
+    --font-scale: 1.2rem;
+}
+body.font-xlarge {
+    --font-scale: 1.45rem;
+}
+
+/* Reset Accessible */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: var(--font-scale);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Focus Visible per a Navegació per Teclat / Polsadors */
+:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 4px;
+}
+
+/* Contenidor Principal */
+.app-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    padding-bottom: 120px; /* Espai per a la barra inferior d'accions ràpides */
+}
+
+/* Barra Superior */
+.top-header {
+    background: var(--bg-surface);
+    border-bottom: 3px solid var(--border-main);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: var(--text-main);
+}
+
+.brand-badge {
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+    font-weight: 900;
+    font-size: 1.2rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-titles h1 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+}
+
+.brand-titles span {
+    font-size: 0.85rem;
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.header-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon-setting {
+    background: var(--bg-card);
+    border: 2px solid var(--border-main);
+    color: var(--text-main);
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon-setting:hover, .btn-icon-setting:focus {
+    border-color: var(--color-primary);
+    background: var(--bg-highlight);
+}
+
+/* Panell d'Estat GPS i Rumb */
+.status-banner {
+    background: var(--bg-surface);
+    border-bottom: 2px solid var(--border-main);
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-alert);
+}
+
+.status-dot.active {
+    background: var(--color-success);
+    box-shadow: 0 0 10px var(--color-success);
+}
+
+/* TARGETA PRINCIPAL DE GUIATGE DIRECCIONAL */
+.guidance-card {
+    background: var(--bg-card);
+    border: 3px solid var(--border-main);
+    border-radius: var(--border-radius-lg);
+    margin: 1.25rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-deep);
+    position: relative;
+    overflow: hidden;
+}
+
+.guidance-card.aligned {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 25px rgba(255, 230, 0, 0.35);
+}
+
+.guidance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.target-badge {
+    background: var(--color-secondary);
+    color: #000000;
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.target-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+}
+
+.target-artist {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 0.85rem;
+}
+
+.target-location-name {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Indicador Direccional Gegant (Dreta / Esquerra / Davant) */
+.direction-box {
+    background: var(--bg-surface);
+    border: 3px solid var(--color-primary);
+    border-radius: var(--border-radius-md);
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.direction-arrow-visual {
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--color-primary);
+    transition: transform 0.3s ease;
+}
+
+.direction-phrase {
+    font-size: 1.45rem;
+    font-weight: 900;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.distance-highlight {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--color-primary);
+}
+
+.direction-clock {
+    font-size: 1.05rem;
+    color: var(--color-secondary);
+    font-weight: 700;
+}
+
+/* Botó Principal d'Audiodescripció */
+.btn-audiodescription {
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: 1.2rem 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 900;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 15px rgba(255, 230, 0, 0.4);
+    transition: transform 0.15s ease, filter 0.15s ease;
+    margin-bottom: 1rem;
+}
+
+.btn-audiodescription:hover, .btn-audiodescription:focus {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+.btn-audiodescription:active {
+    transform: scale(0.98);
+}
+
+/* Caixa de Text d'Audiodescripció */
+.narration-box {
+    background: var(--bg-surface);
+    border-left: 5px solid var(--color-primary);
+    padding: 1.2rem;
+    border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-main);
+}
+
+.narration-box strong {
+    color: var(--color-primary);
+}
+
+/* SECCIÓ DE PROXIMITAT I LLISTA D'OBRES */
+.section-nearby {
+    margin: 0 1.25rem 1.5rem;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.item-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border-main);
+    border-radius: var(--border-radius-md);
+    padding: 1rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+    color: var(--text-main);
+}
+
+.item-card:hover, .item-card:focus {
+    border-color: var(--color-primary);
+    background: var(--bg-highlight);
+}
+
+.item-card.active {
+    border-color: var(--color-primary);
+    background: var(--bg-highlight);
+    box-shadow: 0 0 15px rgba(255, 230, 0, 0.2);
+}
+
+.item-card-info {
+    flex: 1;
+}
+
+.item-card-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.2rem;
+}
+
+.item-card-sub {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.item-card-dist {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--color-primary);
+    margin-left: 1rem;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.item-card-dir {
+    font-size: 0.85rem;
+    color: var(--color-secondary);
+    font-weight: 700;
+}
+
+/* BARRA FIXA INFERIOR D'ACCIONS GEGANTS */
+.bottom-action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-surface);
+    border-top: 3px solid var(--border-main);
+    padding: 0.75rem 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 1000;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.btn-bottom-action {
+    flex: 1;
+    min-height: 68px;
+    border-radius: var(--border-radius-md);
+    background: var(--bg-card);
+    border: 2px solid var(--border-main);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.btn-bottom-action i, .btn-bottom-action .icon {
+    font-size: 1.5rem;
+}
+
+.btn-bottom-action:hover, .btn-bottom-action:focus {
+    background: var(--bg-highlight);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-bottom-action.primary-mic {
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+    border-color: var(--color-primary);
+    flex: 1.2;
+}
+
+.btn-bottom-action.primary-mic.listening {
+    background: var(--color-alert);
+    color: #ffffff;
+    border-color: #ffffff;
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    from { transform: scale(1); box-shadow: 0 0 10px var(--color-alert); }
+    to { transform: scale(1.05); box-shadow: 0 0 25px var(--color-alert); }
+}
+
+/* PANELL DEL SIMULADOR VIRTUAL */
+.simulator-panel {
+    background: #0f172a;
+    border: 2px dashed var(--color-secondary);
+    border-radius: var(--border-radius-md);
+    margin: 1.25rem;
+    padding: 1.25rem;
+}
+
+.sim-controls-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.btn-sim-pad {
+    background: #1e293b;
+    border: 2px solid #475569;
+    color: white;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.btn-sim-pad:hover, .btn-sim-pad:focus {
+    border-color: var(--color-secondary);
+    background: #334155;
+}
+
+/* MODAL DE CONFIGURACIÓ */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--bg-surface);
+    border: 3px solid var(--color-primary);
+    border-radius: var(--border-radius-lg);
+    padding: 1.75rem;
+    max-width: 550px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.btn-close-modal {
+    background: var(--bg-card);
+    border: 2px solid var(--border-main);
+    color: var(--text-main);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.setting-row {
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.setting-label {
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.setting-options-grid {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-setting-opt {
+    background: var(--bg-card);
+    border: 2px solid var(--border-main);
+    color: var(--text-main);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    flex: 1;
+    min-width: 100px;
+}
+
+.btn-setting-opt.active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+}
+
+/* Ocultació accessible per lectors de pantalla */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

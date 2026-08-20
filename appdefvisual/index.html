@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Guia Sonora Accessible · Pluja d'Art 2026 Sant Jordi Desvalls</title>
+    <meta name="description" content="Guia sonora interactiva per a persones amb discapacitat visual o baixa visió. Orientació espacial esquerra/dreta per GPS i audiodescripció de totes les obres de la Fira Pluja d'Art 2026.">
+    <meta name="theme-color" content="#050811">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="../img/logo.jpg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Full d'Estils Accessible -->
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body id="appBody">
+
+    <!-- Regió Live ARIA per a anuncis d'altaveu i lectors de pantalla -->
+    <div id="ariaLiveRegion" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+
+    <div class="app-wrapper">
+        
+        <!-- BARRA SUPERIOR -->
+        <header class="top-header" role="banner">
+            <a href="#" class="brand-link" aria-label="Pluja d'Art 2026 Sant Jordi Desvalls - Guia Sonora">
+                <span class="brand-badge" aria-hidden="true">🦯 🔊</span>
+                <div class="brand-titles">
+                    <h1>Pluja d'Art 2026</h1>
+                    <span>Guia Sonora Accessible · Discapacitat Visual</span>
+                </div>
+            </a>
+
+            <div class="header-controls">
+                <button id="btnToggleSim" class="btn-icon-setting" aria-label="Activar o desactivar mode simulador virtual" title="Mode Simulador">
+                    🕹️
+                </button>
+                <button id="btnOpenSettings" class="btn-icon-setting" aria-label="Obrir configuració d'accessibilitat i veu" title="Configuració">
+                    ⚙️
+                </button>
+            </div>
+        </header>
+
+        <!-- BANNER D'ESTAT DEL GPS I ORIENTACIÓ -->
+        <div class="status-banner" role="status">
+            <div class="status-indicator">
+                <span id="gpsDot" class="status-dot" aria-hidden="true"></span>
+                <span id="gpsStatusText">Connectant GPS...</span>
+            </div>
+            <div id="headingStatusText" style="font-weight: 700; color: var(--color-secondary);">
+                🧭 Rumb: Calculant...
+            </div>
+        </div>
+
+        <!-- PANELL DEL SIMULADOR VIRTUAL (OCULT PER DEFECTE) -->
+        <section id="simulatorPanel" class="simulatorPanel simulator-panel" style="display: none;" aria-label="Controls de simulació de passeig">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <strong style="color: var(--color-secondary); font-size: 1.1rem;">🕹️ Mode Simulador Actiu</strong>
+                <button id="btnCloseSim" class="btn-close-modal" style="padding: 0.2rem 0.6rem; font-size: 0.85rem;">Tancar</button>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                Simula caminar pels carrers de Sant Jordi Desvalls i escolta com canvien les indicacions dreta/esquerra.
+            </p>
+
+            <div class="sim-controls-grid">
+                <div></div>
+                <button id="btnSimUp" class="btn-sim-pad" aria-label="Caminar un pas endavant">⬆️ Endavant</button>
+                <div></div>
+                <button id="btnSimLeft" class="btn-sim-pad" aria-label="Girar a l'esquerra">⬅️ Gir Esquerra</button>
+                <button id="btnSimDown" class="btn-sim-pad" aria-label="Caminar un pas enrere">⬇️ Enrere</button>
+                <button id="btnSimRight" class="btn-sim-pad" aria-label="Girar a la dreta">➡️ Gir Dreta</button>
+            </div>
+
+            <div style="margin-top: 0.75rem;">
+                <label for="selectTeleport" style="font-weight: bold; font-size: 0.9rem; display: block; margin-bottom: 0.3rem;">Teletransportar-se a un espai:</label>
+                <select id="selectTeleport" style="width: 100%; padding: 0.6rem; background: var(--bg-card); color: white; border: 2px solid var(--border-main); border-radius: 8px; font-weight: bold; font-size: 1rem;">
+                    <option value="">-- Selecciona un punt de Sant Jordi Desvalls --</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- TARGETA PRINCIPAL DE GUIATGE DIRECCIONAL DE L'OBRA OBJECTIU -->
+        <main id="mainContent" role="main">
+            <section id="guidanceCard" class="guidance-card" aria-label="Espai o Obra Actual">
+                
+                <div class="guidance-header">
+                    <span id="targetCategoryBadge" class="target-badge">Exposició</span>
+                    <span id="targetCodeBadge" style="font-size: 1.4rem; font-weight: 900; color: var(--color-primary);">#1</span>
+                </div>
+
+                <h2 id="targetTitle" class="target-title">Carregant obra...</h2>
+                <div id="targetArtist" class="target-artist">Artista</div>
+                <div id="targetLocation" class="target-location-name">📍 Ubicació a Sant Jordi Desvalls</div>
+
+                <!-- Indicador Direccional Gegant -->
+                <div id="directionBox" class="direction-box" role="region" aria-label="Indicació de direcció">
+                    <div id="arrowVisual" class="direction-arrow-visual" aria-hidden="true">⬆️</div>
+                    <div id="directionPhrase" class="direction-phrase">Calculant direcció...</div>
+                    <div id="distanceHighlight" class="distance-highlight">-- m</div>
+                    <div id="clockPosition" class="direction-clock">Posició del rellotge: --</div>
+                </div>
+
+                <!-- Botons d'Acció d'Àudio -->
+                <button id="btnPlayAudioDesc" class="btn-audiodescription" aria-label="Escoltar l'audiodescripció completa de l'obra">
+                    <span style="font-size: 1.6rem;" aria-hidden="true">🔊</span>
+                    <span>ESCOLTAR AUDIODESCRIPCIÓ</span>
+                </button>
+
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                    <button id="btnRepeatDirection" class="btn-bottom-action" style="flex: 1; min-height: 52px;" aria-label="Repetir indicació de direcció i metres">
+                        <span>🧭 Repetir Rumb</span>
+                    </button>
+                    <button id="btnNextTarget" class="btn-bottom-action" style="flex: 1; min-height: 52px;" aria-label="Passar a la següent obra de la fira">
+                        <span>Següent Obra ➡️</span>
+                    </button>
+                </div>
+
+                <!-- Text de l'Audiodescripció desplegat -->
+                <div id="narrationContainer" class="narration-box" aria-label="Text de l'audiodescripció">
+                    <p id="narrationText">Prem el botó groc superior per escoltar la descripció sonora detallada.</p>
+                    <div id="tactileNote" style="margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px dashed var(--border-main); color: var(--color-secondary); font-weight: 700;">
+                        ✋ <strong>Informació Tàctil:</strong> <span id="tactileText">Sense informació addicional.</span>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- LLISTA D'OBRES I ESPAIS PROPERS -->
+            <section class="section-nearby" aria-label="Llista d'obres properes">
+                <h3 class="section-title">
+                    <span>📍</span>
+                    <span>Tots els Espais i Obres de la Fira</span>
+                </h3>
+
+                <!-- Filtres ràpids -->
+                <div style="display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.5rem; margin-bottom: 0.75rem;" role="tablist">
+                    <button id="filterAll" class="btn-setting-opt active" role="tab" aria-selected="true">Totes (21+)</button>
+                    <button id="filterExpo" class="btn-setting-opt" role="tab" aria-selected="false">Exposicions</button>
+                    <button id="filterShow" class="btn-setting-opt" role="tab" aria-selected="false">Espectacles</button>
+                    <button id="filterWc" class="btn-setting-opt" role="tab" aria-selected="false">♿ WC Adaptats</button>
+                    <button id="filterFood" class="btn-setting-opt" role="tab" aria-selected="false">Foodtrucks</button>
+                </div>
+
+                <div id="itemsContainer" class="items-list" role="listbox" aria-label="Selecciona una obra per ser guiat">
+                    <!-- Es genera dinàmicament per JS -->
+                </div>
+            </section>
+        </main>
+
+        <!-- BARRA FIXA INFERIOR D'ACCIONS GEGANTS -->
+        <nav class="bottom-action-bar" role="navigation" aria-label="Accions ràpides per veu i emergència">
+            <button id="btnSpeakVoiceCommand" class="btn-bottom-action primary-mic" aria-label="Parlar amb la guia per veu. Mantén o prem per dir: On sóc, Següent obra o On és el lavabo">
+                <span style="font-size: 1.7rem;" aria-hidden="true">🎤</span>
+                <span id="micLabel">PARLAR AMB LA GUIA</span>
+            </button>
+
+            <button id="btnGoToNearestWC" class="btn-bottom-action" aria-label="Guiar immediatament al lavabo adaptat més proper">
+                <span style="font-size: 1.5rem;" aria-hidden="true">♿</span>
+                <span>Lavabo Proper</span>
+            </button>
+
+            <button id="btnEmergencyCall" class="btn-bottom-action" aria-label="Trucar al telèfon d'atenció de l'organització de Sant Jordi Desvalls">
+                <span style="font-size: 1.5rem;" aria-hidden="true">📞</span>
+                <span>Ajuda</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- MODAL DE CONFIGURACIÓ D'ACCESSIBILITAT -->
+    <div id="settingsModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="settingsModalTitle" style="font-size: 1.4rem; color: var(--color-primary);">⚙️ Configuració Accessible</h2>
+                <button id="btnCloseSettings" class="btn-close-modal" aria-label="Tancar configuració">✕ Tancar</button>
+            </div>
+
+            <!-- Contrast -->
+            <div class="setting-row">
+                <span class="setting-label">Tema i Contrast:</span>
+                <div class="setting-options-grid">
+                    <button id="themeDark" class="btn-setting-opt active">Fosc Alt Contrast (Groc/Negre)</button>
+                    <button id="themeLight" class="btn-setting-opt">Clar Alt Contrast</button>
+                </div>
+            </div>
+
+            <!-- Mida de lletra -->
+            <div class="setting-row">
+                <span class="setting-label">Mida del Text:</span>
+                <div class="setting-options-grid">
+                    <button id="fontNormal" class="btn-setting-opt active">Normal</button>
+                    <button id="fontLarge" class="btn-setting-opt">Gran (A+)</button>
+                    <button id="fontXLarge" class="btn-setting-opt">Molt Gran (A++)</button>
+                </div>
+            </div>
+
+            <!-- Velocitat de la Veu -->
+            <div class="setting-row">
+                <span class="setting-label">Velocitat de Síntesi de Veu (TTS):</span>
+                <div class="setting-options-grid">
+                    <button id="rateSlow" class="btn-setting-opt">0.85x (Pausada)</button>
+                    <button id="rateNormal" class="btn-setting-opt active">1.0x (Normal)</button>
+                    <button id="rateFast" class="btn-setting-opt">1.25x (Ràpida)</button>
+                </div>
+            </div>
+
+            <!-- Radar Acústic -->
+            <div class="setting-row">
+                <span class="setting-label">Radar Acústic Estèreo (Bips de guia):</span>
+                <div class="setting-options-grid">
+                    <button id="radarOn" class="btn-setting-opt active">Activat</button>
+                    <button id="radarOff" class="btn-setting-opt">Desactivat</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: center;">
+                <button id="btnSaveCloseSettings" class="btn-audiodescription" style="margin-bottom: 0;">Guardar Preferències</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de l'Aplicació -->
+    <script src="js/data-artworks.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/audio-guide.js"></script>
+    <script src="js/simulator.js"></script>
+
+    <script>
+        // ========================================================
+        // CONTROLADOR PRINCIPAL DE L'APLICACIÓ ACCESSIBLE
+        // ========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = FESTIVAL_DATA.items;
+            const nav = new SpatialNavigationEngine(items);
+            const audio = new AccessibleAudioEngine();
+            const sim = new RouteSimulator(nav, items);
+
+            let currentFilter = 'all';
+            let activeTarget = items[0];
+
+            // Elements DOM
+            const body = document.getElementById('appBody');
+            const ariaLive = document.getElementById('ariaLiveRegion');
+            const gpsDot = document.getElementById('gpsDot');
+            const gpsStatusText = document.getElementById('gpsStatusText');
+            const headingStatusText = document.getElementById('headingStatusText');
+            
+            const guidanceCard = document.getElementById('guidanceCard');
+            const targetCategoryBadge = document.getElementById('targetCategoryBadge');
+            const targetCodeBadge = document.getElementById('targetCodeBadge');
+            const targetTitle = document.getElementById('targetTitle');
+            const targetArtist = document.getElementById('targetArtist');
+            const targetLocation = document.getElementById('targetLocation');
+            
+            const arrowVisual = document.getElementById('arrowVisual');
+            const directionPhrase = document.getElementById('directionPhrase');
+            const distanceHighlight = document.getElementById('distanceHighlight');
+            const clockPosition = document.getElementById('clockPosition');
+            const narrationText = document.getElementById('narrationText');
+            const tactileText = document.getElementById('tactileText');
+            
+            const btnPlayAudioDesc = document.getElementById('btnPlayAudioDesc');
+            const btnRepeatDirection = document.getElementById('btnRepeatDirection');
+            const btnNextTarget = document.getElementById('btnNextTarget');
+            const itemsContainer = document.getElementById('itemsContainer');
+            
+            const btnSpeakVoiceCommand = document.getElementById('btnSpeakVoiceCommand');
+            const micLabel = document.getElementById('micLabel');
+            const btnGoToNearestWC = document.getElementById('btnGoToNearestWC');
+            const btnEmergencyCall = document.getElementById('btnEmergencyCall');
+            
+            const simulatorPanel = document.getElementById('simulatorPanel');
+            const btnToggleSim = document.getElementById('btnToggleSim');
+            const btnCloseSim = document.getElementById('btnCloseSim');
+            const selectTeleport = document.getElementById('selectTeleport');
+            
+            const settingsModal = document.getElementById('settingsModal');
+            const btnOpenSettings = document.getElementById('btnOpenSettings');
+            const btnCloseSettings = document.getElementById('btnCloseSettings');
+            const btnSaveCloseSettings = document.getElementById('btnSaveCloseSettings');
+
+            // Funció per actualitzar la regió Accessible Live per a lectors de pantalla
+            function announceAria(message) {
+                if (ariaLive) {
+                    ariaLive.textContent = message;
+                }
+            }
+
+            // Població del selector de teletransport del simulador
+            items.forEach(it => {
+                const opt = document.createElement('option');
+                opt.value = it.id;
+                opt.textContent = `${it.code} - ${it.name} (${it.project})`;
+                selectTeleport.appendChild(opt);
+            });
+
+            // 1. RENDERITZACIÓ DE LA LLISTA D'OBRES
+            function renderItemsList() {
+                itemsContainer.innerHTML = '';
+                const sorted = nav.getItemsSortedByDistance();
+
+                let filtered = sorted;
+                if (currentFilter === 'expo') filtered = sorted.filter(s => s.item.type === 'expo');
+                else if (currentFilter === 'show') filtered = sorted.filter(s => s.item.type === 'show');
+                else if (currentFilter === 'wc') filtered = sorted.filter(s => s.item.type.includes('wc'));
+                else if (currentFilter === 'food') filtered = sorted.filter(s => s.item.type === 'food');
+
+                filtered.forEach(entry => {
+                    const it = entry.item;
+                    const d = entry.nav;
+                    const isSelected = (activeTarget && activeTarget.id === it.id);
+
+                    const card = document.createElement('button');
+                    card.className = `item-card ${isSelected ? 'active' : ''}`;
+                    card.setAttribute('role', 'option');
+                    card.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+                    card.setAttribute('aria-label', `${it.code} ${it.name}. ${it.artist || ''}. Distància: ${d.distanceMeters} metres ${d.simpleDirection}.`);
+
+                    card.innerHTML = `
+                        <div class="item-card-info">
+                            <div class="item-card-title">
+                                <span style="color: var(--color-primary); font-weight: 900;">${it.code}</span> ${it.name}
+                            </div>
+                            <div class="item-card-sub">${it.project} · ${it.artist || it.category}</div>
+                        </div>
+                        <div class="item-card-dist">
+                            <div>${d.distanceMeters} m</div>
+                            <div class="item-card-dir">${d.simpleDirection}</div>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', () => {
+                        selectTarget(it);
+                    });
+
+                    itemsContainer.appendChild(card);
+                });
+            }
+
+            // 2. SELECCIONAR UNA OBRA COM A OBJECTIU DE GUIATGE
+            function selectTarget(item, announce = true) {
+                activeTarget = item;
+                nav.selectTargetItem(item.id);
+
+                targetCategoryBadge.textContent = item.category;
+                targetCodeBadge.textContent = item.code;
+                targetTitle.textContent = item.name;
+                targetArtist.textContent = item.artist ? `${item.artist} · ${item.project}` : item.project;
+                targetLocation.textContent = `📍 ${item.locationName}`;
+                narrationText.textContent = item.audioDescripcio;
+                tactileText.textContent = item.tactilDetalls || "Sense informació addicional.";
+
+                const currentNav = nav.calculateRelativeDirection(item.lat, item.lng);
+                updateDirectionUI(currentNav);
+                renderItemsList();
+
+                if (announce) {
+                    const welcomeSpeech = `Objectiu seleccionat: ${item.name}. ${item.project}. ${currentNav.spokenSentence}`;
+                    audio.speak(welcomeSpeech, true);
+                    announceAria(welcomeSpeech);
+                }
+            }
+
+            // 3. ACTUALITZACIÓ DINÀMICA DE LA UI DE DIRECCIÓ
+            function updateDirectionUI(navInfo) {
+                distanceHighlight.textContent = `${navInfo.distanceMeters} m`;
+                directionPhrase.textContent = navInfo.detailedInstruction;
+                clockPosition.textContent = `Orientació: ${navInfo.simpleDirection} (a les ${navInfo.clockPosition} en punt)`;
+
+                // Fletxa visual
+                let arrowChar = "⬆️";
+                if (navInfo.relativeAngle > 340 || navInfo.relativeAngle <= 20) arrowChar = "⬆️";
+                else if (navInfo.relativeAngle > 20 && navInfo.relativeAngle <= 70) arrowChar = "↗️";
+                else if (navInfo.relativeAngle > 70 && navInfo.relativeAngle <= 110) arrowChar = "➡️";
+                else if (navInfo.relativeAngle > 110 && navInfo.relativeAngle <= 160) arrowChar = "↘️";
+                else if (navInfo.relativeAngle > 160 && navInfo.relativeAngle <= 200) arrowChar = "⬇️";
+                else if (navInfo.relativeAngle > 200 && navInfo.relativeAngle <= 250) arrowChar = "↙️";
+                else if (navInfo.relativeAngle > 250 && navInfo.relativeAngle <= 290) arrowChar = "⬅️";
+                else arrowChar = "↖️";
+                arrowVisual.textContent = arrowChar;
+
+                if (navInfo.isFacingDirectly) {
+                    guidanceCard.classList.add('aligned');
+                } else {
+                    guidanceCard.classList.remove('aligned');
+                }
+            }
+
+            // 4. ESDEVENIMENTS DE NAVEGACIÓ EN TEMPS REAL
+            nav.onLocationUpdate = (data) => {
+                gpsDot.classList.add('active');
+                gpsStatusText.textContent = data.user.isRealGPS ? `GPS Actiu (±${data.user.accuracy}m)` : "Mode Simulador";
+                headingStatusText.textContent = `🧭 Rumb: ${data.user.heading}°`;
+
+                if (activeTarget && data.target.id === activeTarget.id) {
+                    updateDirectionUI(data.nav);
+                }
+                renderItemsList();
+            };
+
+            nav.onArrival = (target, navInfo) => {
+                audio.playArrivalChime();
+                const arrivalMsg = `Has arribat a ${target.name}. ${target.project}. Escolta l'audiodescripció. ${target.audioDescripcio}`;
+                audio.speak(arrivalMsg, true);
+                announceAria(arrivalMsg);
+            };
+
+            nav.onProximityAlert = (target, navInfo) => {
+                const approachMsg = `T'estàs apropant a ${target.name}. L'obra és ${navInfo.simpleDirection}, a ${navInfo.distanceMeters} metres.`;
+                audio.speak(approachMsg, false);
+                announceAria(approachMsg);
+            };
+
+            // Iniciar Radar Sonor Continu
+            audio.startRadarLoop(() => {
+                if (!activeTarget) return null;
+                return nav.calculateRelativeDirection(activeTarget.lat, activeTarget.lng);
+            });
+
+            // 5. ACCIONS DELS BOTONS PRINCIPALS
+            btnPlayAudioDesc.addEventListener('click', () => {
+                audio.initAudioContext();
+                if (!activeTarget) return;
+                const fullAudiodesc = `Audiodescripció de ${activeTarget.name}, obra de ${activeTarget.artist || 'diversos artistes'}. ${activeTarget.audioDescripcio} Detalls tàctils: ${activeTarget.tactilDetalls || 'Sense detalls tàctils específics.'}`;
+                audio.speak(fullAudiodesc, true);
+                announceAria(fullAudiodesc);
+            });
+
+            btnRepeatDirection.addEventListener('click', () => {
+                audio.initAudioContext();
+                if (!activeTarget) return;
+                const currentNav = nav.calculateRelativeDirection(activeTarget.lat, activeTarget.lng);
+                const phrase = `L'obra ${activeTarget.name} és ${currentNav.spokenSentence}`;
+                audio.speak(phrase, true);
+                announceAria(phrase);
+            });
+
+            btnNextTarget.addEventListener('click', () => {
+                audio.initAudioContext();
+                const currentIndex = items.findIndex(it => it.id === activeTarget.id);
+                const nextIndex = (currentIndex + 1) % items.length;
+                selectTarget(items[nextIndex], true);
+            });
+
+            btnGoToNearestWC.addEventListener('click', () => {
+                audio.initAudioContext();
+                const nearestWC = nav.getNearestItem('wc_accessible') || nav.getNearestItem('wc');
+                if (nearestWC) {
+                    selectTarget(nearestWC.item, true);
+                } else {
+                    audio.speak("No s'ha trobat cap lavabo disponible.", true);
+                }
+            });
+
+            btnEmergencyCall.addEventListener('click', () => {
+                const confirmHelp = `Atenció: El telèfon d'ajuda i acompanyament de l'organització és ${FESTIVAL_DATA.info.telefonOrganitzacio}. Vols fer la trucada ara?`;
+                audio.speak(confirmHelp, true, () => {
+                    window.location.href = `tel:${FESTIVAL_DATA.info.telefonOrganitzacio.replace(/\s+/g, '')}`;
+                });
+            });
+
+            // 6. RECONEIXEMENT DE VEU EN CATALÀ ("Parla amb la Guia")
+            btnSpeakVoiceCommand.addEventListener('click', () => {
+                audio.initAudioContext();
+                micLabel.textContent = "ESCOLTANT...";
+                btnSpeakVoiceCommand.classList.add('listening');
+
+                const started = audio.startVoiceRecognition((cmd) => {
+                    micLabel.textContent = "PARLAR AMB LA GUIA";
+                    btnSpeakVoiceCommand.classList.remove('listening');
+                    handleVoiceCommand(cmd);
+                });
+
+                if (!started) {
+                    micLabel.textContent = "PARLAR AMB LA GUIA";
+                    btnSpeakVoiceCommand.classList.remove('listening');
+                }
+            });
+
+            function handleVoiceCommand(cmd) {
+                console.log("Comanda processada:", cmd);
+
+                if (cmd.includes('on soc') || cmd.includes('on sóc') || cmd.includes('on estic') || cmd.includes('a prop')) {
+                    const nearest = nav.getNearestItem();
+                    if (nearest) {
+                        const d = nav.calculateRelativeDirection(nearest.item.lat, nearest.item.lng);
+                        audio.speak(`Ets a prop de ${nearest.item.name}, situada ${d.simpleDirection} a ${d.distanceMeters} metres.`, true);
+                    }
+                } else if (cmd.includes('següent') || cmd.includes('propera') || cmd.includes('endavant')) {
+                    btnNextTarget.click();
+                } else if (cmd.includes('anterior') || cmd.includes('enrere')) {
+                    const currentIndex = items.findIndex(it => it.id === activeTarget.id);
+                    const prevIndex = (currentIndex - 1 + items.length) % items.length;
+                    selectTarget(items[prevIndex], true);
+                } else if (cmd.includes('repeteix') || cmd.includes('com') || cmd.includes('repetir')) {
+                    btnRepeatDirection.click();
+                } else if (cmd.includes('descripcio') || cmd.includes('descripció') || cmd.includes('explica') || cmd.includes('obra')) {
+                    btnPlayAudioDesc.click();
+                } else if (cmd.includes('lavabo') || cmd.includes('wc') || cmd.includes('bany') || cmd.includes('servei')) {
+                    btnGoToNearestWC.click();
+                } else if (cmd.includes('menjar') || cmd.includes('foodtruck') || cmd.includes('bar')) {
+                    const food = items.find(it => it.type === 'food');
+                    if (food) selectTarget(food, true);
+                } else if (cmd.includes('ajuntament') || cmd.includes('informacio') || cmd.includes('informació')) {
+                    const info = items.find(it => it.id === 'serv_info');
+                    if (info) selectTarget(info, true);
+                } else if (cmd.includes('atura') || cmd.includes('para') || cmd.includes('silenci')) {
+                    audio.stopSpeaking();
+                } else {
+                    audio.speak(`He sentit: ${cmd}. Pots dir: On sóc, Següent obra, Explica l'obra, o On és el lavabo.`, true);
+                }
+            }
+
+            // 7. FILTRES DE TIPUS D'OBRA
+            const filterButtons = {
+                all: document.getElementById('filterAll'),
+                expo: document.getElementById('filterExpo'),
+                show: document.getElementById('filterShow'),
+                wc: document.getElementById('filterWc'),
+                food: document.getElementById('filterFood')
+            };
+
+            Object.keys(filterButtons).forEach(key => {
+                const btn = filterButtons[key];
+                btn.addEventListener('click', () => {
+                    Object.values(filterButtons).forEach(b => {
+                        b.classList.remove('active');
+                        b.setAttribute('aria-selected', 'false');
+                    });
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-selected', 'true');
+                    currentFilter = key;
+                    renderItemsList();
+                });
+            });
+
+            // 8. CONTROLS DEL SIMULADOR
+            btnToggleSim.addEventListener('click', () => {
+                if (simulatorPanel.style.display === 'none') {
+                    simulatorPanel.style.display = 'block';
+                    sim.enable();
+                    audio.speak("Mode simulador activat. Pots moure't amb els botons de fletxes virtuals.", true);
+                } else {
+                    simulatorPanel.style.display = 'none';
+                    sim.disable();
+                    nav.startGPS();
+                    audio.speak("Mode simulador desactivat. Reprenent GPS real.", true);
+                }
+            });
+
+            btnCloseSim.addEventListener('click', () => {
+                simulatorPanel.style.display = 'none';
+                sim.disable();
+                nav.startGPS();
+            });
+
+            document.getElementById('btnSimUp').addEventListener('click', () => {
+                audio.initAudioContext();
+                sim.walkForward();
+            });
+            document.getElementById('btnSimDown').addEventListener('click', () => {
+                audio.initAudioContext();
+                sim.walkBackward();
+            });
+            document.getElementById('btnSimLeft').addEventListener('click', () => {
+                audio.initAudioContext();
+                sim.turnLeft();
+            });
+            document.getElementById('btnSimRight').addEventListener('click', () => {
+                audio.initAudioContext();
+                sim.turnRight();
+            });
+
+            selectTeleport.addEventListener('change', (e) => {
+                const targetId = e.target.value;
+                if (!targetId) return;
+                const found = items.find(it => it.id === targetId);
+                if (found) {
+                    sim.teleportTo(found.lat, found.lng);
+                    selectTarget(found, true);
+                }
+            });
+
+            // 9. CONFIGURACIÓ D'ACCESSIBILITAT (MODAL)
+            btnOpenSettings.addEventListener('click', () => {
+                settingsModal.classList.add('open');
+            });
+            btnCloseSettings.addEventListener('click', () => {
+                settingsModal.classList.remove('open');
+            });
+            btnSaveCloseSettings.addEventListener('click', () => {
+                settingsModal.classList.remove('open');
+                audio.speak("Preferències d'accessibilitat guardades correctament.", true);
+            });
+
+            // Tema Clar / Fosc
+            document.getElementById('themeDark').addEventListener('click', () => {
+                body.classList.remove('light-theme');
+                document.getElementById('themeDark').classList.add('active');
+                document.getElementById('themeLight').classList.remove('active');
+            });
+            document.getElementById('themeLight').addEventListener('click', () => {
+                body.classList.add('light-theme');
+                document.getElementById('themeLight').classList.add('active');
+                document.getElementById('themeDark').classList.remove('active');
+            });
+
+            // Mida de lletra
+            document.getElementById('fontNormal').addEventListener('click', () => {
+                body.classList.remove('font-large', 'font-xlarge');
+                document.getElementById('fontNormal').classList.add('active');
+                document.getElementById('fontLarge').classList.remove('active');
+                document.getElementById('fontXLarge').classList.remove('active');
+            });
+            document.getElementById('fontLarge').addEventListener('click', () => {
+                body.classList.remove('font-xlarge');
+                body.classList.add('font-large');
+                document.getElementById('fontLarge').classList.add('active');
+                document.getElementById('fontNormal').classList.remove('active');
+                document.getElementById('fontXLarge').classList.remove('active');
+            });
+            document.getElementById('fontXLarge').addEventListener('click', () => {
+                body.classList.remove('font-large');
+                body.classList.add('font-xlarge');
+                document.getElementById('fontXLarge').classList.add('active');
+                document.getElementById('fontNormal').classList.remove('active');
+                document.getElementById('fontLarge').classList.remove('active');
+            });
+
+            // Velocitat de Veu
+            document.getElementById('rateSlow').addEventListener('click', () => {
+                audio.setRate(0.85);
+                document.getElementById('rateSlow').classList.add('active');
+                document.getElementById('rateNormal').classList.remove('active');
+                document.getElementById('rateFast').classList.remove('active');
+            });
+            document.getElementById('rateNormal').addEventListener('click', () => {
+                audio.setRate(1.0);
+                document.getElementById('rateNormal').classList.add('active');
+                document.getElementById('rateSlow').classList.remove('active');
+                document.getElementById('rateFast').classList.remove('active');
+            });
+            document.getElementById('rateFast').addEventListener('click', () => {
+                audio.setRate(1.25);
+                document.getElementById('rateFast').classList.add('active');
+                document.getElementById('rateSlow').classList.remove('active');
+                document.getElementById('rateNormal').classList.remove('active');
+            });
+
+            // Radar Acústic
+            document.getElementById('radarOn').addEventListener('click', () => {
+                audio.radarSoundEnabled = true;
+                document.getElementById('radarOn').classList.add('active');
+                document.getElementById('radarOff').classList.remove('active');
+            });
+            document.getElementById('radarOff').addEventListener('click', () => {
+                audio.radarSoundEnabled = false;
+                document.getElementById('radarOff').classList.add('active');
+                document.getElementById('radarOn').classList.remove('active');
+            });
+
+            // 10. GESTOS TÀCTILS A TOTA LA PANTALLA
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchStartTime = 0;
+            let longPressTimer = null;
+
+            window.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                    touchStartTime = Date.now();
+
+                    // Detectar mantenir premut (Long Press) per activar micròfon
+                    longPressTimer = setTimeout(() => {
+                        if (navigator.vibrate) navigator.vibrate(100);
+                        btnSpeakVoiceCommand.click();
+                    }, 800);
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchend', (e) => {
+                clearTimeout(longPressTimer);
+                const touchEndTime = Date.now();
+                const diffTime = touchEndTime - touchStartTime;
+
+                if (e.changedTouches.length === 1 && diffTime < 400) {
+                    const diffX = e.changedTouches[0].clientX - touchStartX;
+                    const diffY = e.changedTouches[0].clientY - touchStartY;
+
+                    // Lliscament Horitzontal (Swipe)
+                    if (Math.abs(diffX) > 80 && Math.abs(diffY) < 50) {
+                        if (diffX < 0) {
+                            // Swipe cap a l'esquerra -> Següent obra
+                            btnNextTarget.click();
+                        } else {
+                            // Swipe cap a la dreta -> Anterior obra
+                            const currentIndex = items.findIndex(it => it.id === activeTarget.id);
+                            const prevIndex = (currentIndex - 1 + items.length) % items.length;
+                            selectTarget(items[prevIndex], true);
+                        }
+                    }
+                }
+            }, { passive: true });
+
+            // 11. INICIALITZACIÓ AUTOMÀTICA
+            selectTarget(items[0], false);
+            nav.startGPS();
+
+            // Missatge de benvinguda amb la primera interacció d'usuari
+            const startInteraction = () => {
+                audio.initAudioContext();
+                audio.speak("Benvingut a la Guia Sonora de Pluja d'Art 2026 a Sant Jordi Desvalls. T'anirem guiant pas a pas cap a cada obra amb indicacions d'esquerra, dreta i audiodescripcions completes. Prem qualsevol botó per començar.", false);
+                window.removeEventListener('click', startInteraction);
+                window.removeEventListener('keydown', startInteraction);
+            };
+            window.addEventListener('click', startInteraction, { once: true });
+            window.addEventListener('keydown', startInteraction, { once: true });
+        });
+    </script>
+</body>
+</html>

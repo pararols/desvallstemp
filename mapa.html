@@ -528,15 +528,28 @@
             bottom: 1.5rem;
             left: 1.5rem;
             background: rgba(15, 23, 42, 0.96);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.22);
             border-radius: 14px;
-            padding: 1rem 1.35rem 0.95rem 1.35rem;
+            padding: 0.9rem 1.35rem;
             z-index: 1000;
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
             width: 490px;
             max-width: calc(100vw - 3rem);
             box-sizing: border-box;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .legend-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 0.45rem;
+            margin-bottom: 0.65rem;
+            cursor: pointer;
+            user-select: none;
         }
 
         .legend-title {
@@ -545,12 +558,57 @@
             font-weight: 800;
             line-height: 1.3;
             white-space: nowrap;
-            margin-top: 0;
-            margin-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-            padding-bottom: 0.45rem;
-            display: block;
             letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-toggle-legend {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cbd5e1;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn-toggle-legend:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .map-legend.collapsed {
+            width: auto;
+            max-width: fit-content;
+            padding: 0.55rem 0.95rem;
+            border-radius: 25px;
+            cursor: pointer;
+            background: rgba(15, 23, 42, 0.95);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            border-color: var(--primary);
+        }
+
+        .map-legend.collapsed .legend-header {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .map-legend.collapsed .legend-content {
+            display: none;
+        }
+
+        .map-legend.collapsed .btn-toggle-legend {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
 
         .legend-grid {
@@ -722,10 +780,47 @@
         #map-wrapper.is-exporting .mobile-sidebar-toggle,
         #map-wrapper.is-exporting .craft-node-wrapper,
         #map-wrapper.is-exporting .craft-mid-wrapper,
+        #map-wrapper.is-exporting .btn-toggle-legend,
         #map-wrapper.is-exporting .leaflet-control-zoom {
             display: none !important;
             opacity: 0 !important;
             visibility: hidden !important;
+        }
+
+        /* Forçar llegenda completa i neta en exportació PNG */
+        #map-wrapper.is-exporting .map-legend {
+            display: block !important;
+            width: 490px !important;
+            max-width: 490px !important;
+            padding: 0.9rem 1.35rem !important;
+            border-radius: 14px !important;
+        }
+
+        #map-wrapper.is-exporting .map-legend .legend-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+            padding-bottom: 0.45rem !important;
+            margin-bottom: 0.65rem !important;
+        }
+
+        #map-wrapper.is-exporting .map-legend .legend-content {
+            display: block !important;
+        }
+
+        /* Teló de fons per al calaix mòbil */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 1040;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-backdrop.active {
+            display: block;
+            opacity: 1;
         }
 
         /* Toggle Sidebar Button for Mobile */
@@ -737,24 +832,74 @@
             background: var(--sidebar-bg);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 0.6rem 0.9rem;
+            padding: 0.55rem 0.85rem;
             border-radius: 8px;
             z-index: 1000;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
         @media (max-width: 768px) {
+            .topbar {
+                padding: 0.5rem 0.85rem;
+            }
+            .topbar-subtitle {
+                display: none;
+            }
+            .topbar-actions {
+                gap: 0.35rem;
+            }
+            .topbar-actions .btn-action {
+                padding: 0.4rem 0.65rem;
+                font-size: 0.78rem;
+            }
+
             .mobile-sidebar-toggle {
                 display: block;
             }
+
             .map-layer-switcher {
-                top: auto;
-                bottom: 6rem;
-                left: 1rem;
-                max-width: calc(100% - 2rem);
+                top: 0.65rem;
+                left: 0.65rem;
+                padding: 0.25rem;
+                max-width: calc(100% - 7.5rem);
             }
+
+            .map-layer-btn {
+                padding: 0.3rem 0.55rem;
+                font-size: 0.75rem;
+            }
+
+            /* Llegenda en mòbils */
+            .map-legend {
+                bottom: 1rem;
+                left: 1rem;
+                max-width: calc(100vw - 2rem);
+            }
+
+            .map-legend:not(.collapsed) {
+                width: calc(100vw - 2rem);
+                max-height: 55vh;
+                overflow-y: auto;
+            }
+
+            .legend-grid {
+                grid-template-columns: 1fr;
+                row-gap: 0.38rem;
+            }
+
+            .sidebar {
+                z-index: 1050;
+                width: min(88vw, 360px);
+            }
+
+            /* Mida adaptada de marcadors per a pantalles tàctils */
+            .custom-marker.marker-show { width: 40px !important; height: 40px !important; font-size: 1.3rem !important; }
+            .custom-marker.marker-food { width: 38px !important; height: 38px !important; font-size: 1.25rem !important; }
+            .custom-marker.marker-wc, .custom-marker.marker-wc-acc { width: 36px !important; height: 36px !important; font-size: 1.2rem !important; }
+            .custom-marker.marker-expo { width: 34px !important; height: 34px !important; font-size: 0.95rem !important; }
         }
     </style>
 </head>
@@ -771,8 +916,8 @@
         </a>
 
         <div class="topbar-actions">
-            <a href="../appdefvisual/index.html" class="btn-action" style="background: #ffe600; color: #000000; font-weight: 800; border-color: #ffe600;" title="Guia Sonora Accessible per a Persones Cegues i Baixa Visió">
-                🦯 🔊 Guia Sonora (Cegues)
+            <a href="appdefvisual/index.html" class="btn-action" style="background: #6366f1; color: #ffffff; font-weight: 700; border-color: #6366f1;" title="Guia Sonora Accessible per a Persones amb Discapacitat Visual o Baixa Visió">
+                🦯 🔊 Guia Sonora Accessible
             </a>
             <button type="button" class="btn-action editor-toggle" id="btn-editor-mode" onclick="toggleEditorMode()">
                 ✏️ Mode Editor Ubicacions
@@ -838,33 +983,43 @@
                 </div>
             </div>
 
-            <!-- Legend -->
-            <div class="map-legend">
-                <div class="legend-title">Llegenda del Festival i Ubicacions</div>
-                <div class="legend-grid">
-                    <!-- Parades i Exposicions -->
-                    <div class="legend-item">
-                        <span class="legend-icon"><div class="legend-line" style="background: rgba(249, 115, 22, 0.85); border: 1px solid #fdba74;"></div></span>
-                        <span>Parades d'Artesania</span>
+            <!-- Legend (Amagable / Desplegable) -->
+            <div class="map-legend" id="map-legend">
+                <div class="legend-header" onclick="toggleLegend()">
+                    <div class="legend-title">
+                        <span>📜 Llegenda del Festival</span>
                     </div>
-                    <div class="legend-item">
-                        <span class="legend-icon"><div class="legend-dot" style="background: #0284c7;"></div></span>
-                        <span>1-22: Exposicions d'Art</span>
-                    </div>
-                    
-                    <!-- Ubicacions d'Espectacles Individuals -->
-                    <div class="legend-item"><span class="legend-icon">🎭</span> <span>Sala Nova</span></div>
-                    <div class="legend-item"><span class="legend-icon">⛲</span> <span>Plaça Major</span></div>
-                    <div class="legend-item"><span class="legend-icon">🏫</span> <span>Escola de Sant Jordi</span></div>
-                    <div class="legend-item"><span class="legend-icon">🤡</span> <span>Plaça U d'Octubre</span></div>
-                    <div class="legend-item"><span class="legend-icon">🌿</span> <span>Plaça Clos Garriga</span></div>
-                    <div class="legend-item"><span class="legend-icon">🍔</span> <span>Zona Foodtrucks & Festa</span></div>
-                    <div class="legend-item"><span class="legend-icon">🥁</span> <span>Carrers de la Vila</span></div>
+                    <button type="button" class="btn-toggle-legend" id="btn-toggle-legend" onclick="event.stopPropagation(); toggleLegend();" title="Amagar o Mostrar la Llegenda">
+                        <span id="legend-toggle-icon">👁️</span> <span id="legend-toggle-text">Amagar</span>
+                    </button>
+                </div>
+                <div class="legend-content" id="legend-content">
+                    <div class="legend-grid">
+                        <!-- Parades i Exposicions -->
+                        <div class="legend-item">
+                            <span class="legend-icon"><div class="legend-line" style="background: rgba(249, 115, 22, 0.85); border: 1px solid #fdba74;"></div></span>
+                            <span>Parades d'Artesania</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-icon"><div class="legend-dot" style="background: #0284c7;"></div></span>
+                            <span>1-22: Exposicions d'Art</span>
+                        </div>
+                        
+                        <!-- Ubicacions d'Espectacles Individuals -->
+                        <div class="legend-item"><span class="legend-icon">🎭</span> <span>Sala Nova</span></div>
+                        <div class="legend-item"><span class="legend-icon">⛲</span> <span>Plaça Major</span></div>
+                        <div class="legend-item"><span class="legend-icon">🏫</span> <span>Escola de Sant Jordi</span></div>
+                        <div class="legend-item"><span class="legend-icon">🤡</span> <span>Plaça U d'Octubre</span></div>
+                        <div class="legend-item"><span class="legend-icon">🏡</span> <span>Ca la Lluïsa Hospital</span></div>
+                        <div class="legend-item"><span class="legend-icon">🌿</span> <span>Plaça Clos Garriga</span></div>
+                        <div class="legend-item"><span class="legend-icon">🍔</span> <span>Zona Foodtrucks & Festa</span></div>
+                        <div class="legend-item"><span class="legend-icon">🥁</span> <span>Carrers de la Vila</span></div>
 
-                    <!-- Serveis -->
-                    <div class="legend-item"><span class="legend-icon">🚻</span> <span>Lavabos WC</span></div>
-                    <div class="legend-item"><span class="legend-icon">♿</span> <span>Lavabo Adaptat PMR</span></div>
-                    <div class="legend-item"><span class="legend-icon">🅿️</span> <span>Aparcaments i Info</span></div>
+                        <!-- Serveis -->
+                        <div class="legend-item"><span class="legend-icon">🚻</span> <span>Lavabos WC</span></div>
+                        <div class="legend-item"><span class="legend-icon">♿</span> <span>Lavabo Adaptat PMR</span></div>
+                        <div class="legend-item"><span class="legend-icon">🅿️</span> <span>Aparcaments i Info</span></div>
+                    </div>
                 </div>
             </div>
 
@@ -873,6 +1028,9 @@
                 📋 Llista d'Espais
             </button>
         </div>
+
+        <!-- Mobile Sidebar Backdrop -->
+        <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
 
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
@@ -906,15 +1064,15 @@
         // 1. DADES OFICIALS BASE DEL FESTIVAL
         // ========================================================
         const BASE_LOCATIONS = [
-            // --- ESPECTACLES (E1 - E7) ---
+            // --- ESPECTACLES (E1 - E8) ---
             {
                 id: 'show_1',
                 type: 'show',
                 code: '🎭',
                 name: 'Sala Nova',
-                artist: 'Els Braves / Pamboliteatre / Tres Pels Pèls',
+                artist: 'Els Braves / Pamboli Teatre',
                 project: 'Espai Teatral Principal',
-                desc: 'Espectacles teatrals de sala: Divendres (Els Braves 20h), Dissabte (Pamboliteatre 19h), Diumenge (Tres Pels Pèls 12:30h).',
+                desc: 'Espectacles teatrals de sala: Divendres 20:00 h (Els Braves), Dissabte 19:00 h (Pamboli Teatre).',
                 lat: 42.0722,
                 lng: 2.9542
             },
@@ -923,9 +1081,9 @@
                 type: 'show',
                 code: '⛲',
                 name: 'Plaça Major',
-                artist: 'Rumbesia, Oriol Serra, Duo Belarc, Pau Zabala...',
+                artist: 'Rumbesia, Teràpia de Riure, Helena i Albert, Duo Belarc, Barretús Garden, La Pulposa, Pau Zabala',
                 project: 'Escenari Central a l\'Aire Lliure',
-                desc: 'Escenari principal: Rumbesia (Div 21h), Taxista Frustrat (Div 22:30h), Duo Belarc (Dis 11h), Barret\'s Garden (Dis 13h), Lia i Marga (Dis 17h), La Pulposa (Dis 18h), Pau Zabala (Diu 11:30h).',
+                desc: 'Escenari central: Divendres (Rumbesia 21:00 h, Taxista Frustrat 22:30 h, Helena i Albert 23:30 h), Dissabte (Duo Belarc 11:00 h, Barretús Garden 13:00 h, La Pulposa 18:00 h), Diumenge (Pau Zabala 12:00 h).',
                 lat: 42.0725,
                 lng: 2.9538
             },
@@ -935,8 +1093,8 @@
                 code: '🏫',
                 name: 'Escola de Sant Jordi Desvalls',
                 artist: 'Cia. CabraCadabra',
-                project: '«Les Granotes» (Espectacle Infantil)',
-                desc: 'Dissabte 19 a les 10:00 h. Titelles, moviment i teatre sensorial per a infants i famílies.',
+                project: '«Les Granotes» (Espectacle Infantil i Familiar)',
+                desc: 'Dissabte 19 a les 10:00 h. Titelles, moviment i teatre sensorial per a tota la família.',
                 lat: 42.0734,
                 lng: 2.9556
             },
@@ -946,7 +1104,7 @@
                 code: '🤡',
                 name: 'Plaça U d’Octubre',
                 artist: 'Djammal (Jose Miguel Martins)',
-                project: '«Clown on Popping»',
+                project: '«Clown on Popping» (Circ Multidisciplinar)',
                 desc: 'Dissabte 19 a les 12:00 h. Espectacle figuratiu, clown i teatre gestual interactiu.',
                 lat: 42.0715,
                 lng: 2.9532
@@ -954,33 +1112,44 @@
             {
                 id: 'show_5',
                 type: 'show',
-                code: '🌿',
-                name: 'Plaça Clos Garriga',
-                artist: 'Espai Creatiu Pluja d\'Art',
-                project: 'Taller de Poesia Il·lustrada',
-                desc: 'Diumenge 20 a les 10:00 h. Taller creatiu obert a totes les edats.',
-                lat: 42.0729,
-                lng: 2.9546
+                code: '🏡',
+                name: 'Ca la Lluïsa Hospital',
+                artist: 'Lia i Marga',
+                project: '«Paraula, Emoció, Fang» (Taller Espectacle)',
+                desc: 'Dissabte 19 a les 16:30 h. Taller espectacle sensorial que uneix veu, transmissió oral i modelatge amb fang.',
+                lat: 42.0724,
+                lng: 2.9534
             },
             {
                 id: 'show_6',
                 type: 'show',
-                code: '🎶',
-                name: 'Escenari Zona Foodtrucks',
-                artist: 'Albert i Helena / DJ Pipa',
-                project: 'Concerts & Festa Major',
-                desc: 'Dissabte nit: Concert acústic (23:00 h) i gran festa de ball amb DJ Pipa (01:00 h).',
+                code: '🌿',
+                name: 'Plaça Clos Garriga',
+                artist: 'Llegim teatre',
+                project: '«Poesia, Colors i Consciència» (Taller Poesia Il·lustrada)',
+                desc: 'Diumenge 20 a les 11:00 h. Taller participatiu per a totes les edats.',
+                lat: 42.0729,
+                lng: 2.9546
+            },
+            {
+                id: 'show_7',
+                type: 'show',
+                code: '🍔',
+                name: 'Zona Foodtrucks & Festa',
+                artist: 'DJ Pipa',
+                project: '«Música per a Tothom» (Sessió de Ball)',
+                desc: 'Dissabte 19 a les 00:00 h (Mitjanit). Gran sessió musical i ball a l\'espai gastronòmic.',
                 lat: 42.0712,
                 lng: 2.9548
             },
             {
-                id: 'show_7',
+                id: 'show_8',
                 type: 'show',
                 code: '🥁',
                 name: 'Carrers de la Vila',
                 artist: 'Geganters de Sant Jordi Desvalls',
                 project: 'Cercavila de Gegants i Capgrossos',
-                desc: 'Diumenge 20 a les 10:00 h. Cercavila tradicional pels carrers del poble.',
+                desc: 'Diumenge 20 a les 10:00 h. Cercavila tradicional pels carrers i places del poble.',
                 lat: 42.0727,
                 lng: 2.9534
             },
@@ -2093,14 +2262,54 @@
             }
         }
 
+        function toggleLegend(forceState) {
+            const legend = document.getElementById('map-legend');
+            const toggleText = document.getElementById('legend-toggle-text');
+            const toggleIcon = document.getElementById('legend-toggle-icon');
+            if (!legend) return;
+
+            let isCollapsed;
+            if (typeof forceState === 'boolean') {
+                isCollapsed = forceState;
+                legend.classList.toggle('collapsed', isCollapsed);
+            } else {
+                isCollapsed = legend.classList.toggle('collapsed');
+            }
+
+            if (toggleText && toggleIcon) {
+                toggleText.innerText = isCollapsed ? 'Mostrar' : 'Amagar';
+                toggleIcon.innerText = isCollapsed ? '📜' : '👁️';
+            }
+            try {
+                localStorage.setItem('pluja_art_legend_collapsed', isCollapsed ? 'true' : 'false');
+            } catch (e) {}
+        }
+
         function toggleSidebar(forceState) {
             const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            if (!sidebar) return;
+
+            let isOpen;
             if (typeof forceState === 'boolean') {
-                sidebar.classList.toggle('open', forceState);
+                isOpen = forceState;
+                sidebar.classList.toggle('open', isOpen);
             } else {
-                sidebar.classList.toggle('open');
+                isOpen = sidebar.classList.toggle('open');
+            }
+
+            if (backdrop) {
+                backdrop.classList.toggle('active', isOpen);
             }
         }
+
+        // Recuperar estat de la llegenda si s'havia guardat
+        try {
+            const savedLegendState = localStorage.getItem('pluja_art_legend_collapsed');
+            if (savedLegendState === 'true') {
+                toggleLegend(true);
+            }
+        } catch (e) {}
 
         // Inicialització inicial
         renderCraftZone();
