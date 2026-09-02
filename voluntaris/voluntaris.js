@@ -117,15 +117,30 @@ const MONTH_MAP = {
     'des': 12, 'desembre': 12, 'diciembre': 12, 'dic': 12
 };
 
+const SHORT_WEEKDAYS = {
+    'dilluns': 'Dl',
+    'dimarts': 'Dm',
+    'dimecres': 'Dc',
+    'dijous': 'Dj',
+    'divendres': 'Dv',
+    'dissabte': 'Ds',
+    'diumenge': 'Dg'
+};
+
+const SHORT_MONTHS = {
+    'gener': 'Gen', 'febrer': 'Feb', 'març': 'Mar', 'abril': 'Abr', 'maig': 'Mai', 'juny': 'Jun',
+    'juliol': 'Jul', 'agost': 'Ago', 'setembre': 'Set', 'octubre': 'Oct', 'novembre': 'Nov', 'desembre': 'Des'
+};
+
 /**
  * Converteix una data ISO (YYYY-MM-DD) a objecte català amb nom de dia de la setmana i data formatada
  */
 function parseIsoToCatalan(isoDateStr) {
-    if (!isoDateStr) return { nom: 'Dia', data: '', iso: '', full: '' };
+    if (!isoDateStr) return { nom: 'Dia', shortNom: 'Dia', data: '', iso: '', full: '', dayNum: '', shortMonth: 'Set' };
     const clean = isoDateStr.trim();
     const parts = clean.split('-').map(Number);
     if (parts.length < 3 || isNaN(parts[0]) || isNaN(parts[1]) || isNaN(parts[2])) {
-        return { nom: 'Dia', data: clean, iso: clean, full: clean };
+        return { nom: 'Dia', shortNom: 'Dia', data: clean, iso: clean, full: clean, dayNum: clean, shortMonth: 'Set' };
     }
     const year = parts[0];
     const monthIdx = parts[1] - 1;
@@ -133,13 +148,19 @@ function parseIsoToCatalan(isoDateStr) {
     const dateObj = new Date(year, monthIdx, day);
     const weekday = CATALAN_WEEKDAYS[dateObj.getDay()] || 'Dia';
     const monthName = CATALAN_MONTHS[monthIdx] || 'setembre';
+    const shortNom = SHORT_WEEKDAYS[weekday.toLowerCase()] || weekday.substring(0, 2);
+    const shortMonth = SHORT_MONTHS[monthName.toLowerCase()] || monthName.substring(0, 3);
+
     return {
         nom: weekday,
+        shortNom,
         data: `${day} ${monthName}`,
+        shortDate: `${day} ${shortMonth}`,
         iso: clean,
         full: `${weekday}, ${day} de ${monthName} de ${year}`,
         dayNum: day,
         monthNum: monthIdx + 1,
+        shortMonth,
         year
     };
 }
@@ -270,14 +291,16 @@ function renderDaySelector() {
         btn.className = 'day-btn' + (isActive ? ' active' : '');
         btn.dataset.day = diaInfo.nom;
         btn.dataset.dayIso = diaIso;
+        btn.title = `${diaInfo.nom}, ${diaInfo.data}`;
         btn.innerHTML = `
             ${isAdmin ? `
                 <div class="day-admin-header">
                     <button class="btn-icon-order" title="Editar data del dia" onclick="event.stopPropagation(); promptEditDia('${diaIso}')">✏️</button>
                 </div>
             ` : ''}
-            <span class="day-name">${diaInfo.nom}</span>
-            <span class="day-date">${d.data || diaInfo.data}</span>
+            <span class="day-weekday">${diaInfo.shortNom || diaInfo.nom}</span>
+            <span class="day-number">${diaInfo.dayNum}</span>
+            <span class="day-month-sub">${diaInfo.shortMonth || 'Set'}</span>
         `;
         btn.onclick = () => {
             currentDayKey = diaIso;
@@ -331,9 +354,11 @@ window.renderHourlyScreenDaySelector = function() {
 
         const btn = document.createElement('button');
         btn.className = 'day-btn' + (isActive ? ' active' : '');
+        btn.title = `${diaInfo.nom}, ${diaInfo.data}`;
         btn.innerHTML = `
-            <span class="day-name">${diaInfo.nom}</span>
-            <span class="day-date">${d.data || diaInfo.data}</span>
+            <span class="day-weekday">${diaInfo.shortNom || diaInfo.nom}</span>
+            <span class="day-number">${diaInfo.dayNum}</span>
+            <span class="day-month-sub">${diaInfo.shortMonth || 'Set'}</span>
         `;
         btn.onclick = () => {
             currentDayKey = diaIso;
