@@ -18,9 +18,9 @@ let currentVoluntari = JSON.parse(localStorage.getItem('voluntari_session')) || 
 let isAdmin = false;
 
 const DEFAULT_DIES = [
-    { nom: 'Divendres', data: '26 setembre' },
-    { nom: 'Dissabte', data: '27 setembre' },
-    { nom: 'Diumenge', data: '28 setembre' }
+    { nom: 'Divendres', data: '18 setembre', data_iso: '2026-09-18' },
+    { nom: 'Dissabte', data: '19 setembre', data_iso: '2026-09-19' },
+    { nom: 'Diumenge', data: '20 setembre', data_iso: '2026-09-20' }
 ];
 let allDies = JSON.parse(localStorage.getItem('pluja_dies_list')) || DEFAULT_DIES;
 let currentDay = allDies[0] ? allDies[0].nom : 'Divendres';
@@ -1281,7 +1281,7 @@ function renderUserSummary() {
             <div class="user-summary-dinar-info">
                 <span class="dinar-icon">🍽️</span>
                 <div class="user-summary-dinar-text">
-                    <strong>Dinar gratuït de voluntaris (Dissabte 27 de setembre)</strong>
+                    <strong>Dinar gratuït de voluntaris (Dissabte 19 de setembre)</strong>
                     <p>${hasDinar ? `✅ Inscrit/a: <strong>${pers} ${pers === 1 ? 'persona' : 'persones'}</strong>` : '❌ No hi assistiràs'}</p>
                 </div>
             </div>
@@ -1398,7 +1398,7 @@ function buildUserSummaryMessage() {
         });
     }
 
-    msg += `\n🍽️ *Dinar de voluntaris (Dissabte 27):* ${hasDinar ? `Sí (${dinarPers} ${dinarPers === 1 ? 'persona' : 'persones'})` : 'No'}\n`;
+    msg += `\n🍽️ *Dinar de voluntaris (Dissabte 19):* ${hasDinar ? `Sí (${dinarPers} ${dinarPers === 1 ? 'persona' : 'persones'})` : 'No'}\n`;
     msg += `\n🌧️✨ *Ens veiem a la Pluja d'Art!*`;
 
     return msg;
@@ -1449,7 +1449,7 @@ window.promptChangeDinar = async function() {
     const currentPers = currentStatus ? (currentVoluntari.dinar_persones || 1) : 1;
 
     const volDinar = confirm(
-        `🍽️ DINAR GRATUÏT DE VOLUNTARIS (Dissabte 27 de setembre)\n(Data límit inscripció: 11 de setembre)\n\n` +
+        `🍽️ DINAR GRATUÏT DE VOLUNTARIS (Dissabte 19 de setembre)\n(Data límit inscripció: 11 de setembre)\n\n` +
         `Vindràs al dinar de dissabte? (Prem 'D'acord' per a SÍ, 'Cancel·la' per a NO)`
     );
 
@@ -3408,7 +3408,7 @@ async function handlePrintPDF() {
 
         printHtml += `
             <div style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 11.5px; color: #166534;">
-                <strong>🍱 Resum Dinar de Voluntaris (Dissabte 27 de setembre):</strong> 
+                <strong>🍱 Resum Dinar de Voluntaris (Dissabte 19 de setembre):</strong> 
                 Total de <strong>${totalPersonesDinar} persones</strong> inscrites (${volsAmbDinar.length} voluntaris + ${Math.max(0, totalPersonesDinar - volsAmbDinar.length)} acompanyants).
                 <span style="color: #c2410c; margin-left: 10px; font-weight: bold;">(⏳ Data límit d'inscripció: 11 de setembre)</span>
             </div>
