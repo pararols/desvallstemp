@@ -2089,7 +2089,8 @@ function renderShiftCard(torn, espai) {
     const durationStr = calculateDuration(torn.hora_inici, torn.hora_fi);
 
     // Tooltip complet
-    const tooltipText = `Horari: ${torn.hora_inici} – ${torn.hora_fi} (${durationStr})\nTasca: ${torn.tasca || 'Sense tasca'}\nLloc: ${torn.lloc || espai.nom}\nPlaces: ${assignats.length}/${torn.necessaris}`;
+    const llocFull = (torn.lloc && torn.lloc.trim()) ? torn.lloc.trim() : (espai ? espai.nom : 'Sense lloc');
+    const tooltipText = `Horari: ${torn.hora_inici} – ${torn.hora_fi} (${durationStr})\nTasca: ${torn.tasca || 'Sense tasca'}\nLloc: ${llocFull}\nPlaces: ${assignats.length}/${torn.necessaris}`;
     card.title = tooltipText;
 
     if (currentViewMode === 'global') {
@@ -2118,12 +2119,13 @@ function renderShiftCard(torn, espai) {
             card.appendChild(taskEl);
         }
 
-        // 3. Lloc específic / punt de trobada (sempre visible si en té)
-        if (torn.lloc && torn.lloc.trim()) {
+        // 3. Lloc específic / punt de trobada (sempre visible: lloc concret o espai)
+        const llocText = (torn.lloc && torn.lloc.trim()) ? torn.lloc.trim() : (espai ? espai.nom : '');
+        if (llocText) {
             const locEl = document.createElement('div');
             locEl.className = 'shift-location-global';
-            locEl.title = `Lloc: ${torn.lloc.trim()}`;
-            locEl.innerHTML = `<span class="shift-location-icon">📍</span> <span class="shift-location-text">${torn.lloc.trim()}</span>`;
+            locEl.title = `Lloc: ${llocText}`;
+            locEl.innerHTML = `<span class="shift-location-icon">📍</span> <span class="shift-location-text">${llocText}</span>`;
             card.appendChild(locEl);
         }
 
@@ -2213,10 +2215,12 @@ function renderShiftCard(torn, espai) {
     }
 
     // 3. Lloc específic / punt de trobada
-    if (torn.lloc && torn.lloc.trim()) {
+    const llocTextDet = (torn.lloc && torn.lloc.trim()) ? torn.lloc.trim() : (espai ? espai.nom : '');
+    if (llocTextDet) {
         const locEl = document.createElement('div');
         locEl.className = 'shift-location';
-        locEl.innerHTML = `<span class="shift-location-icon">📍</span> <span>${torn.lloc.trim()}</span>`;
+        locEl.title = `Lloc: ${llocTextDet}`;
+        locEl.innerHTML = `<span class="shift-location-icon">📍</span> <span>${llocTextDet}</span>`;
         card.appendChild(locEl);
     }
 
