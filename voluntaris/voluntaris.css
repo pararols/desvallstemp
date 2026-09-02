@@ -2693,6 +2693,125 @@ footer {
     color: white;
 }
 
+/* Vista Detallada de Franja Específica (Pantalla 3) */
+.detailed-slot-wrapper {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0.4rem 0.2rem;
+    box-sizing: border-box;
+}
+
+.detailed-slot-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.detailed-slot-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.slot-banner-icon {
+    font-size: 1.5rem;
+}
+
+.slot-banner-time {
+    display: block;
+    font-size: 1.05rem;
+    color: white;
+    font-weight: 800;
+}
+
+.slot-banner-count {
+    display: block;
+    font-size: 0.76rem;
+    color: #38bdf8;
+    font-weight: 600;
+}
+
+.detailed-slot-cards-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    width: 100%;
+}
+
+.detailed-slot-cards-grid .shift-card {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    box-sizing: border-box !important;
+    padding: 0.85rem 1rem !important;
+    gap: 0.4rem !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+}
+
+.shift-space-badge {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 0.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.detailed-slot-cards-grid .shift-card .shift-time-row {
+    font-size: 0.88rem !important;
+}
+
+.detailed-slot-cards-grid .shift-card .shift-time {
+    font-size: 0.88rem !important;
+}
+
+.detailed-slot-cards-grid .shift-card .shift-task-box {
+    padding: 0.45rem 0.6rem !important;
+    margin: 0.2rem 0 !important;
+    border-radius: 8px !important;
+}
+
+.detailed-slot-cards-grid .shift-card .shift-task-title {
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+}
+
+.detailed-slot-cards-grid .shift-card .shift-location {
+    font-size: 0.82rem !important;
+    padding: 0.25rem 0.5rem !important;
+    background: rgba(0, 0, 0, 0.25) !important;
+    border-radius: 6px !important;
+    margin: 0.15rem 0 !important;
+}
+
+.detailed-slot-cards-grid .shift-card .places-badge {
+    font-size: 0.82rem !important;
+    padding: 0.2rem 0.6rem !important;
+}
+
+.detailed-slot-cards-grid .shift-card .btn-signup,
+.detailed-slot-cards-grid .shift-card .btn-withdraw {
+    font-size: 0.88rem !important;
+    padding: 0.55rem 1rem !important;
+    margin-top: 0.4rem !important;
+    border-radius: 8px !important;
+}
+
 /* Modal de Passos Següents en Apuntar-se a un Torn */
 .signup-next-modal-card {
     max-width: 420px;

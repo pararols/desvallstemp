@@ -31,6 +31,7 @@ let allTorns = [];
 let allAssignacions = [];
 let currentColumnWidth = parseInt(localStorage.getItem('pluja_col_width')) || 320;
 let currentViewMode = localStorage.getItem('pluja_view_mode') || 'detailed';
+let selectedHourSlotIdx = null;
 
 // ==========================================
 // 3. INICIALITZACIÓ
@@ -281,6 +282,13 @@ function renderDaySelector() {
     const diaInfo = parseIsoToCatalan(currentDayKey);
 
     if (!isAdmin) {
+        let slotSubText = "Torns de voluntariat disponibles";
+        if (selectedHourSlotIdx !== null && FESTIVAL_HOURS[selectedHourSlotIdx] !== undefined) {
+            const hVal = FESTIVAL_HOURS[selectedHourSlotIdx];
+            const hNext = (hVal + 1) % 24;
+            slotSubText = `⏰ Franja: ${hVal.toString().padStart(2, '0')}:00 – ${hNext.toString().padStart(2, '0')}:00`;
+        }
+
         // Mode voluntari a Pantalla 3: capçalera neta amb el dia actual i botó per anar a Pantalla 2
         container.className = 'screen3-day-bar-volunteer';
         container.innerHTML = `
@@ -288,11 +296,11 @@ function renderDaySelector() {
                 <span class="screen3-day-icon">🗓️</span>
                 <div class="screen3-day-text">
                     <strong class="screen3-day-title">${diaInfo.nom}, ${diaInfo.data}</strong>
-                    <span class="screen3-day-sub">Torns de voluntariat disponibles</span>
+                    <span class="screen3-day-sub">${slotSubText}</span>
                 </div>
             </div>
             <button type="button" class="btn-change-day-slot" onclick="setMobileScreen(2)">
-                <span>⬅️ Canviar de dia / franja</span>
+                <span>⬅️ Triar un altre dia / franja</span>
             </button>
         `;
         renderHourlyScreenDaySelector();
@@ -1222,6 +1230,7 @@ window.renderHourlyOverviewScreen = function() {
 };
 
 window.selectHourlySlotAndZoom = function(hourIdx) {
+    selectedHourSlotIdx = hourIdx;
     setViewMode('detailed');
     setMobileScreen(3, { targetHourMin: hourIdx * 60, selectedHourIdx: hourIdx });
 };
@@ -1670,6 +1679,105 @@ function computeDayTimeSlotsSummary(torns, assignations) {
     return merged;
 }
 
+/**
+ * Renderitza la Vista Detallada de la Pantalla 3 per a voluntaris:
+ * Mostra ÚNICAMENT les fitxes de torn corresponents a la franja horària seleccionada a la Pantalla 2.
+ */
+function renderVolunteerSlotDetailedView(container, curDia, dayTorns, visibleEspais) {
+    let displayedTorns = dayTorns;
+    let slotLabel = "Tots els torns d'aquest dia";
+
+    if (selectedHourSlotIdx !== null && FESTIVAL_HOURS[selectedHourSlotIdx] !== undefined) {
+        const hVal = FESTIVAL_HOURS[selectedHourSlotIdx];
+        const hNext = (hVal + 1) % 24;
+        slotLabel = `${hVal.toString().padStart(2, '0')}:00 – ${hNext.toString().padStart(2, '0')}:00`;
+        const hStart = selectedHourSlotIdx * 60;
+        const hEnd = (selectedHourSlotIdx + 1) * 60;
+        
+        displayedTorns = dayTorns.filter(t => {
+            const s = timeToFestivalMinutes(t.hora_inici);
+            let e = timeToFestivalMinutes(t.hora_fi);
+            if (e <= s) e += 1440;
+            return s < hEnd && e > hStart;
+        });
+    }
+
+    // Ordenar cronològicament per hora d'inici i espai
+    displayedTorns.sort((a, b) => {
+        const diff = timeToFestivalMinutes(a.hora_inici) - timeToFestivalMinutes(b.hora_inici);
+        if (diff !== 0) return diff;
+        return (a.espai_id || '').localeCompare(b.espai_id || '');
+    });
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'detailed-slot-wrapper';
+
+    // Banner de la franja seleccionada
+    const banner = document.createElement('div');
+    banner.className = 'detailed-slot-banner';
+    banner.innerHTML = `
+        <div class="detailed-slot-banner-left">
+            <span class="slot-banner-icon">⏰</span>
+            <div>
+                <strong class="slot-banner-time">Franja: ${slotLabel}</strong>
+                <span class="slot-banner-count">${displayedTorns.length} torn${displayedTorns.length === 1 ? '' : 's'} disponible${displayedTorns.length === 1 ? '' : 's'}</span>
+            </div>
+        </div>
+        <button type="button" class="btn-change-day-slot" onclick="setMobileScreen(2)">
+            <span>⬅️ Triar un altre dia / franja</span>
+        </button>
+    `;
+    wrapper.appendChild(banner);
+
+    if (displayedTorns.length === 0) {
+        const emptyBox = document.createElement('div');
+        emptyBox.className = 'user-summary-empty';
+        emptyBox.style.cssText = 'padding: 2.5rem 1.5rem; text-align: center; margin: 1.5rem 0;';
+        emptyBox.innerHTML = `
+            <span style="font-size: 2.5rem; display: block; margin-bottom: 0.8rem;">🏖️</span>
+            <p style="font-size: 1.15rem; font-weight: 700; color: white;">Sense torns en aquesta franja</p>
+            <p style="font-size: 0.88rem; color: #94a3b8; margin: 0.5rem 0 1.2rem;">No s'ha trobat cap torn actiu per a la franja horària seleccionada.</p>
+            <button type="button" class="btn-primary" onclick="setMobileScreen(2)">⬅️ Triar una altra franja a la Pantalla 2</button>
+        `;
+        wrapper.appendChild(emptyBox);
+    } else {
+        const grid = document.createElement('div');
+        grid.className = 'detailed-slot-cards-grid';
+
+        displayedTorns.forEach(torn => {
+            const espai = allEspais.find(e => e.id === torn.espai_id);
+            const card = renderShiftCard(torn, espai);
+            // En vista de franja aïllada, les targetes no tenen posició absoluta
+            card.style.position = 'relative';
+            card.style.top = 'auto';
+            card.style.left = 'auto';
+            card.style.right = 'auto';
+            card.style.width = '100%';
+            card.style.height = 'auto';
+            card.style.minHeight = 'auto';
+            grid.appendChild(card);
+        });
+
+        wrapper.appendChild(grid);
+    }
+
+    // Botons inferiors de navegació
+    const bottomNav = document.createElement('div');
+    bottomNav.className = 'screen-nav-bottom-bar';
+    bottomNav.style.marginTop = '1.5rem';
+    bottomNav.innerHTML = `
+        <button type="button" class="btn-secondary" onclick="setMobileScreen(2)">
+            ◀ Enrere a Franges (Pantalla 2)
+        </button>
+        <button type="button" class="btn-primary" onclick="setMobileScreen(4)">
+            El meu Resum (Pantalla 4) ❯
+        </button>
+    `;
+    wrapper.appendChild(bottomNav);
+
+    container.appendChild(wrapper);
+}
+
 function renderAll() {
     renderDaySelector();
 
@@ -1724,6 +1832,15 @@ function renderAll() {
 
     // 2. Torns del dia per als espais visibles
     const dayTorns = allTorns.filter(t => isTornInDia(t, curDia) && visibleEspais.some(e => e.id === t.espai_id));
+
+    // =========================================================================
+    // VISTA DETALLADA PER A VOLUNTARIS: NOMÉS MOSTRAR ELS TORNS DE LA FRANJA
+    // =========================================================================
+    if (!isAdmin && currentViewMode === 'detailed') {
+        renderVolunteerSlotDetailedView(container, curDia, dayTorns, visibleEspais);
+        renderUserSummary();
+        return;
+    }
 
     // 3. Determinar el rang d'hores visibles (Retall d'hores a l'inici i al final en mode usuari)
     let minHourIdx = 0;
@@ -2212,6 +2329,14 @@ function renderShiftCard(torn, espai) {
     // ==========================================
     // VISTA DETALLADA
     // ==========================================
+    // 0. Espai / Àrea
+    if (espai) {
+        const spaceRow = document.createElement('div');
+        spaceRow.className = 'shift-space-badge';
+        spaceRow.innerHTML = `<span>🏢</span> <strong>${espai.nom}</strong>`;
+        card.appendChild(spaceRow);
+    }
+
     // 1. Fila d'hora i durada
     const timeRow = document.createElement('div');
     timeRow.className = 'shift-time-row';
