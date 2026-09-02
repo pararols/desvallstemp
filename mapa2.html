@@ -379,6 +379,29 @@
             margin-top: 0.2rem;
         }
 
+        .btn-card-edit {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            color: #c4b5fd;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            margin-left: auto;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+
+        .btn-card-edit:hover {
+            background: #8b5cf6;
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
         /* Custom Markers Leaflet */
         .custom-marker {
             display: flex;
@@ -974,6 +997,163 @@
             visibility: hidden !important;
         }
 
+        /* Modal Editor de Targetes / Textos */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: fadeInModal 0.2s ease-out;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card-edit-dialog {
+            background: #0f172a;
+            border: 1px solid rgba(139, 92, 246, 0.45);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 530px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 30px rgba(139, 92, 246, 0.25);
+            animation: scaleInModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        @keyframes scaleInModal {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .card-edit-header {
+            padding: 1.1rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .btn-close-modal {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #94a3b8;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-close-modal:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #f87171;
+        }
+
+        #card-edit-form {
+            padding: 1.25rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #f8fafc;
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .card-edit-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 0.5rem;
+        }
+
+        .btn-editor-op {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #f1f5f9;
+            padding: 0.5rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-editor-op:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-editor-op.btn-editor-reset {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+        }
+
+        .btn-editor-op.btn-editor-reset:hover {
+            background: #ef4444;
+            color: white;
+        }
+
         /* Teló de fons per al calaix mòbil */
         .sidebar-backdrop {
             display: none;
@@ -1257,7 +1437,68 @@
                 <!-- Location Cards injected via JS -->
             </div>
         </aside>
+    </div>
 
+    <!-- Modal per a Modificar Textos de la Targeta / Símbol -->
+    <div id="card-edit-modal" class="modal-backdrop" style="display: none;" onclick="handleModalBackdropClick(event)">
+        <div class="card-edit-dialog" role="dialog" aria-modal="true" aria-labelledby="card-edit-modal-title">
+            <div class="card-edit-header">
+                <h3 id="card-edit-modal-title" style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; color: #f8fafc; font-weight: 800;">
+                    <span>✏️ Modificar Textos del Símbol</span>
+                </h3>
+                <button type="button" class="btn-close-modal" onclick="closeCardEditModal()" title="Tancar">✖</button>
+            </div>
+
+            <form id="card-edit-form" onsubmit="event.preventDefault(); saveCardEditForm();">
+                <input type="hidden" id="edit-card-id">
+
+                <div class="form-group">
+                    <label for="edit-card-name">Nom / Títol de l'Espai o Espectacle</label>
+                    <input type="text" id="edit-card-name" required placeholder="Ex: Ajuntament (Sala de Regants)">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1.2;">
+                        <label for="edit-card-type">Tipus de Punt</label>
+                        <select id="edit-card-type">
+                            <option value="expo">🎨 Exposició d'Art</option>
+                            <option value="show">🎭 Espectacle / Escenari</option>
+                            <option value="food">🚚 Foodtruck & Gastronomia</option>
+                            <option value="wc">🚻 Lavabos WC</option>
+                            <option value="wc_accessible">♿ WC Adaptat (PMR)</option>
+                            <option value="serv">🅿️ Aparcament & Serveis</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 0.8;">
+                        <label for="edit-card-code">Símbol / Emoji / Número</label>
+                        <input type="text" id="edit-card-code" placeholder="Ex: 1..16, 🎭, 🚚, 🚻, ♿, 🅿️">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-card-artist">Artista / Responsable / Companyia</label>
+                    <input type="text" id="edit-card-artist" placeholder="Ex: Escola de Dibuix i Pintura de Celrà / Djammal">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-card-project">Subtítol / Horari / Projecte</label>
+                    <input type="text" id="edit-card-project" placeholder="Ex: «Memòria i Silenci» / Dissabte 19 a les 12:00 h">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-card-desc">Descripció Detallada (Text de la Targeta)</label>
+                    <textarea id="edit-card-desc" rows="4" placeholder="Escriu aquí el text complet que apareixerà a la targeta informativa..."></textarea>
+                </div>
+
+                <div class="card-edit-footer">
+                    <button type="button" class="btn-editor-op btn-editor-reset" onclick="deleteCurrentEditingCard()">🗑️ Eliminar</button>
+                    <div style="display: flex; gap: 0.5rem; margin-left: auto;">
+                        <button type="button" class="btn-action" onclick="closeCardEditModal()">✖ Cancel·lar</button>
+                        <button type="submit" class="btn-action primary">💾 Desar Canvis</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -1908,7 +2149,8 @@
                 let editorButtons = '';
                 if (isEditorMode) {
                     editorButtons = `
-                        <div style="margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.5rem;">
+                        <div style="margin-top: 0.6rem; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 0.5rem; display: flex; gap: 0.4rem; flex-direction: column;">
+                            <button type="button" class="popup-btn" style="background: rgba(139, 92, 246, 0.25); border-color: #8b5cf6; color: #c4b5fd; font-weight: 700;" onclick="openCardEditModal('${loc.id}')">✏️ Modificar Textos / Targeta</button>
                             <button type="button" class="popup-btn delete" onclick="deletePoint('${loc.id}')">🗑️ Eliminar aquest punt</button>
                         </div>
                     `;
@@ -1970,6 +2212,11 @@
                 if (loc.type === 'wc_accessible') badgeClass = 'badge-wc-acc';
                 if (loc.type === 'serv') badgeClass = 'badge-serv';
 
+                let editBtnHtml = '';
+                if (isEditorMode) {
+                    editBtnHtml = `<button type="button" class="btn-card-edit" onclick="event.stopPropagation(); openCardEditModal('${loc.id}')" title="Modificar Textos">✏️</button>`;
+                }
+
                 const card = document.createElement('div');
                 card.className = 'loc-card';
                 card.id = `card-${loc.id}`;
@@ -1982,6 +2229,7 @@
                         ${loc.artist ? `<div class="loc-artist">${loc.artist}</div>` : ''}
                         <div class="loc-sub">${loc.project}</div>
                     </div>
+                    ${editBtnHtml}
                 `;
 
                 listEl.appendChild(card);
@@ -2135,6 +2383,93 @@
                     console.error("Error en crida delete Supabase:", e);
                 }
             }
+        }
+
+        // ========================================================
+        // 6B. GESTIÓ I EDICIÓ DE TEXTOS DE LES TARGETES / SÍMBOLS
+        // ========================================================
+        let currentEditingCardId = null;
+
+        function openCardEditModal(id) {
+            const loc = locations.find(l => l.id === id);
+            if (!loc) return;
+
+            currentEditingCardId = id;
+            document.getElementById('edit-card-id').value = loc.id;
+            document.getElementById('edit-card-name').value = loc.name || '';
+            document.getElementById('edit-card-type').value = loc.type || 'expo';
+            document.getElementById('edit-card-code').value = loc.code || '';
+            document.getElementById('edit-card-artist').value = loc.artist || '';
+            document.getElementById('edit-card-project').value = loc.project || '';
+            document.getElementById('edit-card-desc').value = loc.desc || '';
+
+            const modal = document.getElementById('card-edit-modal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeCardEditModal() {
+            const modal = document.getElementById('card-edit-modal');
+            if (modal) modal.style.display = 'none';
+            currentEditingCardId = null;
+        }
+
+        function handleModalBackdropClick(event) {
+            if (event.target.id === 'card-edit-modal') {
+                closeCardEditModal();
+            }
+        }
+
+        function deleteCurrentEditingCard() {
+            if (!currentEditingCardId) return;
+            const id = currentEditingCardId;
+            closeCardEditModal();
+            deletePoint(id);
+        }
+
+        async function saveCardEditForm() {
+            const id = document.getElementById('edit-card-id').value;
+            const loc = locations.find(l => l.id === id);
+            if (!loc) return;
+
+            loc.name = document.getElementById('edit-card-name').value.trim() || 'Sense Títol';
+            loc.type = document.getElementById('edit-card-type').value;
+            loc.code = document.getElementById('edit-card-code').value.trim() || '📍';
+            loc.artist = document.getElementById('edit-card-artist').value.trim();
+            loc.project = document.getElementById('edit-card-project').value.trim();
+            loc.desc = document.getElementById('edit-card-desc').value.trim();
+
+            // 1. Guardar a LocalStorage
+            localStorage.setItem('pluja_art_map_locations', JSON.stringify(locations));
+
+            // 2. Desar directament a Supabase si hi ha client actiu
+            if (supabaseClient) {
+                try {
+                    const row = {
+                        id: loc.id,
+                        type: loc.type,
+                        code: String(loc.code),
+                        name: loc.name,
+                        artist: loc.artist || '',
+                        project: loc.project || '',
+                        descripcio: loc.desc || '',
+                        lat: Number(loc.lat),
+                        lng: Number(loc.lng),
+                        updated_at: new Date().toISOString()
+                    };
+                    const { error } = await supabaseClient
+                        .from('festival_locations')
+                        .upsert([row], { onConflict: 'id' });
+                    if (error) console.error("Error desant punt a Supabase:", error);
+                    else console.log("Punt desat a Supabase amb èxit:", loc.id);
+                } catch (e) {
+                    console.error("Error en crida upsert Supabase:", e);
+                }
+            }
+
+            closeCardEditModal();
+            renderMarkers();
+            renderSidebar();
+            selectLocation(loc.id);
         }
 
         // ========================================================
