@@ -791,6 +791,110 @@
             box-shadow: 0 2px 10px rgba(37, 99, 235, 0.6);
         }
 
+        /* Separador de controls */
+        .map-control-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: auto 0.15rem;
+            align-self: center;
+        }
+
+        .map-layer-btn.gps-btn {
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.35);
+            background: rgba(56, 189, 248, 0.08);
+        }
+
+        .map-layer-btn.gps-btn:hover {
+            background: rgba(56, 189, 248, 0.2);
+            color: #ffffff;
+        }
+
+        .map-layer-btn.gps-btn.active {
+            background: rgba(16, 185, 129, 0.25);
+            border-color: #10b981;
+            color: #6ee7b7;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+        }
+
+        .gps-indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94a3b8;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .map-layer-btn.gps-btn.active .gps-indicator-dot {
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse-gps-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-gps-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+        }
+
+        .map-layer-btn.center-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #f1f5f9;
+        }
+
+        .map-layer-btn.center-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .map-layer-btn.festival-btn {
+            background: rgba(244, 63, 94, 0.15);
+            border-color: rgba(244, 63, 94, 0.4);
+            color: #fda4af;
+        }
+
+        .map-layer-btn.festival-btn:hover {
+            background: var(--secondary);
+            border-color: var(--secondary);
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(244, 63, 94, 0.5);
+            transform: translateY(-1px);
+        }
+
+        /* Marcador GPS Usuari al Mapa */
+        .user-gps-container {
+            background: transparent;
+            border: none;
+        }
+
+        .user-gps-marker {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #0284c7;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 15px #38bdf8, 0 0 30px rgba(56, 189, 248, 0.8);
+            position: relative;
+        }
+
+        .user-gps-pulse {
+            position: absolute;
+            inset: -12px;
+            border-radius: 50%;
+            border: 2px solid #38bdf8;
+            opacity: 0.8;
+            animation: radarPulse 2s infinite ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes radarPulse {
+            0% { transform: scale(0.6); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
         /* Estils dels Nodes i Midpoints d'Edició de Parades */
         .craft-node-handle {
             width: 14px;
@@ -831,6 +935,7 @@
         #map-wrapper.is-exporting .craft-node-wrapper,
         #map-wrapper.is-exporting .craft-mid-wrapper,
         #map-wrapper.is-exporting .btn-toggle-legend,
+        #map-wrapper.is-exporting .user-gps-container,
         #map-wrapper.is-exporting .leaflet-control-zoom {
             display: none !important;
             opacity: 0 !important;
@@ -1110,13 +1215,24 @@
                 📋 Mostrar Espais ▶
             </button>
 
-            <!-- Selector de Fons de Mapa (OpenStreetMap i Satèl·lit Real) -->
+            <!-- Selector de Fons de Mapa (OpenStreetMap i Satèl·lit Real) i Controls GPS / Centrat -->
             <div class="map-layer-switcher">
                 <button type="button" class="map-layer-btn active" data-layer="osm" onclick="setBaseLayer('osm')">
                     🌍 OpenStreetMap
                 </button>
                 <button type="button" class="map-layer-btn google-sat" data-layer="googleHybrid" onclick="setBaseLayer('googleHybrid')">
                     🛰️ Satèl·lit Real
+                </button>
+                <div class="map-control-divider"></div>
+                <button type="button" class="map-layer-btn gps-btn" id="btn-toggle-gps" onclick="toggleGpsTracking()" title="Activar o desactivar localització GPS en temps real">
+                    <span class="gps-indicator-dot"></span>
+                    <span id="btn-gps-text">📍 GPS</span>
+                </button>
+                <button type="button" class="map-layer-btn center-btn" id="btn-center-gps" onclick="centerOnGpsLocation()" title="Centrar el mapa a la meva posició GPS actual">
+                    🎯 La meva posició
+                </button>
+                <button type="button" class="map-layer-btn festival-btn" id="btn-center-festival" onclick="centerOnFestival()" title="Centrar el mapa a tot el recinte del Festival Pluja d'Art">
+                    🎪 Centrar Festival
                 </button>
             </div>
 
@@ -1746,6 +1862,132 @@
                 }
             } catch (e) {
                 console.error("fitMapToAllSymbols error:", e);
+            }
+        }
+
+        function centerOnFestival() {
+            fitMapToAllSymbols();
+        }
+
+        // ========================================================
+        // 3B. CONTROL DE LOCALITZACIÓ GPS EN TEMPS REAL
+        // ========================================================
+        let isGpsTrackingActive = false;
+        let gpsWatchId = null;
+        let userGpsCoords = null;
+        let userGpsMarker = null;
+        let userGpsAccuracyCircle = null;
+
+        function toggleGpsTracking(autoCenter = false) {
+            const btn = document.getElementById('btn-toggle-gps');
+            const txt = document.getElementById('btn-gps-text');
+
+            if (isGpsTrackingActive && !autoCenter) {
+                // Desactivar seguiment GPS
+                if (gpsWatchId !== null && navigator.geolocation) {
+                    navigator.geolocation.clearWatch(gpsWatchId);
+                    gpsWatchId = null;
+                }
+                isGpsTrackingActive = false;
+                if (btn) btn.classList.remove('active');
+                if (txt) txt.innerText = '📍 GPS';
+                if (userGpsMarker) {
+                    map.removeLayer(userGpsMarker);
+                    userGpsMarker = null;
+                }
+                if (userGpsAccuracyCircle) {
+                    map.removeLayer(userGpsAccuracyCircle);
+                    userGpsAccuracyCircle = null;
+                }
+                userGpsCoords = null;
+                return;
+            }
+
+            if (!navigator.geolocation) {
+                alert("La geolocalització GPS no està suportada pel teu navegador.");
+                return;
+            }
+
+            isGpsTrackingActive = true;
+            if (btn) btn.classList.add('active');
+            if (txt) txt.innerText = '📍 Cercant GPS...';
+
+            let isFirstFix = true;
+
+            gpsWatchId = navigator.geolocation.watchPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    const acc = Math.round(pos.coords.accuracy || 10);
+                    userGpsCoords = [lat, lng];
+
+                    if (txt) txt.innerText = `📍 GPS (±${acc}m)`;
+
+                    // Dibuixar o actualitzar marcador d'usuari
+                    if (!userGpsMarker) {
+                        const userIcon = L.divIcon({
+                            className: 'user-gps-container',
+                            html: '<div class="user-gps-marker"><div class="user-gps-pulse"></div></div>',
+                            iconSize: [22, 22],
+                            iconAnchor: [11, 11]
+                        });
+                        userGpsMarker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 2000 }).addTo(map);
+                        userGpsMarker.bindPopup(`
+                            <div style="font-family:'Outfit',sans-serif; text-align:center; padding:0.25rem;">
+                                <strong style="color:#0284c7; font-size:0.95rem;">📍 La teva posició</strong><br>
+                                <span style="font-size:0.8rem; color:#64748b;">Precisió GPS: ±${acc} m</span>
+                            </div>
+                        `);
+
+                        userGpsAccuracyCircle = L.circle([lat, lng], {
+                            radius: acc,
+                            color: '#0284c7',
+                            weight: 1.5,
+                            fillColor: '#38bdf8',
+                            fillOpacity: 0.12
+                        }).addTo(map);
+                    } else {
+                        userGpsMarker.setLatLng([lat, lng]);
+                        userGpsMarker.setPopupContent(`
+                            <div style="font-family:'Outfit',sans-serif; text-align:center; padding:0.25rem;">
+                                <strong style="color:#0284c7; font-size:0.95rem;">📍 La teva posició</strong><br>
+                                <span style="font-size:0.8rem; color:#64748b;">Precisió GPS: ±${acc} m</span>
+                            </div>
+                        `);
+                        if (userGpsAccuracyCircle) {
+                            userGpsAccuracyCircle.setLatLng([lat, lng]);
+                            userGpsAccuracyCircle.setRadius(acc);
+                        }
+                    }
+
+                    if (isFirstFix || autoCenter) {
+                        isFirstFix = false;
+                        map.flyTo([lat, lng], 18, { animate: true, duration: 0.8 });
+                    }
+                },
+                (err) => {
+                    console.warn("GPS Geolocation error:", err);
+                    isGpsTrackingActive = false;
+                    if (btn) btn.classList.remove('active');
+                    if (txt) txt.innerText = '📍 GPS';
+                    alert("No s'ha pogut obtenir la teva posició GPS. Comprova que tens el GPS activat i has donat permisos de localització al navegador.");
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 2000,
+                    timeout: 10000
+                }
+            );
+        }
+
+        function centerOnGpsLocation() {
+            if (userGpsCoords && map) {
+                map.flyTo(userGpsCoords, 18, { animate: true, duration: 0.8 });
+                if (userGpsMarker) {
+                    setTimeout(() => userGpsMarker.openPopup(), 850);
+                }
+            } else {
+                toggleGpsTracking(true);
             }
         }
 
