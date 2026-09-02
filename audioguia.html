@@ -739,8 +739,8 @@
             <h2 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #ffffff; margin-bottom: 0.6rem;">
                 Audioguia GPS Immersiva
             </h2>
-            <p style="font-size: 0.9rem; color: #94a3b8; line-height: 1.5;">
-                Posa't els auriculars i camina pel circuit! El sistema detectarà la teva posició GPS sobre OpenStreetMap i reproduirà automàticament la música marítima en bucle a cada instal·lació.
+            <p style="font-size: 0.9rem; color: #94a3b8; line-height: 1.5; margin-bottom: 0.5rem;">
+                Posa't els auriculars i camina pel circuit! Quan estiguis a <strong>menys de 10 metres</strong> de cada instal·lació, el GPS activarà automàticament la música marítima en bucle.
             </p>
             <button type="button" class="btn-start-tour" onclick="unlockAudioAndStart()">
                 <span>🎧</span> Iniciar Experiència Sonora
@@ -1111,7 +1111,7 @@
                     audioFile: audioFile,
                     lat: actualLat,
                     lng: actualLng,
-                    radius: 28, // radi de detecció geofence en metres
+                    radius: 10, // radi de detecció geofence exacte a 10 metres
                     isLine: item.isLine,
                     coords: item.coords,
                     color: item.color || '#38bdf8'
