@@ -311,8 +311,40 @@ function renderDaySelector() {
         container.appendChild(addBtn);
     }
 
+    renderHourlyScreenDaySelector();
     populateDaysSelectInModal();
 }
+
+window.renderHourlyScreenDaySelector = function() {
+    const container = document.getElementById('hourly-screen-day-selector');
+    if (!container) return;
+    container.innerHTML = '';
+
+    sortDaysChronologically();
+    const curDia = getCurrentDiaObj();
+    const curKey = getDiaKey(curDia);
+
+    allDies.forEach((d) => {
+        const diaIso = getDiaIso(d);
+        const diaInfo = parseIsoToCatalan(diaIso);
+        const isActive = diaIso === curKey;
+
+        const btn = document.createElement('button');
+        btn.className = 'day-btn' + (isActive ? ' active' : '');
+        btn.innerHTML = `
+            <span class="day-name">${diaInfo.nom}</span>
+            <span class="day-date">${d.data || diaInfo.data}</span>
+        `;
+        btn.onclick = () => {
+            currentDayKey = diaIso;
+            currentDay = diaInfo.nom;
+            localStorage.setItem('pluja_active_dia_iso', diaIso);
+            renderDaySelector();
+            renderHourlyOverviewScreen();
+        };
+        container.appendChild(btn);
+    });
+};
 
 function populateDaysSelectInModal() {
     const select = document.getElementById('torn-dia');
@@ -982,11 +1014,178 @@ async function handleRegistreVoluntari() {
     renderAll();
 }
 
+let currentMobileScreen = 1;
+
+window.setMobileScreen = function(screenNum, options = {}) {
+    currentMobileScreen = screenNum;
+
+    // Actualitzar classes de la barra de navegació superior
+    for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`step-nav-${i}`);
+        if (btn) {
+            btn.classList.remove('active', 'done');
+            if (i === screenNum) {
+                btn.classList.add('active');
+            } else if (i < screenNum) {
+                btn.classList.add('done');
+            }
+        }
+    }
+
+    // Amagar/mostrar pantalles
+    const screens = [
+        document.getElementById('screen-1-auth'),
+        document.getElementById('screen-2-hourly'),
+        document.getElementById('screen-3-shifts'),
+        document.getElementById('screen-4-summary')
+    ];
+
+    screens.forEach((scr, idx) => {
+        if (!scr) return;
+        if (idx + 1 === screenNum) {
+            scr.style.display = 'block';
+            scr.classList.add('active');
+        } else {
+            scr.style.display = 'none';
+            scr.classList.remove('active');
+        }
+    });
+
+    if (screenNum === 2) {
+        renderHourlyOverviewScreen();
+    } else if (screenNum === 3) {
+        renderAll();
+        if (options.targetHourMin !== undefined) {
+            setTimeout(() => {
+                const wrapper = document.getElementById('spaces-grid-wrapper');
+                if (wrapper) {
+                    const targetTop = getTimelineY(options.targetHourMin);
+                    wrapper.scrollTo({ top: Math.max(0, targetTop - 20), behavior: 'smooth' });
+                }
+            }, 100);
+        }
+    } else if (screenNum === 4) {
+        renderUserSummary();
+    }
+
+    // Desplaçar la finestra a la part superior de forma suau
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.renderHourlyOverviewScreen = function() {
+    const listEl = document.getElementById('mobile-hourly-list');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    const curDia = getCurrentDiaObj();
+    const dayTorns = allTorns.filter(t => isTornInDia(t, curDia));
+
+    renderHourlyScreenDaySelector();
+
+    if (dayTorns.length === 0) {
+        listEl.innerHTML = `
+            <div class="user-summary-empty">
+                <p style="font-size: 1.6rem; margin-bottom: 0.5rem;">🏖️</p>
+                <strong style="font-size: 1.05rem; color: white;">Sense torns en aquest dia</strong>
+                <p style="font-size: 0.85rem; margin-top: 0.3rem;">Tria un altre dia al selector superior per consultar les franges horàries.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Recollir hores actives del dia
+    const activeHours = [];
+    FESTIVAL_HOURS.forEach((hVal, k) => {
+        const hStart = k * 60;
+        const hEnd = (k + 1) * 60;
+        const hNext = (hVal + 1) % 24;
+        const timeLabel = `${hVal.toString().padStart(2, '0')}:00 – ${hNext.toString().padStart(2, '0')}:00`;
+
+        const hourTorns = dayTorns.filter(t => {
+            const s = timeToFestivalMinutes(t.hora_inici);
+            let e = timeToFestivalMinutes(t.hora_fi);
+            if (e <= s) e += 1440;
+            return s < hEnd && e > hStart;
+        });
+
+        if (hourTorns.length > 0) {
+            const totalNeeded = hourTorns.reduce((sum, t) => sum + (parseInt(t.necessaris) || 1), 0);
+            const totalAssigned = hourTorns.reduce((sum, t) => {
+                return sum + allAssignacions.filter(a => a.torn_id === t.id).length;
+            }, 0);
+            const deficit = Math.max(0, totalNeeded - totalAssigned);
+
+            const activeEspaisMap = {};
+            hourTorns.forEach(t => {
+                const espai = allEspais.find(e => e.id === t.espai_id);
+                const espaiNom = espai ? espai.nom : 'Espai';
+                const count = allAssignacions.filter(a => a.torn_id === t.id).length;
+                if (!activeEspaisMap[espaiNom]) {
+                    activeEspaisMap[espaiNom] = { needed: 0, assigned: 0 };
+                }
+                activeEspaisMap[espaiNom].needed += (parseInt(t.necessaris) || 1);
+                activeEspaisMap[espaiNom].assigned += count;
+            });
+
+            activeHours.push({
+                hourIdx: k,
+                hVal,
+                timeLabel,
+                hourTorns,
+                totalNeeded,
+                totalAssigned,
+                deficit,
+                activeEspaisMap
+            });
+        }
+    });
+
+    activeHours.forEach(item => {
+        let statusClass = 'status-empty';
+        let badgeText = `🚨 Falten ${item.totalNeeded} (${item.totalAssigned}/${item.totalNeeded})`;
+        if (item.totalAssigned >= item.totalNeeded) {
+            statusClass = 'status-full';
+            badgeText = `✓ Complet (${item.totalAssigned}/${item.totalNeeded})`;
+        } else if (item.totalAssigned > 0) {
+            statusClass = 'status-partial';
+            badgeText = `⚠️ Falten ${item.deficit} (${item.totalAssigned}/${item.totalNeeded})`;
+        }
+
+        const chipsHtml = Object.entries(item.activeEspaisMap).map(([nom, st]) => {
+            return `<span class="mobile-hourly-space-tag">📍 ${nom}: ${st.assigned}/${st.needed}</span>`;
+        }).join('');
+
+        const card = document.createElement('div');
+        card.className = `mobile-hourly-card ${statusClass}`;
+        card.onclick = () => selectHourlySlotAndZoom(item.hourIdx);
+
+        card.innerHTML = `
+            <div class="mobile-hourly-card-header">
+                <span class="mobile-hourly-time">⏰ ${item.timeLabel}</span>
+                <span class="mobile-hourly-badge">${badgeText}</span>
+            </div>
+            <div class="mobile-hourly-spaces">
+                ${chipsHtml}
+            </div>
+            <div class="mobile-hourly-card-cta">
+                <span>Veure ${item.hourTorns.length} torn${item.hourTorns.length === 1 ? '' : 's'} d'aquesta hora ❯</span>
+            </div>
+        `;
+        listEl.appendChild(card);
+    });
+};
+
+window.selectHourlySlotAndZoom = function(hourIdx) {
+    setMobileScreen(3, { targetHourMin: hourIdx * 60 });
+};
+
 function loginVoluntari(vol) {
     currentVoluntari = vol;
     localStorage.setItem('voluntari_session', JSON.stringify(vol));
     updateUserUI();
     renderAll();
+    // Avançar automàticament a la pantalla 2 (Franges Horàries)
+    setMobileScreen(2);
 }
 
 function logoutVoluntari() {
@@ -995,6 +1194,7 @@ function logoutVoluntari() {
     document.getElementById('select-voluntari-existent').value = '';
     updateUserUI();
     renderAll();
+    setMobileScreen(1);
 }
 
 function updateUserUI() {
@@ -2712,11 +2912,25 @@ window.cancelEditEspaiName = function() {
     renderEspaisAdminList();
 };
 
+function isDuplicateEspai(nom, excludeId = null) {
+    if (!nom) return false;
+    const clean = nom.trim().toLowerCase();
+    return allEspais.some(e => {
+        if (excludeId && e.id === excludeId) return false;
+        return (e.nom || '').trim().toLowerCase() === clean;
+    });
+}
+
 window.saveEspaiName = async function(id) {
     const inp = document.getElementById(`input-edit-espai-${id}`);
     const newNom = inp ? inp.value.trim() : '';
     if (!newNom) {
         alert("El nom de l'espai no pot estar buit.");
+        return;
+    }
+
+    if (isDuplicateEspai(newNom, id)) {
+        alert(`Ja existeix un espai amb el nom "${newNom}". Tria un nom diferent.`);
         return;
     }
 
@@ -2744,6 +2958,11 @@ window.promptEditEspaiName = async function(id) {
     const trimmed = newNom.trim();
     if (!trimmed || trimmed === espai.nom) return;
 
+    if (isDuplicateEspai(trimmed, id)) {
+        alert(`Ja existeix un espai amb el nom "${trimmed}". Tria un nom diferent.`);
+        return;
+    }
+
     const { error } = await supabaseClient
         .from('vol_espais')
         .update({ nom: trimmed })
@@ -2768,6 +2987,16 @@ async function handleAddEspai() {
         if (err) {
             err.textContent = "Si us plau, escriu el nom de l'espai.";
             err.style.display = 'block';
+        }
+        return;
+    }
+
+    if (isDuplicateEspai(nom)) {
+        if (err) {
+            err.textContent = `Ja existeix un espai anomenat "${nom}". Si us plau, utilitza un altre nom.`;
+            err.style.display = 'block';
+        } else {
+            alert(`Ja existeix un espai anomenat "${nom}".`);
         }
         return;
     }

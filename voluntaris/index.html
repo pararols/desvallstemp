@@ -31,146 +31,228 @@
     </header>
 
     <main>
-        <!-- HERO / IDENTIFICACIÓ -->
-        <section id="auth-section" class="card glass">
-            <div class="auth-header-texts" id="auth-header-texts">
-                <h1>Participa a la Pluja d'Art! 🎨</h1>
-                <p class="subtitle">Tria el teu nom de la llista o registra't amb el teu telèfon per apuntar-te als torns.</p>
-            </div>
-            
-            <div class="auth-box">
-                <div class="field-group">
-                    <label for="select-voluntari-existent">Ets a la llista de voluntaris?</label>
-                    <select id="select-voluntari-existent">
-                        <option value="">-- Tria el teu nom --</option>
-                        <!-- Injected via JS -->
-                    </select>
-                </div>
-                <div class="divider"><span>O BÉ</span></div>
-                <div class="new-vol-form">
-                    <label>Ets nou/nova? Dona't d'alta:</label>
-                    <div class="field-row">
-                        <input type="text" id="new-vol-nom" placeholder="Nom" autocomplete="given-name">
-                        <input type="text" id="new-vol-cognom" placeholder="Cognoms" autocomplete="family-name">
-                    </div>
-                    <input type="tel" id="new-vol-tel" placeholder="Telèfon de contacte" autocomplete="tel">
-                    
-                    <!-- Bloc Dinar Gratuït de Dissabte -->
-                    <div class="dinar-box">
-                        <div class="dinar-header">
-                            <span class="dinar-icon">🍽️</span>
-                            <div class="dinar-header-text">
-                                <strong>Dinar gratuït per a voluntaris (Dissabte 27)</strong>
-                                <span class="dinar-deadline">⏳ Data límit per inscriure's: <strong>11 de setembre</strong></span>
-                            </div>
-                        </div>
-                        <div class="dinar-options">
-                            <label class="dinar-radio-label">
-                                <input type="radio" name="new-vol-dinar" value="si" checked id="radio-dinar-si">
-                                <span>Sí, vindré al dinar</span>
-                            </label>
-                            <label class="dinar-radio-label">
-                                <input type="radio" name="new-vol-dinar" value="no" id="radio-dinar-no">
-                                <span>No podré venir</span>
-                            </label>
-                        </div>
-                        <div class="dinar-persones-group" id="dinar-persones-group">
-                            <label for="new-vol-dinar-persones">Quantes persones sereu en total? <span class="sublabel">(Incloent acompanyants no voluntaris)</span></label>
-                            <input type="number" id="new-vol-dinar-persones" min="1" max="10" value="1">
-                        </div>
-                    </div>
+        <!-- BARRA DE NAVEGACIÓ PER PANTALLES / WIZARD (MÒBIL I RÀPIDA) -->
+        <nav class="mobile-steps-nav" id="mobile-steps-nav">
+            <button type="button" class="step-nav-btn active" id="step-nav-1" onclick="setMobileScreen(1)">
+                <span class="step-num">1</span>
+                <span class="step-title">Dades & Dinar</span>
+            </button>
+            <button type="button" class="step-nav-btn" id="step-nav-2" onclick="setMobileScreen(2)">
+                <span class="step-num">2</span>
+                <span class="step-title">Franges</span>
+            </button>
+            <button type="button" class="step-nav-btn" id="step-nav-3" onclick="setMobileScreen(3)">
+                <span class="step-num">3</span>
+                <span class="step-title">Graella Torns</span>
+            </button>
+            <button type="button" class="step-nav-btn" id="step-nav-4" onclick="setMobileScreen(4)">
+                <span class="step-num">4</span>
+                <span class="step-title">El meu Resum</span>
+            </button>
+        </nav>
 
-                    <button id="btn-registre-voluntari" class="btn-primary">Dona'm d'alta i participa</button>
-                </div>
-            </div>
-
-            <div id="welcome-message" style="display: none;">
-                <div class="user-greeting">
-                    <span class="user-icon">👤</span>
-                    <div>
-                        <div class="greeting-text">Hola, <strong id="current-user-name">...</strong>!</div>
-                        <div class="greeting-sub">Fes clic sobre qualsevol torn disponible per apuntar-te o desapuntar-te.</div>
-                        <div class="greeting-dinar" id="greeting-dinar-badge">
-                            <!-- Injected dynamically via JS: 🍽️ Dinar dissabte: Sí (2 pers.) · Data límit: 11 setembre -->
-                        </div>
-                    </div>
-                </div>
-                <button id="btn-logout-vol" class="btn-small">Canvia de persona</button>
-            </div>
-        </section>
-
-        <!-- CALENDARI I GRAELLA SECTION -->
-        <section id="calendar-section" class="calendar-container">
-            <div class="controls-bar">
-                <div class="day-selector" id="day-selector">
-                    <!-- Injected dynamically via JS: Day buttons + admin controls -->
-                </div>
-
-                <!-- SELECTOR DE VISTA (DETALLADA / GLOBAL) -->
-                <div class="view-mode-selector">
-                    <button class="view-mode-btn active" id="btn-view-detailed" onclick="setViewMode('detailed')">
-                        <span class="view-icon">📋</span> Vista Detallada
-                    </button>
-                    <button class="view-mode-btn" id="btn-view-global" onclick="setViewMode('global')">
-                        <span class="view-icon">🗺️</span> Vista Calendari
-                    </button>
+        <!-- PANTALLA 1: IDENTIFICACIÓ I DINAR -->
+        <section id="screen-1-auth" class="app-screen active">
+            <div id="auth-section" class="card glass">
+                <div class="auth-header-texts" id="auth-header-texts">
+                    <h1>Participa a la Pluja d'Art! 🎨</h1>
+                    <p class="subtitle">Tria el teu nom de la llista o registra't amb el teu telèfon per apuntar-te als torns.</p>
                 </div>
                 
-                <div class="zoom-controls" id="zoom-controls" title="Ajusta l'amplada de les columnes per veure més còmodament els torns solapats">
-                    <span class="zoom-label">Amplada:</span>
-                    <button class="btn-zoom" id="btn-zoom-out" onclick="adjustColumnWidth(-40)" title="Reduir amplada">➖</button>
-                    <span class="zoom-val-display" id="zoom-val-display">320px</span>
-                    <button class="btn-zoom" id="btn-zoom-in" onclick="adjustColumnWidth(40)" title="Augmentar amplada">➕</button>
+                <div class="auth-box">
+                    <div class="field-group">
+                        <label for="select-voluntari-existent">Ets a la llista de voluntaris?</label>
+                        <select id="select-voluntari-existent">
+                            <option value="">-- Tria el teu nom --</option>
+                            <!-- Injected via JS -->
+                        </select>
+                    </div>
+                    <div class="divider"><span>O BÉ</span></div>
+                    <div class="new-vol-form">
+                        <label>Ets nou/nova? Dona't d'alta:</label>
+                        <div class="field-row">
+                            <input type="text" id="new-vol-nom" placeholder="Nom" autocomplete="given-name">
+                            <input type="text" id="new-vol-cognom" placeholder="Cognoms" autocomplete="family-name">
+                        </div>
+                        <input type="tel" id="new-vol-tel" placeholder="Telèfon de contacte" autocomplete="tel">
+                        
+                        <!-- Bloc Dinar Gratuït de Dissabte -->
+                        <div class="dinar-box">
+                            <div class="dinar-header">
+                                <span class="dinar-icon">🍽️</span>
+                                <div class="dinar-header-text">
+                                    <strong>Dinar gratuït per a voluntaris (Dissabte 27)</strong>
+                                    <span class="dinar-deadline">⏳ Data límit per inscriure's: <strong>11 de setembre</strong></span>
+                                </div>
+                            </div>
+                            <div class="dinar-options">
+                                <label class="dinar-radio-label">
+                                    <input type="radio" name="new-vol-dinar" value="si" checked id="radio-dinar-si">
+                                    <span>Sí, vindré al dinar</span>
+                                </label>
+                                <label class="dinar-radio-label">
+                                    <input type="radio" name="new-vol-dinar" value="no" id="radio-dinar-no">
+                                    <span>No podré venir</span>
+                                </label>
+                            </div>
+                            <div class="dinar-persones-group" id="dinar-persones-group">
+                                <label for="new-vol-dinar-persones">Quantes persones sereu en total? <span class="sublabel">(Incloent acompanyants no voluntaris)</span></label>
+                                <input type="number" id="new-vol-dinar-persones" min="1" max="10" value="1">
+                            </div>
+                        </div>
+
+                        <button id="btn-registre-voluntari" class="btn-primary">Dona'm d'alta i participa</button>
+                    </div>
                 </div>
 
-                <div class="admin-top-actions" id="admin-top-actions" style="display: none;">
-                    <button id="btn-open-dies-modal" class="btn-secondary">📅 Gestionar Dies</button>
-                    <button id="btn-open-espais-modal" class="btn-secondary">+ Gestionar Espais</button>
-                    <button id="btn-new-torn-global" class="btn-primary">+ Crear Nou Torn</button>
-                </div>
-            </div>
-
-            <!-- GRAELLA / TIMELINE AMB EIX VERTICAL D'HORES -->
-            <div class="spaces-grid-wrapper" id="spaces-grid-wrapper">
-                <div id="timeline-container" class="timeline-container">
-                    <!-- Injected via JS: Time Axis + Spaces Columns & Shift Tracks -->
+                <div id="welcome-message" style="display: none;">
+                    <div class="user-greeting">
+                        <span class="user-icon">👤</span>
+                        <div>
+                            <div class="greeting-text">Hola, <strong id="current-user-name">...</strong>!</div>
+                            <div class="greeting-sub">Fes clic a continuar per triar els teus torns o consultar la graella.</div>
+                            <div class="greeting-dinar" id="greeting-dinar-badge">
+                                <!-- Injected dynamically via JS -->
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem;">
+                        <button id="btn-logout-vol" class="btn-small">Canvia de persona</button>
+                        <button type="button" class="btn-primary" onclick="setMobileScreen(2)" style="flex: 1; min-width: 160px; font-weight: 700;">
+                            Continuar a les Franges Horàries ❯
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- RESUM PERSONAL DEL VOLUNTARI (INSCRIPCIONS I DINAR + WHATSAPP) -->
-        <section id="user-summary-section" class="user-summary-section glass" style="display: none;">
-            <div class="user-summary-header">
-                <div class="user-summary-title-group">
-                    <span class="summary-icon">📋</span>
-                    <div>
-                        <h2>El teu resum de participació</h2>
-                        <p class="summary-subtitle" id="user-summary-vol-name">Voluntari/a</p>
+        <!-- PANTALLA 2: RESUM DE FRANGES HORÀRIES I COBERTURA PER DIA -->
+        <section id="screen-2-hourly" class="app-screen" style="display: none;">
+            <div class="screen-hourly-card card glass">
+                <div class="screen-hourly-header">
+                    <div class="sticky-day-selector-container">
+                        <div class="day-selector" id="hourly-screen-day-selector">
+                            <!-- Injected dynamically via JS -->
+                        </div>
+                    </div>
+                    <div class="screen-hourly-info-banner">
+                        <span class="banner-icon">👉</span>
+                        <span>Toca qualsevol franja horària per veure els torns detallats i apuntar-t'hi:</span>
                     </div>
                 </div>
-                <div class="user-summary-actions">
-                    <button type="button" id="btn-copy-user-summary" class="btn-secondary" onclick="copyUserSummary()">
-                        📋 Copiar Resum
-                    </button>
-                    <button type="button" id="btn-whatsapp-summary" class="btn-whatsapp" onclick="sendSummaryViaWhatsApp()">
-                        <span class="whatsapp-icon">💬</span> Enviar per WhatsApp
-                    </button>
-                </div>
-            </div>
 
-            <!-- Bloc Estat del Dinar -->
-            <div class="user-summary-dinar-card" id="user-summary-dinar-box">
-                <!-- Injected dynamically via JS -->
-            </div>
-
-            <!-- Llistat de Torns Inscrits -->
-            <div class="user-summary-torns-container">
-                <div class="user-summary-torns-header">
-                    <h3>🎯 Els teus torns assignats</h3>
-                    <span id="user-summary-total-badge" class="summary-total-badge">0 torns</span>
-                </div>
-                <div id="user-summary-torns-list" class="user-summary-torns-grid">
+                <div class="mobile-hourly-list" id="mobile-hourly-list">
                     <!-- Injected dynamically via JS -->
+                </div>
+
+                <div class="screen-nav-bottom-bar">
+                    <button type="button" class="btn-secondary" onclick="setMobileScreen(1)">
+                        ◀ Enrere (Dades)
+                    </button>
+                    <button type="button" class="btn-primary" onclick="setMobileScreen(3)">
+                        Graella de Torns ❯
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PANTALLA 3: GRAELLA I CALENDARI DE TORNS -->
+        <section id="screen-3-shifts" class="app-screen" style="display: none;">
+            <div id="calendar-section" class="calendar-container">
+                <!-- Capçalera de dia fixa FORA del scroll -->
+                <div class="mobile-sticky-day-bar">
+                    <div class="day-selector" id="day-selector">
+                        <!-- Injected dynamically via JS -->
+                    </div>
+                </div>
+
+                <div class="controls-bar">
+                    <!-- SELECTOR DE VISTA (DETALLADA / GLOBAL) -->
+                    <div class="view-mode-selector">
+                        <button class="view-mode-btn active" id="btn-view-detailed" onclick="setViewMode('detailed')">
+                            <span class="view-icon">📋</span> Vista Detallada
+                        </button>
+                        <button class="view-mode-btn" id="btn-view-global" onclick="setViewMode('global')">
+                            <span class="view-icon">🗺️</span> Vista Calendari
+                        </button>
+                    </div>
+                    
+                    <div class="zoom-controls" id="zoom-controls" title="Ajusta l'amplada de les columnes">
+                        <span class="zoom-label">Amplada:</span>
+                        <button class="btn-zoom" id="btn-zoom-out" onclick="adjustColumnWidth(-40)" title="Reduir amplada">➖</button>
+                        <span class="zoom-val-display" id="zoom-val-display">320px</span>
+                        <button class="btn-zoom" id="btn-zoom-in" onclick="adjustColumnWidth(40)" title="Augmentar amplada">➕</button>
+                    </div>
+
+                    <div class="admin-top-actions" id="admin-top-actions" style="display: none;">
+                        <button id="btn-open-dies-modal" class="btn-secondary">📅 Gestionar Dies</button>
+                        <button id="btn-open-espais-modal" class="btn-secondary">+ Gestionar Espais</button>
+                        <button id="btn-new-torn-global" class="btn-primary">+ Crear Nou Torn</button>
+                    </div>
+                </div>
+
+                <!-- GRAELLA / TIMELINE AMB EIX VERTICAL D'HORES -->
+                <div class="spaces-grid-wrapper" id="spaces-grid-wrapper">
+                    <div id="timeline-container" class="timeline-container">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <div class="screen-nav-bottom-bar">
+                    <button type="button" class="btn-secondary" onclick="setMobileScreen(2)">
+                        ◀ Enrere (Franges)
+                    </button>
+                    <button type="button" class="btn-primary" onclick="setMobileScreen(4)" id="btn-go-to-summary-step">
+                        Veure el meu Resum i WhatsApp ❯
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PANTALLA 4: RESUM PERSONAL DEL VOLUNTARI I WHATSAPP -->
+        <section id="screen-4-summary" class="app-screen" style="display: none;">
+            <div id="user-summary-section" class="user-summary-section glass">
+                <div class="user-summary-header">
+                    <div class="user-summary-title-group">
+                        <span class="summary-icon">📋</span>
+                        <div>
+                            <h2>El teu resum de participació</h2>
+                            <p class="summary-subtitle" id="user-summary-vol-name">Voluntari/a</p>
+                        </div>
+                    </div>
+                    <div class="user-summary-actions">
+                        <button type="button" id="btn-copy-user-summary" class="btn-secondary" onclick="copyUserSummary()">
+                            📋 Copiar Resum
+                        </button>
+                        <button type="button" id="btn-whatsapp-summary" class="btn-whatsapp" onclick="sendSummaryViaWhatsApp()">
+                            <span class="whatsapp-icon">💬</span> Enviar per WhatsApp
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bloc Estat del Dinar -->
+                <div class="user-summary-dinar-card" id="user-summary-dinar-box">
+                    <!-- Injected dynamically via JS -->
+                </div>
+
+                <!-- Llistat de Torns Inscrits -->
+                <div class="user-summary-torns-container">
+                    <div class="user-summary-torns-header">
+                        <h3>🎯 Els teus torns assignats</h3>
+                        <span id="user-summary-total-badge" class="summary-total-badge">0 torns</span>
+                    </div>
+                    <div id="user-summary-torns-list" class="user-summary-torns-grid">
+                        <!-- Injected dynamically via JS -->
+                    </div>
+                </div>
+
+                <div class="screen-nav-bottom-bar">
+                    <button type="button" class="btn-secondary" onclick="setMobileScreen(3)">
+                        ◀ Tornar a la Graella per afegir més torns
+                    </button>
+                    <button type="button" class="btn-whatsapp" onclick="sendSummaryViaWhatsApp()" style="font-weight: 700;">
+                        💬 Enviar per WhatsApp
+                    </button>
                 </div>
             </div>
         </section>
