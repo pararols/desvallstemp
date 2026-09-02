@@ -1072,9 +1072,9 @@
 
         // Processar i ordenar estrictament els punts del circuit lumínic per a l'audioguia
         function processLocationsToSpots(rawList) {
-            // Filtrar exclusivament punts del circuit nocturn (inici, instal·lacions lumíniques i espectacles)
+            // Filtrar exclusivament instal·lacions lumíniques i inici (EXCLOENT estrictament espectacles i serveis)
             const circuitItems = rawList.filter(item => 
-                item.type === 'start' || item.type === 'lum' || item.type === 'show' || (item.id && item.id.startsWith('lum_'))
+                item.type !== 'show' && (item.type === 'start' || item.type === 'lum')
             );
 
             // Ordenar estrictament per l'ordre configurat a mapa3.html
