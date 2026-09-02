@@ -2637,6 +2637,147 @@ footer {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
+.screen3-day-bar-volunteer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.screen3-day-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.screen3-day-icon {
+    font-size: 1.3rem;
+}
+
+.screen3-day-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.screen3-day-title {
+    font-size: 0.95rem;
+    color: white;
+    font-weight: 800;
+}
+
+.screen3-day-sub {
+    font-size: 0.72rem;
+    color: #94a3b8;
+}
+
+.btn-change-day-slot {
+    background: rgba(30, 41, 59, 0.9);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: #38bdf8;
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.btn-change-day-slot:hover {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: #38bdf8;
+    color: white;
+}
+
+/* Modal de Passos Següents en Apuntar-se a un Torn */
+.signup-next-modal-card {
+    max-width: 420px;
+    width: 92%;
+    text-align: center;
+    padding: 1.6rem 1.2rem;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.signup-next-icon {
+    font-size: 2.8rem;
+    display: inline-block;
+    margin-bottom: 0.4rem;
+}
+
+.signup-next-header h3 {
+    font-size: 1.25rem;
+    color: white;
+    margin-bottom: 0.6rem;
+    font-weight: 800;
+}
+
+.signup-next-details {
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 0.75rem 0.9rem;
+    margin-bottom: 1rem;
+    font-size: 0.82rem;
+    color: #e2e8f0;
+    line-height: 1.45;
+    text-align: left;
+}
+
+.signup-next-question {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 0.85rem;
+}
+
+.signup-next-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.signup-btn-more,
+.signup-btn-summary {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.65rem 0.9rem !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    font-size: 0.92rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    text-align: center !important;
+}
+
+.signup-btn-more {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+    border: 1px solid #38bdf8 !important;
+    color: white !important;
+}
+
+.signup-btn-summary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border: 1px solid #34d399 !important;
+    color: white !important;
+}
+
+.signup-btn-more small,
+.signup-btn-summary small {
+    font-size: 0.72rem !important;
+    font-weight: normal !important;
+    opacity: 0.88 !important;
+    margin-top: 0.15rem !important;
+}
+
 .screen-nav-bottom-bar {
     display: flex;
     justify-content: space-between;

@@ -30,7 +30,7 @@ let allEspais = [];
 let allTorns = [];
 let allAssignacions = [];
 let currentColumnWidth = parseInt(localStorage.getItem('pluja_col_width')) || 320;
-let currentViewMode = localStorage.getItem('pluja_view_mode') || (window.innerWidth <= 768 ? 'global' : 'detailed');
+let currentViewMode = localStorage.getItem('pluja_view_mode') || 'detailed';
 
 // ==========================================
 // 3. INICIALITZACIÓ
@@ -278,10 +278,32 @@ function renderDaySelector() {
     const curDia = getCurrentDiaObj();
     currentDay = curDia.nom;
     currentDayKey = getDiaKey(curDia);
+    const diaInfo = parseIsoToCatalan(currentDayKey);
 
+    if (!isAdmin) {
+        // Mode voluntari a Pantalla 3: capçalera neta amb el dia actual i botó per anar a Pantalla 2
+        container.className = 'screen3-day-bar-volunteer';
+        container.innerHTML = `
+            <div class="screen3-day-info">
+                <span class="screen3-day-icon">🗓️</span>
+                <div class="screen3-day-text">
+                    <strong class="screen3-day-title">${diaInfo.nom}, ${diaInfo.data}</strong>
+                    <span class="screen3-day-sub">Torns de voluntariat disponibles</span>
+                </div>
+            </div>
+            <button type="button" class="btn-change-day-slot" onclick="setMobileScreen(2)">
+                <span>⬅️ Canviar de dia / franja</span>
+            </button>
+        `;
+        renderHourlyScreenDaySelector();
+        populateDaysSelectInModal();
+        return;
+    }
+
+    container.className = 'day-selector';
     allDies.forEach((d) => {
         const diaIso = getDiaIso(d);
-        const diaInfo = parseIsoToCatalan(diaIso);
+        const dInfo = parseIsoToCatalan(diaIso);
         const isActive = diaIso === currentDayKey;
 
         const wrapper = document.createElement('div');
@@ -289,29 +311,27 @@ function renderDaySelector() {
 
         const btn = document.createElement('button');
         btn.className = 'day-btn' + (isActive ? ' active' : '');
-        btn.dataset.day = diaInfo.nom;
+        btn.dataset.day = dInfo.nom;
         btn.dataset.dayIso = diaIso;
-        btn.title = `${diaInfo.nom}, ${diaInfo.data}`;
+        btn.title = `${dInfo.nom}, ${dInfo.data}`;
         btn.innerHTML = `
-            ${isAdmin ? `
-                <div class="day-admin-header">
-                    <button class="btn-icon-order" title="Editar data del dia" onclick="event.stopPropagation(); promptEditDia('${diaIso}')">✏️</button>
-                </div>
-            ` : ''}
-            <span class="day-weekday">${diaInfo.shortNom || diaInfo.nom}</span>
-            <span class="day-number">${diaInfo.dayNum}</span>
-            <span class="day-month-sub">${diaInfo.shortMonth || 'Set'}</span>
+            <div class="day-admin-header">
+                <button class="btn-icon-order" title="Editar data del dia" onclick="event.stopPropagation(); promptEditDia('${diaIso}')">✏️</button>
+            </div>
+            <span class="day-weekday">${dInfo.shortNom || dInfo.nom}</span>
+            <span class="day-number">${dInfo.dayNum}</span>
+            <span class="day-month-sub">${dInfo.shortMonth || 'Set'}</span>
         `;
         btn.onclick = () => {
             currentDayKey = diaIso;
-            currentDay = diaInfo.nom;
+            currentDay = dInfo.nom;
             localStorage.setItem('pluja_active_dia_iso', diaIso);
             renderDaySelector();
             renderAll();
         };
         wrapper.appendChild(btn);
 
-        if (isAdmin && allDies.length > 1) {
+        if (allDies.length > 1) {
             const delBtn = document.createElement('button');
             delBtn.className = 'btn-delete-day';
             delBtn.title = `Eliminar dia ${getDiaDisplayName(d)}`;
@@ -326,13 +346,11 @@ function renderDaySelector() {
         container.appendChild(wrapper);
     });
 
-    if (isAdmin) {
-        const addBtn = document.createElement('button');
-        addBtn.className = 'btn-add-day';
-        addBtn.innerHTML = '<span>➕</span> <span>Afegir Dia</span>';
-        addBtn.onclick = promptAddDia;
-        container.appendChild(addBtn);
-    }
+    const addBtn = document.createElement('button');
+    addBtn.className = 'btn-add-day';
+    addBtn.innerHTML = '<span>➕</span> <span>Afegir Dia</span>';
+    addBtn.onclick = promptAddDia;
+    container.appendChild(addBtn);
 
     renderHourlyScreenDaySelector();
     populateDaysSelectInModal();
@@ -1079,6 +1097,9 @@ window.setMobileScreen = function(screenNum, options = {}) {
     if (screenNum === 2) {
         renderHourlyOverviewScreen();
     } else if (screenNum === 3) {
+        if (!isAdmin && window.innerWidth <= 768) {
+            setViewMode('detailed');
+        }
         renderAll();
         if (options.targetHourMin !== undefined) {
             setTimeout(() => {
@@ -1087,7 +1108,7 @@ window.setMobileScreen = function(screenNum, options = {}) {
                     const targetTop = getTimelineY(options.targetHourMin);
                     wrapper.scrollTo({ top: Math.max(0, targetTop - 20), behavior: 'smooth' });
                 }
-            }, 100);
+            }, 120);
         }
     } else if (screenNum === 4) {
         renderUserSummary();
@@ -1201,7 +1222,8 @@ window.renderHourlyOverviewScreen = function() {
 };
 
 window.selectHourlySlotAndZoom = function(hourIdx) {
-    setMobileScreen(3, { targetHourMin: hourIdx * 60 });
+    setViewMode('detailed');
+    setMobileScreen(3, { targetHourMin: hourIdx * 60, selectedHourIdx: hourIdx });
 };
 
 function loginVoluntari(vol) {
@@ -2439,12 +2461,52 @@ async function handleToggleAssignacio(torn, isMeIn, placesLeft) {
             } else {
                 alert("Error en apuntar-se: " + error.message);
             }
+        } else {
+            // Èxit en la inscripció!
+            await fetchData();
+            renderAll();
+            showSignupNextStepModal(torn);
+            return;
         }
     }
 
     await fetchData();
     renderAll();
 }
+
+window.showSignupNextStepModal = function(torn) {
+    const modal = document.getElementById('modal-signup-next');
+    if (!modal) return;
+
+    const espai = allEspais.find(e => e.id === torn.espai_id);
+    const diaIso = getDiaIso(torn);
+    const diaInfo = parseIsoToCatalan(diaIso);
+    const llocText = (torn.lloc && torn.lloc.trim()) ? torn.lloc.trim() : (espai ? espai.nom : '');
+
+    const detailsEl = document.getElementById('signup-next-details');
+    if (detailsEl) {
+        detailsEl.innerHTML = `
+            <div style="font-weight: 700; color: #38bdf8; font-size: 0.95rem; margin-bottom: 0.35rem;">🎯 ${torn.tasca || (espai ? espai.nom : 'Torn de voluntariat')}</div>
+            <div style="margin-bottom: 0.2rem;">🗓️ <strong>${diaInfo.nom}, ${diaInfo.data}</strong></div>
+            <div style="margin-bottom: 0.2rem;">⏰ <strong>${torn.hora_inici} – ${torn.hora_fi}</strong></div>
+            <div>📍 <strong>${llocText || (espai ? espai.nom : 'Espai')}</strong></div>
+        `;
+    }
+
+    modal.style.display = 'flex';
+};
+
+window.handleSignupNextMore = function() {
+    const modal = document.getElementById('modal-signup-next');
+    if (modal) modal.style.display = 'none';
+    setMobileScreen(2);
+};
+
+window.handleSignupNextSummary = function() {
+    const modal = document.getElementById('modal-signup-next');
+    if (modal) modal.style.display = 'none';
+    setMobileScreen(4);
+};
 
 // ==========================================
 // 8. GESTIÓ DE TORNS PER A L'ADMIN (MODAL)
