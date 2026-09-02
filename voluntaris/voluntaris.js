@@ -1697,7 +1697,7 @@ function renderAll() {
     }
 
     const isMobile = window.innerWidth <= 768;
-    const normalHourHeight = currentViewMode === 'global' ? (isMobile ? 95 : 120) : (isMobile ? 110 : 150);
+    const normalHourHeight = currentViewMode === 'global' ? (isMobile ? 135 : 140) : (isMobile ? 145 : 160);
     const inactiveHourHeight = isMobile ? 28 : 34;
 
     // 2. Torns del dia per als espais visibles
@@ -1905,7 +1905,7 @@ function renderAll() {
 
             const topPx = getTimelineY(festStart);
             const bottomPx = getTimelineY(festEnd);
-            const minH = currentViewMode === 'global' ? (isMobile ? 80 : 92) : 54;
+            const minH = currentViewMode === 'global' ? (isMobile ? 115 : 120) : (isMobile ? 95 : 110);
             const heightPx = Math.max(minH, bottomPx - topPx - 4);
 
             card.style.top = `${topPx}px`;
@@ -2118,7 +2118,16 @@ function renderShiftCard(torn, espai) {
             card.appendChild(taskEl);
         }
 
-        // 3. Fila d'estat de places + lloc
+        // 3. Lloc específic / punt de trobada (sempre visible si en té)
+        if (torn.lloc && torn.lloc.trim()) {
+            const locEl = document.createElement('div');
+            locEl.className = 'shift-location-global';
+            locEl.title = `Lloc: ${torn.lloc.trim()}`;
+            locEl.innerHTML = `<span class="shift-location-icon">📍</span> <span class="shift-location-text">${torn.lloc.trim()}</span>`;
+            card.appendChild(locEl);
+        }
+
+        // 4. Fila d'estat de places
         const statusRow = document.createElement('div');
         statusRow.className = 'shift-status-row';
 
@@ -2135,12 +2144,7 @@ function renderShiftCard(torn, espai) {
             badgeText = `${placesLeft} lliure${placesLeft === 1 ? '' : 's'} (${assignats.length}/${torn.necessaris})`;
         }
 
-        let locHtml = '';
-        if (torn.lloc && torn.lloc.trim()) {
-            locHtml = `<div class="shift-location" title="${torn.lloc.trim()}"><span class="shift-location-icon">📍</span> <span>${torn.lloc.trim()}</span></div>`;
-        }
-
-        statusRow.innerHTML = `<span class="places-badge ${badgeClass}">${badgeText}</span>${locHtml}`;
+        statusRow.innerHTML = `<span class="places-badge ${badgeClass}">${badgeText}</span>`;
         card.appendChild(statusRow);
 
         // 5. Botó d'apuntar-se / desapuntar-se per als voluntaris

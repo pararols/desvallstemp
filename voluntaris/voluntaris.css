@@ -1319,34 +1319,34 @@ select:focus, input:focus, textarea:focus {
 }
 
 .view-global .shift-card .shift-time {
-    font-size: 0.8rem !important;
+    font-size: 0.78rem !important;
     font-weight: 700 !important;
     gap: 0.25rem !important;
 }
 
 .view-global .shift-card .shift-duration {
-    font-size: 0.65rem !important;
-    padding: 0.1rem 0.35rem !important;
+    font-size: 0.62rem !important;
+    padding: 0.08rem 0.3rem !important;
 }
 
 .view-global .shift-card .shift-task-global {
-    font-size: 0.8rem !important;
+    font-size: 0.76rem !important;
     font-weight: 700 !important;
     color: #ffffff !important;
     display: flex !important;
     align-items: center !important;
-    gap: 0.3rem !important;
-    background: rgba(14, 165, 233, 0.18) !important;
+    gap: 0.25rem !important;
+    background: rgba(14, 165, 233, 0.22) !important;
     border-left: 3px solid #38bdf8 !important;
     border-radius: 5px !important;
-    padding: 0.22rem 0.45rem !important;
-    margin: 0.1rem 0 !important;
+    padding: 0.18rem 0.4rem !important;
+    margin: 0.08rem 0 !important;
     line-height: 1.25 !important;
     box-sizing: border-box;
 }
 
 .view-global .shift-card .shift-task-global .shift-task-icon {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     flex-shrink: 0;
 }
 
@@ -1357,9 +1357,35 @@ select:focus, input:focus, textarea:focus {
     font-weight: 700;
 }
 
+.view-global .shift-card .shift-location-global {
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: #e2e8f0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 4px !important;
+    padding: 0.15rem 0.35rem !important;
+    margin: 0.05rem 0 !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box;
+}
+
+.view-global .shift-card .shift-location-global .shift-location-icon {
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+.view-global .shift-card .shift-location-global .shift-location-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .view-global .shift-card .shift-status-row {
     border-top: 1px dashed rgba(255, 255, 255, 0.1) !important;
-    padding-top: 0.25rem !important;
+    padding-top: 0.2rem !important;
     margin-top: 0.05rem !important;
     display: flex !important;
     justify-content: space-between !important;
@@ -1368,43 +1394,44 @@ select:focus, input:focus, textarea:focus {
 }
 
 .view-global .shift-card .places-badge {
-    font-size: 0.72rem !important;
-    padding: 0.12rem 0.45rem !important;
+    font-size: 0.7rem !important;
+    padding: 0.12rem 0.42rem !important;
     font-weight: 700 !important;
 }
 
 .view-global .shift-card .shift-location {
     font-size: 0.68rem !important;
-    color: #94a3b8 !important;
+    color: #cbd5e1 !important;
     gap: 0.2rem !important;
-    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .view-global .shift-card .shift-actions {
-    margin-top: 0.2rem !important;
+    margin-top: 0.15rem !important;
 }
 
 .view-global .shift-card .shift-actions .btn-signup,
 .view-global .shift-card .shift-actions .btn-withdraw {
     font-size: 0.74rem !important;
-    padding: 0.28rem 0.5rem !important;
+    padding: 0.25rem 0.45rem !important;
     border-radius: 6px !important;
     font-weight: 700 !important;
+    width: 100% !important;
+    text-align: center !important;
 }
 
 .view-global .shift-card .admin-card-bar {
-    padding-top: 0.25rem !important;
-    margin-top: 0.1rem !important;
+    padding-top: 0.2rem !important;
+    margin-top: 0.08rem !important;
     gap: 0.2rem !important;
 }
 
 .view-global .shift-card .admin-card-bar .btn-icon-admin {
-    width: 24px !important;
-    height: 24px !important;
-    font-size: 0.75rem !important;
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.72rem !important;
     border-radius: 5px !important;
 }
 
@@ -1835,11 +1862,11 @@ footer {
 
     /* VISTA GLOBAL A MÒBIL */
     .view-global {
-        --hour-height: 65px !important;
+        --hour-height: 135px !important;
     }
     .view-global .space-col-header {
-        width: 190px !important;
-        min-width: 190px !important;
+        width: 210px !important;
+        min-width: 210px !important;
         padding: 0.45rem 0.6rem !important;
     }
     .view-global .space-title {
@@ -1850,55 +1877,69 @@ footer {
         padding: 0.1rem 0.35rem !important;
     }
     .view-global .space-track {
-        width: 190px !important;
-        min-width: 190px !important;
-        height: calc(24 * 65px) !important;
+        width: 210px !important;
+        min-width: 210px !important;
+        height: calc(24 * 135px) !important;
     }
     .view-global .track-hour-cell,
     .view-global .time-marker {
-        height: 65px !important;
+        height: 135px !important;
     }
     .view-global .shift-card {
-        padding: 0.25rem 0.35rem !important;
-        gap: 0.15rem !important;
+        padding: 0.35rem 0.45rem !important;
+        gap: 0.18rem !important;
+        border-radius: 8px !important;
     }
     .view-global .shift-card .shift-time {
-        font-size: 0.7rem !important;
+        font-size: 0.74rem !important;
     }
     .view-global .shift-card .shift-duration {
         font-size: 0.58rem !important;
         padding: 0.05rem 0.25rem !important;
     }
+    .view-global .shift-card .shift-task-global {
+        font-size: 0.72rem !important;
+        line-height: 1.2 !important;
+        padding: 0.15rem 0.35rem !important;
+        margin: 0.04rem 0 !important;
+    }
+    .view-global .shift-card .shift-location-global {
+        font-size: 0.68rem !important;
+        line-height: 1.15 !important;
+        padding: 0.12rem 0.3rem !important;
+        margin: 0.04rem 0 !important;
+    }
     .view-global .shift-card .places-badge {
-        font-size: 0.65rem !important;
-        padding: 0.08rem 0.25rem !important;
+        font-size: 0.68rem !important;
+        padding: 0.1rem 0.38rem !important;
     }
     .view-global .shift-card .shift-location {
         font-size: 0.65rem !important;
     }
     .view-global .shift-card .shift-actions .btn-signup,
     .view-global .shift-card .shift-actions .btn-withdraw {
-        font-size: 0.62rem !important;
-        padding: 0.15rem 0.3rem !important;
+        font-size: 0.72rem !important;
+        padding: 0.22rem 0.4rem !important;
+        width: 100% !important;
     }
 
     /* VISTA DETALLADA A MÒBIL */
     .view-detailed {
-        --hour-height: 110px !important;
+        --hour-height: 145px !important;
     }
     .view-detailed .space-col-header {
-        width: 250px !important;
-        min-width: 250px !important;
+        width: 260px !important;
+        min-width: 260px !important;
         padding: 0.5rem 0.7rem !important;
     }
     .view-detailed .space-track {
-        width: 250px !important;
-        min-width: 250px !important;
-        height: calc(24 * 110px) !important;
+        width: 260px !important;
+        min-width: 260px !important;
+        height: calc(24 * 145px) !important;
     }
     .view-detailed .track-hour-cell,
     .view-detailed .time-marker {
-        height: 110px !important;
+        height: 145px !important;
     }
 
     /* FORMULARI REGISTRE INICIAL A MÒBIL */
