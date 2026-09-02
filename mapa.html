@@ -1866,7 +1866,22 @@
         }
 
         function centerOnFestival() {
-            fitMapToAllSymbols();
+            if (!map) return;
+            let targetCoords = [42.07135, 2.95342]; // Coordenades Plaça 1 d'Octubre (Sant Jordi Desvalls)
+
+            // Si existeix el punt a la llista d'ubicacions (ex: show_4 o lum_octubre), utilitzar les seves coordenades exactes
+            if (Array.isArray(locations)) {
+                const locOctubre = locations.find(l => (l.id === 'show_4' || l.id === 'lum_octubre' || (l.name && (l.name.includes("Octubre") || l.name.includes("1 d'Octubre")))));
+                if (locOctubre && locOctubre.lat && locOctubre.lng) {
+                    targetCoords = [parseFloat(locOctubre.lat), parseFloat(locOctubre.lng)];
+                }
+            }
+
+            const targetZoom = (window.innerWidth <= 768) ? 17.5 : 18;
+            map.flyTo(targetCoords, targetZoom, {
+                animate: true,
+                duration: 0.8
+            });
         }
 
         // ========================================================
