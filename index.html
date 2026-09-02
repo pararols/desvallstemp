@@ -3,9 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://script.google.com https://script.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://*.googleusercontent.com; connect-src https://script.google.com https://script.googleusercontent.com;">
     <meta name="description" content="Sant Jordi Desvalls: l'únic municipi de Catalunya amb el nom del patró, capital de les lletres i les arts. Descobreix els festivals Pluja d'Art i Pluja de Lletres.">
     <meta name="keywords" content="Desvalls Cultura, Sant Jordi Desvalls, Pluja d'Art, Pluja de Lletres, Cultura Rural, Girona, Art, Literatura">
+    
+    <!-- OpenGraph (Facebook, WhatsApp, LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://desvallscultura.cat/">
+    <meta property="og:title" content="Desvalls Cultura | Capital de les Lletres i les Arts">
+    <meta property="og:description" content="Descobreix Pluja de Lletres i Pluja d'Art a Sant Jordi Desvalls. L'epicentre cultural rural de les comarques gironines.">
+    <meta property="og:image" content="https://desvallscultura.cat/img/logo.jpg">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://desvallscultura.cat/">
+    <meta name="twitter:title" content="Desvalls Cultura | Sant Jordi Desvalls">
+    <meta name="twitter:description" content="Llibres, art i cultura rural al cor de Girona.">
+    <meta name="twitter:image" content="https://desvallscultura.cat/img/logo.jpg">
+
     <title>Desvalls Cultura | Capital de les Lletres i les Arts</title>
     
     <!-- Google Fonts -->
@@ -13,7 +31,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="css/style.css?v=2.2026.4">
+    <link rel="stylesheet" href="css/style.css?v=21a965ac">
 </head>
 <body>
 
@@ -25,11 +43,14 @@
                 <span class="logo-text">Desvalls</span> Cultura
             </a>
             <ul class="nav-links">
+                <li><a href="pluja-art-2026.html" style="color: var(--secondary); font-weight: 800;">Pluja d'Art 2026</a></li>
+                <li><a href="art-luminic-2026.html" onclick="openArtLuminicPending(event)" style="color: #38bdf8; font-weight: 700;">✨ Art Lumínic</a></li>
                 <li><a href="pluja-lletres-2026.html" style="color: var(--primary); font-weight: bold;">Pluja de Lletres 2026</a></li>
+                <li><a href="marxandatge.html" style="color: var(--primary); font-weight: 700;">👕 Samarretes</a></li>
                 <li><a href="#festivals">Festivals</a></li>
                 <li><a href="#agenda">Agenda</a></li>
                 <li><a href="#associa-t">Fes-te Soci</a></li>
-                <li><a href="participa-pluja-art.html" class="btn-primary" style="background: var(--dark); border-color: var(--dark); color: white;">Participa a Pluja d'Art 2026</a></li>
+                <li><a href="participa-pluja-art.html" class="btn-primary" style="background: var(--dark); border-color: var(--dark); color: white;">Participa a Pluja d'Art</a></li>
             </ul>
             <div class="mobile-menu-icon" id="mobileMenuIcon">
                 <span></span><span></span><span></span>
@@ -48,8 +69,8 @@
             <h1 class="hero-title">ON EL LLIBRE <br> I L'ART PRENEN VIDA</h1>
             <p class="hero-subtitle">Som l'únic poble de Catalunya que porta el nom del patró. Estem destinats a ser el gran epicentre literari rural i un altaveu constant per a totes les arts i expressions culturals.</p>
             <div class="hero-actions">
-                <a href="#festivals" class="btn-primary">Descobreix la Programació</a>
-                <a href="#mecenatge" class="btn-secondary" style="border-color: var(--secondary); color: var(--secondary);">Fes-te Mecenes</a>
+                <a href="pluja-art-2026.html" class="btn-primary" style="background: var(--secondary); border-color: var(--secondary);">Programa Pluja d'Art 2026</a>
+                <a href="#festivals" class="btn-secondary" style="border-color: rgba(255,255,255,0.4); color: white;">Tots els Festivals</a>
             </div>
         </div>
     </section>
@@ -73,12 +94,40 @@
                 <!-- Pluja d'Art -->
                 <article class="glass-card" style="padding: 3rem 2rem; border-left: 4px solid var(--secondary); position: relative; overflow: hidden;">
                      <span style="position: absolute; top: -20px; right: -20px; font-size: 8rem; opacity: 0.05;">🎨</span>
-                    <h3 style="color: var(--secondary); font-size: 1.8rem; margin-bottom: 0.5rem;">Pluja d'Art</h3>
-                    <p style="color: var(--secondary); font-size: 0.9rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">🗓️ Setembre</p>
-                    <p style="color: var(--white); font-weight: bold; margin-bottom: 1rem;">El punt de trobada de l'art en totes les seves formes.</p>
-                    <p style="margin-bottom: 1.5rem;">El gran altaveu per a creadors multidisciplinaris, tant amateurs com professionals. La iniciativa ofereix una residència artística —amb un jurat que compta amb la participació del Bòlit, Centre d'Art Contemporani—, un màgic Festival de Llum i diverses propostes d'arts plàstiques i escèniques on la participació activa del poble n'és la protagonista.</p>
-                    <a href="participa-pluja-art.html" class="btn-primary" style="display: inline-block; background: var(--secondary); border-color: var(--secondary);">Participa. Inscripcions obertes</a>
+                    <h3 style="color: var(--secondary); font-size: 1.8rem; margin-bottom: 0.5rem;">Pluja d'Art 2026</h3>
+                    <p style="color: var(--secondary); font-size: 0.9rem; font-weight: bold; text-transform: uppercase; margin-bottom: 1rem;">🗓️ 18, 19 i 20 de Setembre</p>
+                    <p style="color: var(--white); font-weight: bold; margin-bottom: 1rem;">5a Fira d'Art i Espectacles al Carrer.</p>
+                    <p style="margin-bottom: 1.5rem;">El gran cap de setmana d'arts vives, teatre, dansa, música en directe, art lumínic i 21 espais d'exposició d'arts plàstiques.</p>
+                    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+                        <a href="pluja-art-2026.html" class="btn-primary" style="display: inline-block; background: var(--secondary); border-color: var(--secondary); font-size: 0.9rem; padding: 0.6rem 1.2rem; font-weight: bold;">🎭 Programa Oficial & Exposicions</a>
+                        <a href="art-luminic-2026.html" class="btn-primary" style="display: inline-block; background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%); border-color: #38bdf8; color: white; font-size: 0.9rem; padding: 0.6rem 1.2rem; font-weight: bold;">✨ Art Lumínic</a>
+                        <a href="participa-pluja-art.html" class="btn-secondary" style="display: inline-block; border: 1px solid rgba(255, 255, 255, 0.2); color: white; background: transparent; font-size: 0.9rem; padding: 0.6rem 1.2rem;">📋 Participa & Bases</a>
+                    </div>
                 </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marxandatge & Samarreta Oficial Banner Section -->
+    <section id="marxandatge-destacat" class="section" style="background: linear-gradient(135deg, #090d16 0%, #134e4a 50%, #064e3b 100%); color: white; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 4rem 0;">
+        <div class="container" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 3rem;">
+            <div style="flex: 1 1 320px; max-width: 450px; text-align: center;">
+                <div style="background: rgba(255,255,255,0.06); padding: 1.25rem; border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 15px 35px rgba(0,0,0,0.3);">
+                    <img src="https://drive.google.com/thumbnail?id=1neim2uaZSiiiT_faIl_ymBpVf41IvoVf&sz=w1000" alt="Samarreta Oficial Sant Jordi Desvalls" style="width: 100%; max-height: 280px; object-fit: contain; border-radius: 1rem;">
+                </div>
+            </div>
+            <div style="flex: 1 1 420px;">
+                <span style="background: rgba(18, 162, 152, 0.3); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.4); padding: 0.35rem 0.9rem; border-radius: 2rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 1rem;">👕 Marxandatge Oficial 2026</span>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 1rem; color: #ffffff; line-height: 1.2;">Reserva la samarreta de Sant Jordi Desvalls</h3>
+                <p style="color: #cbd5e1; font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                    Vesteix la cultura del poble i col·labora directament amb les activitats de Desvalls Cultura. Disseny original cedit per <a href="https://www.bussoga.com/" target="_blank" rel="noopener" style="color: #5eead4; font-weight: 700; text-decoration: underline;">Bussoga</a> (<a href="https://www.instagram.com/bussoga/" target="_blank" rel="noopener" style="color: #fda4af; text-decoration: underline;">@bussoga</a>). Disponible en colors <strong>Blau</strong> i <strong>Vermell</strong> i talles <strong>S, M, L, XL i XXL</strong>. Preu: <strong>20 €</strong>.
+                </p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                    <a href="marxandatge.html" class="btn-primary" style="background: var(--primary); border-color: var(--primary); font-size: 1.05rem; padding: 0.85rem 1.75rem; font-weight: 700;">
+                        🛍️ Encarregar Samarreta
+                    </a>
+                    <span style="color: #fda4af; font-size: 0.9rem; font-weight: 600;">⏳ Fins a l'1 de setembre!</span>
+                </div>
             </div>
         </div>
     </section>
@@ -400,18 +449,8 @@
         <button id="acceptCookies" class="btn-primary" style="padding: 0.5rem 1rem;">D'acord</button>
     </div>
 
-    <!-- Welcome Modal Pluja de Lletres -->
-    <div id="welcomeLletresModal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; padding: 1rem; opacity: 0; transition: opacity 0.5s ease;">
-        <div style="background: rgba(15, 23, 42, 0.95); border: 2px solid var(--primary); border-radius: 1rem; max-width: 500px; width: 100%; text-align: center; position: relative; overflow: hidden; box-shadow: 0 0 40px rgba(45, 212, 191, 0.2); transform: translateY(-20px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-            <button id="closeLletresModal" style="position: absolute; top: 1rem; right: 1rem; display:flex; justify-content:center; align-items:center; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; border: none; font-size: 1.5rem; cursor: pointer; transition: 0.3s; z-index: 2;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">&times;</button>
-            <div style="padding: 2.5rem 1.5rem;">
-                <h3 style="color: var(--primary); font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1.5rem; font-style: italic;">La pluja que ho floreix tot, ja arriba!</h3>
-                <img src="img/cartell pluja de lletres.jpeg" alt="Cartell Pluja de Lletres 2026" style="width: 100%; max-height: 480px; object-fit: contain; border-radius: 0.5rem; margin-bottom: 1.5rem;">
-                <a href="pluja-lletres-2026.html" class="btn-primary" style="display: block; width: 100%; font-size: 1.1rem; padding: 1rem;">Llegeix el Programa Aquí</a>
-            </div>
-        </div>
-    </div>
 
-    <script src="js/main.js?v=2.2026.5"></script>
+    <script src="js/seo-schema.js?v=7f35aa96"></script>
+    <script src="js/main.js?v=ed957a32"></script>
 </body>
 </html>

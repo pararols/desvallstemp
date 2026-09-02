@@ -137,6 +137,16 @@ h1, h2, h3 {
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--dark);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo img, .logo-img {
+    height: 40px;
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
 }
 
 .logo-text { color: var(--primary); }

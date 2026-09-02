@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voluntaris | Pluja d'Art 2026</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="voluntaris.css">
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- NAV / HEADER -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="../index.html" class="logo-link">Pluja <span>Voluntaris</span></a>
+            </div>
+            <div class="header-actions">
+                <button id="btn-export-csv" class="btn-ghost admin-only-btn" title="Exportar dades a CSV" style="display: none;">📊 Exportar CSV</button>
+                <button id="btn-print-pdf" class="btn-ghost admin-only-btn" title="Imprimir graella i contactes" style="display: none;">📄 Imprimir PDF</button>
+                <button id="btn-admin-login-toggle" class="btn-ghost">Accés Administrador</button>
+                <div id="admin-indicator" class="admin-badge" style="display: none;">Mode Administrador</div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO / IDENTIFICACIÓ -->
+        <section id="auth-section" class="card glass">
+            <div class="auth-header-texts" id="auth-header-texts">
+                <h1>Participa a la Pluja d'Art! 🎨</h1>
+                <p class="subtitle">Tria el teu nom de la llista o registra't amb el teu telèfon per apuntar-te als torns.</p>
+            </div>
+            
+            <div class="auth-box">
+                <div class="field-group">
+                    <label for="select-voluntari-existent">Ets a la llista de voluntaris?</label>
+                    <select id="select-voluntari-existent">
+                        <option value="">-- Tria el teu nom --</option>
+                        <!-- Injected via JS -->
+                    </select>
+                </div>
+                <div class="divider"><span>O BÉ</span></div>
+                <div class="new-vol-form">
+                    <label>Ets nou/nova? Dona't d'alta:</label>
+                    <div class="field-row">
+                        <input type="text" id="new-vol-nom" placeholder="Nom" autocomplete="given-name">
+                        <input type="text" id="new-vol-cognom" placeholder="Cognoms" autocomplete="family-name">
+                    </div>
+                    <input type="tel" id="new-vol-tel" placeholder="Telèfon de contacte" autocomplete="tel">
+                    <button id="btn-registre-voluntari" class="btn-primary">Dona'm d'alta i participa</button>
+                </div>
+            </div>
+
+            <div id="welcome-message" style="display: none;">
+                <div class="user-greeting">
+                    <span class="user-icon">👤</span>
+                    <div>
+                        <div class="greeting-text">Hola, <strong id="current-user-name">...</strong>!</div>
+                        <div class="greeting-sub">Fes clic sobre qualsevol torn disponible per apuntar-te o desapuntar-te.</div>
+                    </div>
+                </div>
+                <button id="btn-logout-vol" class="btn-small">Canvia de persona</button>
+            </div>
+        </section>
+
+        <!-- CALENDARI I GRAELLA SECTION -->
+        <section id="calendar-section" class="calendar-container">
+            <div class="controls-bar">
+                <div class="day-selector">
+                    <button class="day-btn active" data-day="Divendres">
+                        <span class="day-name">Divendres</span>
+                        <span class="day-date">26 setembre</span>
+                    </button>
+                    <button class="day-btn" data-day="Dissabte">
+                        <span class="day-name">Dissabte</span>
+                        <span class="day-date">27 setembre</span>
+                    </button>
+                    <button class="day-btn" data-day="Diumenge">
+                        <span class="day-name">Diumenge</span>
+                        <span class="day-date">28 setembre</span>
+                    </button>
+                </div>
+
+                <!-- SELECTOR DE VISTA (DETALLADA / GLOBAL) -->
+                <div class="view-mode-selector">
+                    <button class="view-mode-btn active" id="btn-view-detailed" onclick="setViewMode('detailed')">
+                        <span class="view-icon">📋</span> Vista Detallada
+                    </button>
+                    <button class="view-mode-btn" id="btn-view-global" onclick="setViewMode('global')">
+                        <span class="view-icon">🗺️</span> Vista Calendari
+                    </button>
+                </div>
+                
+                <div class="zoom-controls" id="zoom-controls" title="Ajusta l'amplada de les columnes per veure més còmodament els torns solapats">
+                    <span class="zoom-label">Amplada:</span>
+                    <button class="btn-zoom" id="btn-zoom-out" onclick="adjustColumnWidth(-40)" title="Reduir amplada">➖</button>
+                    <span class="zoom-val-display" id="zoom-val-display">320px</span>
+                    <button class="btn-zoom" id="btn-zoom-in" onclick="adjustColumnWidth(40)" title="Augmentar amplada">➕</button>
+                </div>
+
+                <div class="admin-top-actions" id="admin-top-actions" style="display: none;">
+                    <button id="btn-open-espais-modal" class="btn-secondary">+ Gestionar Espais</button>
+                    <button id="btn-new-torn-global" class="btn-primary">+ Crear Nou Torn</button>
+                </div>
+            </div>
+
+            <!-- GRAELLA / TIMELINE AMB EIX VERTICAL D'HORES -->
+            <div class="spaces-grid-wrapper" id="spaces-grid-wrapper">
+                <div id="timeline-container" class="timeline-container">
+                    <!-- Injected via JS: Time Axis + Spaces Columns & Shift Tracks -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓ PER IMPRIMIR (NOMÉS PDF/PRINT) -->
+        <section id="print-section" class="print-only">
+            <h2>Llistat de Contactes de Voluntaris</h2>
+            <table id="print-vol-table">
+                <thead>
+                    <tr>
+                        <th>Nom i Cognoms</th>
+                        <th>Telèfon</th>
+                    </tr>
+                </thead>
+                <tbody id="print-vol-tbody">
+                    <!-- Injected via JS -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- MODAL GESTIÓ / EDICIÓ TORN (ADMIN) -->
+    <div id="modal-torn" class="modal">
+        <div class="modal-content glass">
+            <h2 id="modal-torn-title">Nou Torn de Voluntariat</h2>
+            <p class="modal-desc">Defineix l'horari exacte, la tasca concreta, el lloc i les places necessàries.</p>
+            
+            <input type="hidden" id="torn-edit-id" value="">
+            
+            <div class="form-grid">
+                <div class="field-group">
+                    <label for="torn-dia">Dia</label>
+                    <select id="torn-dia">
+                        <option value="Divendres">Divendres (26 setembre)</option>
+                        <option value="Dissabte">Dissabte (27 setembre)</option>
+                        <option value="Diumenge">Diumenge (28 setembre)</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label for="torn-espai-id">Espai / Àrea</label>
+                    <select id="torn-espai-id">
+                        <!-- Injected via JS -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="field-group">
+                    <label for="torn-hora-inici">Hora Inici (HH:MM)</label>
+                    <input type="time" id="torn-hora-inici" required value="17:00">
+                </div>
+                <div class="field-group">
+                    <label for="torn-hora-fi">Hora Fi (HH:MM)</label>
+                    <input type="time" id="torn-hora-fi" required value="18:30">
+                </div>
+            </div>
+
+            <div class="field-group">
+                <label for="torn-tasca">Tasca o tasques concretes</label>
+                <input type="text" id="torn-tasca" placeholder="Ex: Venda de tiquets i suport a la barra" required>
+            </div>
+
+            <div class="field-group">
+                <label for="torn-lloc">Lloc específic / Punt de trobada</label>
+                <input type="text" id="torn-lloc" placeholder="Ex: Carpa Central - Plaça de la Vila" required>
+            </div>
+
+            <div class="field-group">
+                <label for="torn-necessaris">Places de voluntaris necessàries</label>
+                <input type="number" id="torn-necessaris" min="1" max="50" value="2" required>
+            </div>
+
+            <div id="torn-form-error" class="error-msg" style="display: none;"></div>
+
+            <div class="modal-buttons">
+                <button id="btn-cancel-torn" class="btn-ghost" type="button">Cancel·la</button>
+                <button id="btn-split-from-edit" class="btn-secondary" type="button" style="display: none;">✂️ Dividir en trams</button>
+                <button id="btn-duplicate-torn" class="btn-secondary" type="button" style="display: none;">📋 Duplicar</button>
+                <button id="btn-delete-torn" class="btn-danger" type="button" style="display: none;">🗑️ Eliminar</button>
+                <button id="btn-save-torn" class="btn-primary" type="button">Guardar Torn</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DIVIDIR TORN EN TRAMS (ADMIN) -->
+    <div id="modal-dividir-torn" class="modal">
+        <div class="modal-content glass">
+            <h2>✂️ Dividir Torn en Trams Horaris</h2>
+            <p class="modal-desc">Divideix aquest torn gran en franges horàries més petites de forma automàtica.</p>
+            
+            <input type="hidden" id="dividir-torn-id" value="">
+            
+            <div class="split-info-card">
+                <div class="split-info-row">
+                    <span class="split-label">Espai / Dia:</span>
+                    <strong id="dividir-info-espai-dia">-</strong>
+                </div>
+                <div class="split-info-row">
+                    <span class="split-label">Horari total:</span>
+                    <div>
+                        <strong id="dividir-info-horari" style="color: #38bdf8;">-</strong>
+                        <span id="dividir-info-durada" class="shift-duration" style="margin-left: 0.4rem;">-</span>
+                    </div>
+                </div>
+                <div class="split-info-row">
+                    <span class="split-label">Tasca:</span>
+                    <span id="dividir-info-tasca">-</span>
+                </div>
+                <div class="split-info-row">
+                    <span class="split-label">Places per tram:</span>
+                    <strong id="dividir-info-places">-</strong>
+                </div>
+            </div>
+
+            <div class="field-group" style="margin-top: 1.2rem;">
+                <label>Tria la durada de cada tram:</label>
+                <div class="split-preset-buttons">
+                    <button type="button" class="btn-preset active" data-mins="60">1h (60 min)</button>
+                    <button type="button" class="btn-preset" data-mins="45">45 min</button>
+                    <button type="button" class="btn-preset" data-mins="30">30 min</button>
+                    <button type="button" class="btn-preset" data-mins="90">1h 30m</button>
+                    <button type="button" class="btn-preset" data-mins="120">2h</button>
+                    <button type="button" class="btn-preset" data-mins="custom">Personalitzat...</button>
+                </div>
+                <div id="custom-mins-row" style="display: none; margin-top: 0.6rem;">
+                    <div style="display: flex; align-items: center; gap: 0.6rem;">
+                        <input type="number" id="split-custom-mins" min="5" max="720" value="60" style="width: 110px;">
+                        <span>minuts per tram</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field-group" style="margin-top: 1.2rem;">
+                <label>Previsualització dels trams (<span id="split-preview-count">0</span> torns resultants):</label>
+                <div id="split-preview-list" class="split-preview-list">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <div id="split-form-error" class="error-msg" style="display: none;"></div>
+
+            <div class="modal-buttons" style="margin-top: 1.8rem;">
+                <button id="btn-cancel-dividir" class="btn-ghost" type="button">Cancel·la</button>
+                <button id="btn-do-dividir" class="btn-primary" type="button">✂️ Aplicar i Crear Trams</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL GESTIÓ ESPAIS (ADMIN) -->
+    <div id="modal-espais" class="modal">
+        <div class="modal-content glass">
+            <h2>Gestionar Espais / Àrees</h2>
+            <p class="modal-desc">Afegeix o elimina columnes d'espais per al festival.</p>
+            
+            <div class="espais-list" id="espais-admin-list">
+                <!-- Injected via JS -->
+            </div>
+            
+            <div class="new-espai-form">
+                <input type="text" id="new-espai-nom" placeholder="Nom del nou espai..." autocomplete="off">
+                <button id="btn-add-espai" class="btn-primary">+ Afegir</button>
+            </div>
+            
+            <div id="espais-form-error" class="error-msg" style="display: none;"></div>
+            
+            <div class="modal-buttons" style="margin-top: 1.5rem;">
+                <button id="btn-close-espais" class="btn-ghost" style="width: 100%;">Tancar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LOGIN ADMIN -->
+    <div id="modal-admin" class="modal">
+        <div class="modal-content glass">
+            <h2>Accés Administrador</h2>
+            <p class="modal-desc">Entra amb el teu compte per gestionar els torns i espais.</p>
+            
+            <div class="field-group">
+                <label for="admin-email">Correu electrònic</label>
+                <input type="email" id="admin-email" placeholder="admin@desvallscultura.cat">
+            </div>
+            <div class="field-group">
+                <label for="admin-pass">Contrasenya</label>
+                <input type="password" id="admin-pass" placeholder="••••••••">
+            </div>
+            <div id="admin-auth-error" class="error-msg" style="display: none;"></div>
+            
+            <div class="modal-buttons">
+                <button id="btn-cancel-admin" class="btn-ghost">Cancel·la</button>
+                <button id="btn-do-admin-login" class="btn-primary">Entrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Pluja d'Art - Associació Desvalls Cultura</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="voluntaris.js"></script>
+</body>
+</html>

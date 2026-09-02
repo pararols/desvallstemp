@@ -9,17 +9,43 @@
 const SUPABASE_URL = 'https://ojqhexrqbfwcubyactuj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_eV7n7kB-tnt00ScrveNm-A_gsFBqJtG';
 
-// Inicialització de Supabase
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Inicialització de Supabase amb control d'errors
+let supabaseClient;
+try {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+} catch (e) {
+    console.error("Error inicialitzant Supabase:", e);
+    alert("Error crític: No s'ha pogut carregar la llibreria de Supabase. Revisa la connexió a Internet.");
+}
+
+// Alerta de Protocol Local
+if (window.location.protocol === 'file:') {
+    console.warn("Estàs obrint el fitxer directament (file://). El login de Supabase podria fallar.");
+}
 
 // ALERTA: Aquesta és la URL del Apps Script quan programis la funció doGet()
-const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgxLlIpnmTf6nHuZnDPUD2MxnQEuLYSc0URMUrujYr92YlfbCuH4NuFpNZeolcKZY9bA/exec';
+const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHh9RupnngfeY9FoBc276LAPwGXRif2Bs1fs8Yp-OQORzyk-CYrdoFHgS2_M7mzleXlA/exec';
+const GOOGLE_BARRETS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyu7ka8LUg3hty2LhqiTDTDg_puJFPwGvA8FJFQaI55edJyDshRnGRq3DC397NcMQIX3g/exec';
+const API_SECRET_TOKEN = 'v3rt1c4l-pluj4-4rt-2026'; // Token de seguretat admès pel script
+
+// Helper per evitar atacs XSS sanititzant els textos
+function escapeHTML(str) {
+    if (!str) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return String(str).replace(/[&<>"']/g, function(m) { return map[m]; });
+}
 
 // ==========================================
 // 2. ESTAT LOCAL
 // ==========================================
 let appData = [];
-let currentCategoryFilter = 'Arts Generals';
+let currentCategoryFilter = 'Arts Plàstiques';
 let currentStatusFilter = 'Tots';
 let selectedIds = new Set();
 
@@ -30,16 +56,25 @@ function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.data-tab').forEach(tab => tab.classList.remove('active'));
     
-    if(event && event.target) {
-        event.target.classList.add('active');
+    if(window.event && window.event.target) {
+        window.event.target.classList.add('active');
     }
-    document.getElementById(`tab-${tabName}`).classList.add('active');
+    
+    let targetTab = tabName;
+    if (tabName === 'plastiques' || tabName === 'vives' || tabName === 'luminic') {
+        targetTab = 'arts';
+    }
+    document.getElementById(`tab-${targetTab}`).classList.add('active');
 
-    if (tabName === 'arts') currentCategoryFilter = 'Arts Generals';
+    if (tabName === 'plastiques') currentCategoryFilter = 'Arts Plàstiques';
+    if (tabName === 'vives') currentCategoryFilter = 'Arts Vives';
+    if (tabName === 'luminic') currentCategoryFilter = 'Art Lumínic';
     if (tabName === 'residencia') currentCategoryFilter = 'Residència Artística';
     if (tabName === 'paradetes') currentCategoryFilter = 'Paradetes i Artesania';
+    if (tabName === 'barrets') currentCategoryFilter = 'Concurs Decoració de Barrets';
 
     updateKPIs();
+    renderAllTables();
 }
 
 // ==========================================
@@ -52,19 +87,24 @@ const btnLogout = document.getElementById('btn-logout');
 const errorMsg = document.getElementById('auth-error');
 
 // Escoltador d'estat d'autenticació
-supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' || session) {
-        console.log("Sessió iniciada:", session.user.email);
-        document.getElementById('user-email').innerText = session.user.email;
-        loginScreen.style.display = 'none';
-        dashboard.style.display = 'block';
-        fetchDataFromGoogle(); // Carrega dades automàticament en entrar
-    } else if (event === 'SIGNED_OUT') {
-        console.log("Sessió tancada");
-        loginScreen.style.display = 'flex';
-        dashboard.style.display = 'none';
-    }
-});
+if (supabaseClient) {
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        try {
+            if (event === 'SIGNED_IN' || session) {
+                console.log("Sessió iniciada:", session.user.email);
+                document.getElementById('user-email').innerText = session.user.email;
+                loginScreen.style.display = 'none';
+                dashboard.style.display = 'block';
+                fetchDataFromGoogle();
+            } else if (event === 'SIGNED_OUT') {
+                loginScreen.style.display = 'flex';
+                dashboard.style.display = 'none';
+            }
+        } catch (e) {
+            console.error("Error en canvi d'estat d'auth:", e);
+        }
+    });
+}
 
 btnLogin.addEventListener('click', async () => {
     const email = document.getElementById('auth-email').value;
@@ -77,15 +117,32 @@ btnLogin.addEventListener('click', async () => {
     }
 
     btnLogin.innerText = 'Verificant...';
+    btnLogin.disabled = true;
     errorMsg.style.display = 'none';
     
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    
-    if(error) {
-        console.error("Error Login:", error.message);
-        errorMsg.innerText = "Error d'accés: " + error.message;
-        errorMsg.style.display = 'block';
+    try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        
+        if(error) {
+            console.error("Error Login:", error.message, error.status);
+            
+            let customMsg = "Error d'accés: " + error.message;
+
+            if (error.message.includes("Invalid login credentials") || error.status === 400) {
+                customMsg = "L'usuari o la contrasenya no són correctes.";
+            } else if (error.status === 429) {
+                customMsg = "Massa intents. Espera uns minuts.";
+            }
+
+            errorMsg.innerText = customMsg;
+            errorMsg.style.display = 'block';
+        }
+    } catch (err) {
+        console.error("Error inesperat en login:", err);
+        alert("S'ha produït un error inesperat de connexió. Revisa la consola o prova des d'un servidor local (localhost).");
+    } finally {
         btnLogin.innerText = 'Inicia Sessió';
+        btnLogin.disabled = false;
     }
 });
 
@@ -102,9 +159,33 @@ async function fetchDataFromGoogle() {
     loader.style.display = 'inline-block';
     
     try {
-        // 1. Obtenim dades de Google
-        const response = await fetch(GOOGLE_APP_SCRIPT_URL);
+        // 1. Obtenim dades de Google amb Token de seguretat
+        const urlWithAuth = `${GOOGLE_APP_SCRIPT_URL}?token=${API_SECRET_TOKEN}`;
+        const response = await fetch(urlWithAuth);
         const googleData = await response.json();
+        
+        // 1b. Obtenir dades del full dedicat de Barrets (Google Sheets)
+        try {
+            const barretsResponse = await fetch(GOOGLE_BARRETS_SCRIPT_URL);
+            const dedicatedBarretsData = await barretsResponse.json();
+            if (Array.isArray(dedicatedBarretsData)) {
+                dedicatedBarretsData.forEach((bRow, idx) => {
+                    googleData.push({
+                        id: 'BarretSheet_' + (idx + 1),
+                        Categoria: 'Concurs Decoració de Barrets',
+                        Modalitat: 'Concurs Decoració de Barrets',
+                        Nom: bRow['Nom i Cognoms'] || bRow.Nom || bRow.nom || '',
+                        Telefon: bRow['Telèfon'] || bRow.Telefon || bRow.telefon || '',
+                        Email: bRow['Correu electrònic'] || bRow.Email || bRow.email || '',
+                        Edat: bRow.Edat || bRow.edat || '',
+                        Codi_Registre: bRow['Nº Inscripció'] || bRow.Codi_Registre || String(idx + 1).padStart(2, '0'),
+                        Timestamp: bRow["Data d'Alta"] || bRow.Data || new Date().toISOString()
+                    });
+                });
+            }
+        } catch (bErr) {
+            console.warn("Full dedicat de barrets fetch:", bErr);
+        }
         
         // 2. Obtenim els estats guardats a Supabase
         const { data: dbStatuses, error } = await supabaseClient
@@ -113,16 +194,100 @@ async function fetchDataFromGoogle() {
             
         if (error) throw error;
 
-        // Crear mapa d'estats per cerca ràpida
+        // Crear mapa d'estats i correus incorrectes per cerca ràpida
         const statusMap = {};
+        const emailInvalidMap = {};
         dbStatuses.forEach(row => {
-            statusMap[row.id] = row.status;
+            const rawStatus = row.status || 'Nou';
+            if (rawStatus.includes(' | Correu Incorrecte')) {
+                statusMap[row.id] = rawStatus.split(' | ')[0];
+                emailInvalidMap[row.id] = true;
+            } else {
+                statusMap[row.id] = rawStatus;
+                emailInvalidMap[row.id] = false;
+            }
         });
 
         // 3. Fusionar dades
         appData = googleData.map(row => {
             row.Estat = statusMap[row.id] || 'Nou'; // Si no n'hi ha, per defecte "Nou"
+            row.EmailInvalid = emailInvalidMap[row.id] || false;
+            
+            // Identificació i separació de categories per al dashboard
+            const modLower = (row.Modalitat || '').toLowerCase();
+            const catLower = (row.Categoria || '').toLowerCase();
+            const hasCodiReg = row.Codi_Registre !== undefined && row.Codi_Registre !== null && String(row.Codi_Registre).trim() !== '';
+
+            if (catLower.includes('barret') || catLower === 'barrets' || modLower.includes('barret') || modLower.includes('decoraci') || (row.Categoria === 'Arts Generals' && hasCodiReg && !row.Companyia)) {
+                row.Categoria = 'Concurs Decoració de Barrets';
+            } else if (row.Categoria === 'Arts Generals') {
+                if (modLower.includes('vives')) {
+                    row.Categoria = 'Arts Vives';
+                } else if (modLower.includes('lumínic') || modLower.includes('luminic') || modLower.includes('llum')) {
+                    row.Categoria = 'Art Lumínic';
+                } else {
+                    row.Categoria = 'Arts Plàstiques';
+                }
+            }
             return row;
+        });
+
+        // 3b. Obtenir i sincronitzar inscripcions de barrets des de Supabase
+        try {
+            const { data: supabaseBarrets } = await supabaseClient
+                .from('barret_inscripcions')
+                .select('*');
+
+            if (supabaseBarrets && supabaseBarrets.length > 0) {
+                const existingEmails = new Set(appData.map(r => (r.Email || r.email || '').toLowerCase().trim()));
+
+                supabaseBarrets.forEach(b => {
+                    const bEmail = (b.email || b.Email || '').toLowerCase().trim();
+                    if (!existingEmails.has(bEmail) && bEmail !== '') {
+                        appData.push({
+                            id: 'Supabase_' + b.id,
+                            Categoria: 'Concurs Decoració de Barrets',
+                            Modalitat: 'Concurs Decoració de Barrets',
+                            Nom: b.nom || b.Nom || '',
+                            Telefon: b.telefon || b.Telefon || '',
+                            Email: b.email || b.Email || '',
+                            Edat: b.edat || b.Edat || '',
+                            Codi_Registre: b.codi_registre || b.Codi_Registre || '01',
+                            Timestamp: b.created_at || new Date().toISOString(),
+                            Estat: statusMap['Supabase_' + b.id] || 'Nou',
+                            EmailInvalid: emailInvalidMap['Supabase_' + b.id] || false
+                        });
+                    }
+                });
+            }
+        } catch (sErr) {
+            console.warn('Sincronització directa des de Supabase (barret_inscripcions):', sErr);
+        }
+        
+        // 4. Identificació de possibles repetits (per correu o DNI)
+        const emailCounts = {};
+        const dniCounts = {};
+        appData.forEach(row => {
+            const email = (row.Email || '').trim().toLowerCase();
+            const dni = (row.DNI_URL || row.DNI || '').trim().toLowerCase();
+            if (email && email.includes('@')) {
+                emailCounts[email] = (emailCounts[email] || 0) + 1;
+            }
+            if (dni && dni.length > 2) {
+                dniCounts[dni] = (dniCounts[dni] || 0) + 1;
+            }
+        });
+        appData.forEach(row => {
+            const email = (row.Email || '').trim().toLowerCase();
+            const dni = (row.DNI_URL || row.DNI || '').trim().toLowerCase();
+            const emailDup = email && emailCounts[email] > 1;
+            const dniDup = dni && dniCounts[dni] > 1;
+            
+            row.isDuplicate = emailDup || dniDup;
+            row.duplicateReason = [];
+            if (emailDup) row.duplicateReason.push("Correu electrònic duplicat");
+            if (dniDup) row.duplicateReason.push("DNI/NIF duplicat");
+            row.duplicateReason = row.duplicateReason.join(" i ");
         });
         
         renderAllTables();
@@ -160,9 +325,14 @@ window.toggleSelect = function(id) {
 window.toggleSelectAll = function(category) {
     const isChecked = event.target.checked;
     
+    let targetCat = category;
+    if (category === 'Arts Generals') {
+        targetCat = currentCategoryFilter;
+    }
+    
     // Filtrem els que es veuen actualment
     const visibleRows = appData.filter(r => {
-        const matchCat = r.Categoria === category;
+        const matchCat = r.Categoria === targetCat;
         const matchStat = (currentStatusFilter === 'Tots') || (r.Estat === currentStatusFilter);
         return matchCat && matchStat;
     });
@@ -212,11 +382,16 @@ document.getElementById('btn-apply-bulk').addEventListener('click', async () => 
     btn.disabled = true;
 
     try {
-        const upsertData = Array.from(selectedIds).map(id => ({
-            id: id,
-            status: newStatus,
-            updated_at: new Date().toISOString()
-        }));
+        const upsertData = Array.from(selectedIds).map(id => {
+            const row = appData.find(r => r.id === id);
+            const isEmailInvalid = row ? row.EmailInvalid : false;
+            const statusToSave = newStatus + (isEmailInvalid ? ' | Correu Incorrecte' : '');
+            return {
+                id: id,
+                status: statusToSave,
+                updated_at: new Date().toISOString()
+            };
+        });
 
         const { error } = await supabaseClient
             .from('registrations_management')
@@ -251,9 +426,14 @@ window.copyDisplayedEmails = async function(category) {
     const btn = event.currentTarget;
     const originalText = btn.innerText;
     
+    let targetCat = category;
+    if (category === 'Arts Generals') {
+        targetCat = currentCategoryFilter;
+    }
+    
     // Filtrem les dades que s'estan veient actualment
     const filtered = appData.filter(r => {
-        const matchCat = r.Categoria === category;
+        const matchCat = r.Categoria === targetCat;
         const matchStat = (currentStatusFilter === 'Tots') || (r.Estat === currentStatusFilter);
         return matchCat && matchStat;
     });
@@ -282,7 +462,7 @@ window.copyDisplayedEmails = async function(category) {
         
     } catch (err) {
         console.error('Error copiant al porta-retalls:', err);
-        alert('No s'ha pogut copiar automàticament.');
+        alert("No s'ha pogut copiar automàticament.");
     }
 };
 
@@ -320,16 +500,19 @@ window.updateStatus = async function(rowId, newStatus) {
 
     // 2. Guardem a Supabase
     try {
+        const isEmailInvalid = row ? row.EmailInvalid : false;
+        const statusToSave = newStatus + (isEmailInvalid ? ' | Correu Incorrecte' : '');
+        
         const { error } = await supabaseClient
             .from('registrations_management')
             .upsert({ 
                 id: rowId, 
-                status: newStatus,
+                status: statusToSave,
                 updated_at: new Date().toISOString()
             });
             
         if (error) throw error;
-        console.log(`✅ Guardat a Supabase: ${rowId} = ${newStatus}`);
+        console.log(`✅ Guardat a Supabase: ${rowId} = ${statusToSave}`);
     } catch (err) {
         console.error("Error guardant estat:", err);
         alert("No s'ha pogut guardar el canvi a la base de dades.");
@@ -355,6 +538,22 @@ function linkDrive(url, label) {
     return `<a href="${url}" target="_blank" class="drive-link">📄 ${label}</a>`;
 }
 
+// Formatar links de xarxes socials
+function formatSocialLinks(text) {
+    if(!text || text === '-') return '-';
+    
+    // Regex per trobar URLs (comencin per http o www o dominis comuns)
+    const urlPattern = /(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9.-]+\.(?:com|net|org|cat|es|me)\/[^\s,;]*)/gi;
+    
+    return text.replace(urlPattern, (url) => {
+        let href = url;
+        if (!url.startsWith('http')) {
+            href = 'https://' + url;
+        }
+        return `<a href="${href}" target="_blank" style="color:var(--primary); text-decoration:underline; word-break: break-all;">${url}</a>`;
+    });
+}
+
 function renderAllTables() {
     // Funció genèrica de filtratge
     const getFilteredData = (cat) => {
@@ -368,21 +567,36 @@ function renderAllTables() {
     // ARTS
     const tbodyArts = document.getElementById('table-body-arts');
     tbodyArts.innerHTML = '';
-    const artsData = getFilteredData('Arts Generals');
+    
+    let activeArtsCat = 'Arts Plàstiques';
+    if (['Arts Plàstiques', 'Arts Vives', 'Art Lumínic'].includes(currentCategoryFilter)) {
+        activeArtsCat = currentCategoryFilter;
+    }
+    const artsData = getFilteredData(activeArtsCat);
     artsData.forEach(r => {
         const isChecked = selectedIds.has(r.id) ? 'checked' : '';
+        const dupCell = r.isDuplicate 
+            ? `<span class="badge-duplicate" title="${escapeHTML(r.duplicateReason)}">⚠️ Sí</span>` 
+            : `<span style="color: #64748b">-</span>`;
+        const emailInvalidChecked = r.EmailInvalid ? 'checked' : '';
+        const emailInvalidCell = `<input type="checkbox" ${emailInvalidChecked} onchange="toggleEmailInvalid('${r.id}', this.checked)">`;
+        
         tbodyArts.innerHTML += `
             <tr>
                 <td><input type="checkbox" ${isChecked} onchange="toggleSelect('${r.id}')"></td>
                 <td>${formatDate(r.Timestamp)}</td>
-                <td><strong>${r.Companyia || '-'}</strong><br><small>${r.Nom_Representant || ''}</small><br><small style="color:#64748b">${r.Municipi || ''}</small></td>
-                <td><a href="mailto:${r.Email}" style="color:#60a5fa">${r.Email}</a><br><small>${r.Telefon || ''}</small></td>
-                <td><strong>${r.Titol_Obra || '-'}</strong><br><small>${r.Modalitat || ''}</small></td>
-                <td><div style="font-size: 0.85em; max-height: 100px; overflow-y: auto; padding-right: 5px;">${r.Descripcio ? r.Descripcio.replace(/\\n/g, '<br>') : '-'}</div></td>
-                <td><small><strong>Espai:</strong> <span style="white-space: pre-wrap;">${r.Espai_m2 || '-'}</span><br><strong>Llum:</strong> ${r.Electrica_W || '-'}<br><strong>Equip:</strong> ${r.Persones_Equip || '-'} pers.<br><strong>Dietes:</strong> ${r.Dietes || '-'}</small></td>
+                <td><strong>${escapeHTML(r.Companyia) || '-'}</strong><br><small>${escapeHTML(r.Nom_Representant) || ''}</small></td>
+                <td>${escapeHTML(r.Municipi) || '-'}</td>
+                <td><a href="mailto:${escapeHTML(r.Email)}" style="color:#60a5fa">${escapeHTML(r.Email)}</a><br><small>${escapeHTML(r.Telefon) || ''}</small></td>
+                <td><strong>${escapeHTML(r.Titol_Obra) || '-'}</strong><br><small>${escapeHTML(r.Modalitat) || ''}</small></td>
+                <td><div style="font-size: 0.85em; max-height: 100px; overflow-y: auto; padding-right: 5px;">${r.Descripcio ? escapeHTML(r.Descripcio).replace(/\n/g, '<br>') : '-'}</div></td>
+                <td><small><strong>Espai:</strong> <span style="white-space: pre-wrap;">${escapeHTML(r.Espai_m2) || '-'}</span><br><strong>Llum:</strong> ${escapeHTML(r.Electrica_W) || '-'}<br><strong>Equip:</strong> ${escapeHTML(r.Persones_Equip) || '-'}</small></td>
+                <td><div style="font-size: 0.85em; min-width: 150px; white-space: pre-wrap;">${formatSocialLinks(escapeHTML(r.Xarxes))}</div></td>
+                <td><div style="font-size: 0.85em;">${escapeHTML(r.Acessibilitat) || '-'}</div></td>
                 <td>${linkDrive(r.Dossier_File, 'Dossier')}</td>
+                <td style="text-align: center;">${dupCell}</td>
+                <td style="text-align: center;">${emailInvalidCell}</td>
                 <td>${renderStatusSelect(r.id, r.Estat)}</td>
-                <td>${generateMailto(r.Email, r.Companyia || r.Nom_Representant, r.Categoria)}</td>
             </tr>
         `;
     });
@@ -399,17 +613,24 @@ function renderAllTables() {
             ${linkDrive(r.Calendari, 'Calen.')}
             ${linkDrive(r.Pressupost, 'Pressup.')}
         `;
+        const dupCell = r.isDuplicate 
+            ? `<span class="badge-duplicate" title="${escapeHTML(r.duplicateReason)}">⚠️ Sí</span>` 
+            : `<span style="color: #64748b">-</span>`;
+        const emailInvalidChecked = r.EmailInvalid ? 'checked' : '';
+        const emailInvalidCell = `<input type="checkbox" ${emailInvalidChecked} onchange="toggleEmailInvalid('${r.id}', this.checked)">`;
+        
         tbodyRes.innerHTML += `
             <tr>
                 <td><input type="checkbox" ${isChecked} onchange="toggleSelect('${r.id}')"></td>
                 <td>${formatDate(r.Timestamp)}</td>
-                <td><strong>${r.Nom_Representant || r.Companyia || '-'}</strong><br><small style="color:#64748b">${r.Municipi || ''}</small></td>
-                <td><a href="mailto:${r.Email}" style="color:#60a5fa">${r.Email}</a><br><small>${r.Telefon || ''}</small></td>
-                <td><strong>${r.Titol_Obra || '-'}</strong></td>
-                <td><div style="font-size: 0.85em; max-height: 100px; overflow-y: auto; padding-right: 5px;">${r.Descripcio ? r.Descripcio.replace(/\\n/g, '<br>') : '-'}</div></td>
+                <td><strong>${escapeHTML(r.Nom_Representant) || escapeHTML(r.Companyia) || '-'}</strong><br><small style="color:#64748b">${escapeHTML(r.Municipi) || ''}</small></td>
+                <td><a href="mailto:${escapeHTML(r.Email)}" style="color:#60a5fa">${escapeHTML(r.Email)}</a><br><small>${escapeHTML(r.Telefon) || ''}</small></td>
+                <td><strong>${escapeHTML(r.Titol_Obra) || '-'}</strong></td>
+                <td><div style="font-size: 0.85em; max-height: 100px; overflow-y: auto; padding-right: 5px;">${r.Descripcio ? escapeHTML(r.Descripcio).replace(/\n/g, '<br>') : '-'}</div></td>
                 <td style="display:flex; flex-wrap:wrap; gap:5px;">${driveLinks || '-'}</td>
+                <td style="text-align: center;">${dupCell}</td>
+                <td style="text-align: center;">${emailInvalidCell}</td>
                 <td>${renderStatusSelect(r.id, r.Estat)}</td>
-                <td>${generateMailto(r.Email, r.Nom_Representant || r.Companyia, r.Categoria)}</td>
             </tr>
         `;
     });
@@ -420,26 +641,68 @@ function renderAllTables() {
     const parData = getFilteredData('Paradetes i Artesania');
     parData.forEach(r => {
         const isChecked = selectedIds.has(r.id) ? 'checked' : '';
+        const dupCell = r.isDuplicate 
+            ? `<span class="badge-duplicate" title="${escapeHTML(r.duplicateReason)}">⚠️ Sí</span>` 
+            : `<span style="color: #64748b">-</span>`;
+        const emailInvalidChecked = r.EmailInvalid ? 'checked' : '';
+        const emailInvalidCell = `<input type="checkbox" ${emailInvalidChecked} onchange="toggleEmailInvalid('${r.id}', this.checked)">`;
+        
         tbodyPar.innerHTML += `
             <tr>
                 <td><input type="checkbox" ${isChecked} onchange="toggleSelect('${r.id}')"></td>
                 <td>${formatDate(r.Timestamp)}</td>
-                <td><strong>${r.Companyia || '-'}</strong><br><small>${r.Nom_Representant || ''}</small></td>
-                <td><a href="mailto:${r.Email}" style="color:#60a5fa">${r.Email}</a><br><small>${r.Telefon || ''}</small></td>
-                <td><div style="font-size: 0.85em; margin-bottom: 5px;">${r.Descripcio || '-'}</div>
-                    <small><strong>Llocs:</strong> ${r.Parcel_les || 1} | <strong>Llum:</strong> ${r.Electricitat || '-'} | <strong>Food:</strong> ${r.Carnet_Alimentari || '-'}</small></td>
+                <td><strong>${escapeHTML(r.Companyia) || '-'}</strong><br><small>${escapeHTML(r.Nom_Representant) || ''}</small></td>
+                <td><a href="mailto:${escapeHTML(r.Email)}" style="color:#60a5fa">${escapeHTML(r.Email)}</a><br><small>${escapeHTML(r.Telefon) || ''}</small></td>
+                <td><div style="font-size: 0.85em; margin-bottom: 5px;">${escapeHTML(r.Descripcio) || '-'}</div>
+                    <small><strong>Llocs:</strong> ${escapeHTML(r.Parcel_les) || 1} | <strong>Llum:</strong> ${escapeHTML(r.Electricitat) || '-'} | <strong>Food:</strong> ${escapeHTML(r.Carnet_Alimentari) || '-'}</small></td>
+                <td style="text-align: center;">${dupCell}</td>
+                <td style="text-align: center;">${emailInvalidCell}</td>
                 <td>${renderStatusSelect(r.id, r.Estat)}</td>
-                <td>${generateMailto(r.Email, r.Nom_Representant || r.Companyia, 'Paradeta')}</td>
             </tr>
         `;
     });
+
+    // CONCURS DE BARRETS
+    const tbodyBarrets = document.getElementById('table-body-barrets');
+    if (tbodyBarrets) {
+        tbodyBarrets.innerHTML = '';
+        const barretsData = getFilteredData('Concurs Decoració de Barrets');
+        barretsData.forEach(r => {
+            const isChecked = selectedIds.has(r.id) ? 'checked' : '';
+            const dupCell = r.isDuplicate 
+                ? `<span class="badge-duplicate" title="${escapeHTML(r.duplicateReason)}">⚠️ Sí</span>` 
+                : `<span style="color: #64748b">-</span>`;
+            const emailInvalidChecked = r.EmailInvalid ? 'checked' : '';
+            const emailInvalidCell = `<input type="checkbox" ${emailInvalidChecked} onchange="toggleEmailInvalid('${r.id}', this.checked)">`;
+            
+            tbodyBarrets.innerHTML += `
+                <tr>
+                    <td><input type="checkbox" ${isChecked} onchange="toggleSelect('${r.id}')"></td>
+                    <td>${formatDate(r.Timestamp)}</td>
+                    <td><strong style="color:#a78bfa">${escapeHTML(r.Codi_Registre) || '-'}</strong></td>
+                    <td><strong>${escapeHTML(r.Nom) || escapeHTML(r.Nom_Representant) || '-'}</strong></td>
+                    <td>${escapeHTML(r.Telefon) || '-'}</td>
+                    <td><a href="mailto:${escapeHTML(r.Email)}" style="color:#60a5fa">${escapeHTML(r.Email)}</a></td>
+                    <td>${escapeHTML(r.Edat) || '-'}</td>
+                    <td style="text-align: center;">${dupCell}</td>
+                    <td style="text-align: center;">${emailInvalidCell}</td>
+                    <td>${renderStatusSelect(r.id, r.Estat)}</td>
+                </tr>
+            `;
+        });
+    }
+
+    updateHeaderSortClasses();
 }
 
 function updateKPIs() {
     const cats = {
-        'Arts Generals': 'arts',
+        'Arts Plàstiques': 'plastiques',
+        'Arts Vives': 'vives',
+        'Art Lumínic': 'luminic',
         'Residència Artística': 'res',
-        'Paradetes i Artesania': 'para'
+        'Paradetes i Artesania': 'para',
+        'Concurs Decoració de Barrets': 'barrets'
     };
 
     Object.keys(cats).forEach(catName => {
@@ -447,14 +710,21 @@ function updateKPIs() {
         const data = appData.filter(r => r.Categoria === catName);
         
         const total = data.length;
-        const noves = data.filter(r => r.Estat === 'Nou' || r.Estat === 'Pendent Documentació').length;
+        const noves = data.filter(r => r.Estat === 'Nou').length;
+        const pendent = data.filter(r => r.Estat === 'Pendent Documentació').length;
         const process = data.filter(r => r.Estat === 'En Procés').length;
         const aprovades = data.filter(r => r.Estat === 'Aprovat').length;
 
-        document.getElementById(`stats-${prefix}-total`).innerText = total;
-        document.getElementById(`stats-${prefix}-noves`).innerText = noves;
-        document.getElementById(`stats-${prefix}-proces`).innerText = process;
-        document.getElementById(`stats-${prefix}-aprovades`).innerText = aprovades;
+        const totalEl = document.getElementById(`stats-${prefix}-total`);
+        if (totalEl) totalEl.innerText = total;
+        const novesEl = document.getElementById(`stats-${prefix}-noves`);
+        if (novesEl) novesEl.innerText = noves;
+        const pendentEl = document.getElementById(`stats-${prefix}-pendent`);
+        if (pendentEl) pendentEl.innerText = pendent;
+        const procesEl = document.getElementById(`stats-${prefix}-proces`);
+        if (procesEl) procesEl.innerText = process;
+        const aprovadesEl = document.getElementById(`stats-${prefix}-aprovades`);
+        if (aprovadesEl) aprovadesEl.innerText = aprovades;
     });
 
     const titleEl = document.getElementById('kpi-title-h2');
@@ -462,3 +732,99 @@ function updateKPIs() {
         titleEl.innerText = 'Resum de Sol·licituds 2026';
     }
 }
+
+// ==========================================
+// 7. ORDENACIÓ DE LES TAULES (SORTING)
+// ==========================================
+let currentSortField = 'Timestamp';
+let currentSortDirection = 'asc';
+
+window.sortTable = function(fieldName) {
+    if (currentSortField === fieldName) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSortField = fieldName;
+        currentSortDirection = 'asc';
+    }
+    
+    appData.sort((a, b) => {
+        let valA = a[fieldName];
+        let valB = b[fieldName];
+        
+        if (valA === undefined || valA === null) valA = '';
+        if (valB === undefined || valB === null) valB = '';
+        
+        if (typeof valA === 'boolean' && typeof valB === 'boolean') {
+            return currentSortDirection === 'asc' 
+                ? (valA === valB ? 0 : (valA ? 1 : -1))
+                : (valA === valB ? 0 : (valA ? -1 : 1));
+        }
+        
+        // Normalize strings for comparison
+        valA = String(valA).toLowerCase().trim();
+        valB = String(valB).toLowerCase().trim();
+        
+        // Check if values are dates
+        const dateA = Date.parse(valA);
+        const dateB = Date.parse(valB);
+        const isDatePattern = /^\d{4}-\d{2}-\d{2}/;
+        if (isDatePattern.test(a[fieldName]) && isDatePattern.test(b[fieldName]) && !isNaN(dateA) && !isNaN(dateB)) {
+            return currentSortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+        }
+        
+        // Check if values are numbers
+        const numA = parseFloat(valA);
+        const numB = parseFloat(valB);
+        if (!isNaN(numA) && !isNaN(numB) && /^\d+$/.test(valA) && /^\d+$/.test(valB)) {
+            return currentSortDirection === 'asc' ? numA - numB : numB - numA;
+        }
+        
+        if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
+        if (valA > valB) return currentSortDirection === 'asc' ? 1 : -1;
+        return 0;
+    });
+    
+    renderAllTables();
+};
+
+function updateHeaderSortClasses() {
+    document.querySelectorAll('th.sortable').forEach(th => {
+        th.classList.remove('asc', 'desc');
+    });
+    
+    document.querySelectorAll(`th[data-sort="${currentSortField}"]`).forEach(th => {
+        th.classList.add(currentSortDirection);
+    });
+}
+
+// ==========================================
+// 8. CORREUS INCORRECTES
+// ==========================================
+window.toggleEmailInvalid = async function(rowId, isChecked) {
+    // 1. Actualitza localment
+    const row = appData.find(r => r.id === rowId);
+    if(row) row.EmailInvalid = isChecked;
+    
+    // 2. Guardem a Supabase
+    try {
+        const currentEstat = row ? row.Estat : 'Nou';
+        const statusToSave = currentEstat + (isChecked ? ' | Correu Incorrecte' : '');
+        
+        const { error } = await supabaseClient
+            .from('registrations_management')
+            .upsert({ 
+                id: rowId, 
+                status: statusToSave,
+                updated_at: new Date().toISOString()
+            });
+            
+        if (error) throw error;
+        console.log(`✅ Guardat correu incorrecte a Supabase: ${rowId} = ${statusToSave}`);
+    } catch (err) {
+        console.error("Error guardant estat de correu:", err);
+        alert("No s'ha pogut guardar el canvi a la base de dades.");
+        // Revert local state on error
+        if(row) row.EmailInvalid = !isChecked;
+        renderAllTables();
+    }
+};
