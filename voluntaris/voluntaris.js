@@ -1829,6 +1829,7 @@ function renderAll() {
     const isMobile = window.innerWidth <= 768;
     const normalHourHeight = currentViewMode === 'global' ? (isMobile ? 135 : 140) : (isMobile ? 145 : 160);
     const inactiveHourHeight = isMobile ? 28 : 34;
+    document.documentElement.style.setProperty('--hour-height', `${normalHourHeight}px`);
 
     // 2. Torns del dia per als espais visibles
     const dayTorns = allTorns.filter(t => isTornInDia(t, curDia) && visibleEspais.some(e => e.id === t.espai_id));

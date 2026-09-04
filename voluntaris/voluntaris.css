@@ -1265,10 +1265,6 @@ select:focus, input:focus, textarea:focus {
 /* ==========================================
    VISTA CALENDARI / GLOBAL (PANORÀMICA)
    ========================================== */
-.view-global {
-    --hour-height: 120px !important;
-}
-
 .view-global .space-col-header {
     width: 270px !important;
     min-width: 270px !important;
@@ -1287,15 +1283,9 @@ select:focus, input:focus, textarea:focus {
 .view-global .space-track {
     width: 270px !important;
     min-width: 270px !important;
-    height: calc(24 * 120px) !important;
-}
-
-.view-global .track-hour-cell {
-    height: 120px !important;
 }
 
 .view-global .time-marker {
-    height: 120px !important;
     padding-top: 0.3rem !important;
 }
 
@@ -1860,30 +1850,9 @@ footer {
         padding: 0.1rem 0.25rem !important;
     }
 
-    /* VISTA GLOBAL A MÒBIL */
-    .view-global {
-        --hour-height: 135px !important;
-    }
-    .view-global .space-col-header {
-        width: 210px !important;
-        min-width: 210px !important;
-        padding: 0.45rem 0.6rem !important;
-    }
-    .view-global .space-title {
-        font-size: 0.88rem !important;
-    }
-    .view-global .space-badge {
-        font-size: 0.65rem !important;
-        padding: 0.1rem 0.35rem !important;
-    }
     .view-global .space-track {
         width: 210px !important;
         min-width: 210px !important;
-        height: calc(24 * 135px) !important;
-    }
-    .view-global .track-hour-cell,
-    .view-global .time-marker {
-        height: 135px !important;
     }
     .view-global .shift-card {
         padding: 0.35rem 0.45rem !important;
@@ -1924,9 +1893,6 @@ footer {
     }
 
     /* VISTA DETALLADA A MÒBIL */
-    .view-detailed {
-        --hour-height: 145px !important;
-    }
     .view-detailed .space-col-header {
         width: 260px !important;
         min-width: 260px !important;
@@ -1935,11 +1901,6 @@ footer {
     .view-detailed .space-track {
         width: 260px !important;
         min-width: 260px !important;
-        height: calc(24 * 145px) !important;
-    }
-    .view-detailed .track-hour-cell,
-    .view-detailed .time-marker {
-        height: 145px !important;
     }
 
     /* FORMULARI REGISTRE INICIAL A MÒBIL */
