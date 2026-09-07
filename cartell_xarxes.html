@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartell Minimalista Xarxes - Concurs de Barrets</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #09090b;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+            min-height: 100vh;
+        }
+
+        /* 1:1 Instagram Post Layout (1080x1080 Minimalist) */
+        .poster-card {
+            width: 540px;
+            height: 540px;
+            background: #0f172a;
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 42px 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .glow {
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, rgba(124, 58, 237, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .header-tag {
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #a78bfa;
+            margin-bottom: 8px;
+        }
+
+        .title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.1rem;
+            font-weight: 800;
+            line-height: 1.15;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .title span {
+            color: #38bdf8;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .divider {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 18px 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #a78bfa;
+            font-weight: 700;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            line-height: 1.3;
+        }
+
+        .info-value span {
+            color: #fbbf24;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-top: 15px;
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .footer-left .label {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .footer-left .val {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #38bdf8;
+        }
+
+        .cta-pill {
+            background: #7c3aed;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1:1 POST CARTELL MINIMALISTA -->
+    <div class="poster-card">
+        <div class="glow"></div>
+        
+        <div>
+            <div class="header-tag">Fira Pluja d'Art 2026 · Sant Jordi Desvalls</div>
+            <h1 class="title">CONCURS DE<br>DECORACIÓ DE <span>BARRETS</span></h1>
+            <p class="subtitle">Expressa la teva creativitat · Obert a tothom i gratuït</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">🗓️ INSCRIPCIÓ</div>
+                <div class="info-value">Fins al <strong>12 d'agost</strong></div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">🎁 EL PREMI</div>
+                <div class="info-value">Menú per a 2 persones al <span>Els 4 Vents</span></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-left">
+                <span class="label">ON INSCRIURE'S</span>
+                <span class="val">desvallscultura.cat</span>
+            </div>
+            <div class="cta-pill">APUNTA'T JA</div>
+        </div>
+    </div>
+
+</body>
+</html>

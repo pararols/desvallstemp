@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graella d'Inscripció - Concurs de Decoració de Barrets (Bar Social)</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 12mm 15mm 12mm 15mm;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1a1a1a;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            font-size: 11pt;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #6b21a8;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .title-area h1 {
+            margin: 0;
+            font-size: 18pt;
+            color: #581c87;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .title-area h2 {
+            margin: 3px 0 0 0;
+            font-size: 12pt;
+            color: #0369a1;
+            font-weight: 600;
+        }
+        .badge {
+            background-color: #f3e8ff;
+            color: #6b21a8;
+            border: 1px solid #c084fc;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 10pt;
+            text-align: right;
+        }
+        .info-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #0284c7;
+            padding: 8px 12px;
+            margin-bottom: 14px;
+            font-size: 9.5pt;
+            line-height: 1.35;
+            border-radius: 0 6px 6px 0;
+        }
+        .info-box p {
+            margin: 2px 0;
+        }
+        .info-highlight {
+            font-weight: bold;
+            color: #b91c1c;
+        }
+        table.grid-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+        table.grid-table th {
+            background-color: #6b21a8;
+            color: #ffffff;
+            font-size: 9.5pt;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 9px 8px;
+            border: 1px solid #581c87;
+            text-align: left;
+        }
+        table.grid-table td {
+            border: 1px solid #cbd5e1;
+            height: 38px;
+            padding: 4px 8px;
+            vertical-align: middle;
+            font-size: 9.5pt;
+        }
+        table.grid-table tr:nth-child(even) {
+            background-color: #fcfcfd;
+        }
+        .num-col { width: 12%; text-align: center; font-weight: bold; color: #581c87; font-family: monospace; font-size: 10.5pt; }
+        .nom-col { width: 36%; }
+        .tel-col { width: 18%; }
+        .email-col { width: 24%; }
+        .edat-col { width: 10%; text-align: center; }
+        
+        .footer {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 8.5pt;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 6px;
+        }
+        .btn-print {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            font-size: 11pt;
+            z-index: 100;
+        }
+        .btn-print:hover { background-color: #0369a1; }
+        @media print {
+            .btn-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-print" onclick="window.print()">Imprimir Full (A4)</button>
+
+    <div class="header">
+        <div class="title-area">
+            <h1>Concurs de Decoració de Barrets</h1>
+            <h2>Fira Pluja d'Art 2026 · Sant Jordi Desvalls</h2>
+        </div>
+        <div class="badge">
+            FULL D'INSCRIPCIÓ<br><span style="font-weight:normal; font-size:8.5pt;">BAR SOCIAL</span>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <p>📌 <strong>Inscripció gratuïta i oberta a tothom.</strong> Data límit: <span class="info-highlight">12 d'agost de 2026</span> (Online a <strong>desvallscultura.cat</strong> o presencial en aquest full).</p>
+        <p>📦 <strong>Lliurament dels barrets:</strong> Del 31 d'agost al 4 de setembre de 2026 a l'Ajuntament de Sant Jordi Desvalls.</p>
+        <p>🎁 <strong>Premi:</strong> Un menú per a dues persones al <strong>Restaurant Els 4 Vents</strong> de Sant Jordi Desvalls.</p>
+    </div>
+
+    <table class="grid-table">
+        <thead>
+            <tr>
+                <th class="num-col">Nº inscripció</th>
+                <th class="nom-col">Nom i Cognoms</th>
+                <th class="tel-col">Telèfon</th>
+                <th class="email-col">Correu electrònic</th>
+                <th class="edat-col">Edat</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td class="num-col">01</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">02</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">03</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">04</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">05</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">06</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">07</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">08</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">09</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">10</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">11</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">12</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">13</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">14</td><td></td><td></td><td></td><td></td></tr>
+            <tr><td class="num-col">15</td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <span>Organitza: Fira Pluja d'Art & Ajuntament de Sant Jordi Desvalls</span>
+        <span>Col·labora: Bar Social & Restaurant Els 4 Vents</span>
+    </div>
+
+</body>
+</html>

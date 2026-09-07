@@ -1,15 +1,9 @@
-# OS metadata
+.agent/
+Plujaart/
+*lona*
+*.pdn
+temp_docx/
+*.tmp
+*.log
 .DS_Store
 Thumbs.db
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Project specific
-node_modules/
-.env
-tmp/
-*.log
