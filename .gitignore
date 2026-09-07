@@ -7,3 +7,7 @@ temp_docx/
 *.log
 .DS_Store
 Thumbs.db
+*Amidaments*
+*.pzh
+*.bc3
+
