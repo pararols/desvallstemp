@@ -8,6 +8,9 @@ temp_docx/
 .DS_Store
 Thumbs.db
 *Amidaments*
-*.pzh
-*.bc3
+piper_models/
+scratch_fonts/
+test_joana.mp3
+test_ona.wav
+*.wav
 

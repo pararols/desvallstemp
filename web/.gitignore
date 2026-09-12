@@ -13,3 +13,5 @@ node_modules/
 .env
 tmp/
 *.log
+*.wav
+piper_models/

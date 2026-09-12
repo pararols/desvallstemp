@@ -719,10 +719,10 @@
                     ⏮️
                 </button>
                 <button type="button" class="btn-ctrl primary" id="btn-play-pause" onclick="toggleAudioPlayback()">
-                    <span id="btn-play-icon">▶️</span>
-                    <span id="btn-play-text">Escoltar</span>
+                    <span id="btn-play-icon">🗣️</span>
+                    <span id="btn-play-text">Llegir fitxa</span>
                 </button>
-                <button type="button" class="btn-ctrl" id="btn-mute" onclick="toggleAudioMute()" title="Silenciar / Activar">
+                <button type="button" class="btn-ctrl" id="btn-mute" onclick="toggleAudioMute()" title="Silenciar / Activar veu">
                     🔊
                 </button>
                 <button type="button" class="btn-ctrl" onclick="stepNextPoint()" title="Següent punt">
@@ -735,15 +735,15 @@
     <!-- Modal d'activació inicial de so (Gesture Unlock) -->
     <div class="audio-unlock-overlay" id="unlock-overlay">
         <div class="unlock-card">
-            <div class="unlock-icon">🤿✨</div>
+            <div class="unlock-icon">🗣️✨</div>
             <h2 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #ffffff; margin-bottom: 0.6rem;">
-                Audioguia GPS Immersiva
+                Audioguia amb Veu en Català
             </h2>
             <p style="font-size: 0.9rem; color: #94a3b8; line-height: 1.5; margin-bottom: 0.5rem;">
-                Posa't els auriculars i camina pel circuit! Quan estiguis a <strong>menys de 10 metres</strong> de cada instal·lació, el GPS activarà automàticament la música marítima en bucle.
+                Posa't els auriculars i recorre el circuit! Quan arribis a <strong>menys de 10 metres</strong> de cada instal·lació o espai, una veu agradable en català et llegirà automàticament la fitxa explicativa.
             </p>
             <button type="button" class="btn-start-tour" onclick="unlockAudioAndStart()">
-                <span>🎧</span> Iniciar Experiència Sonora
+                <span>🎧</span> Iniciar Audioguia amb Veu
             </button>
         </div>
     </div>
@@ -761,8 +761,7 @@
         </div>
     </div>
 
-    <!-- Element Audio HTML5 ocult -->
-    <audio id="main-audio" preload="auto" loop></audio>
+    <!-- Audioguia per Síntesi de Veu (Web Speech API) -->
 
     <script>
         // --- CREDENCIALS SUPABASE (IDÈNTIQUES A MAPA3.HTML) ---
@@ -837,13 +836,13 @@
             {
                 id: 'lum_escola',
                 type: 'lum',
-                code: '🏛️',
-                name: "5. Antiga Escola · «Punt de Llum»",
-                artist: 'Intervenció Patrimonial',
-                project: 'Ressalt Arquitectònic i Espai de Pau',
-                descripcio: "Espai de pau i ressalt arquitectònic on la il·luminació puntual posa en valor la història de l'edifici escolar.",
-                lat: 42.07075,
-                lng: 2.95360,
+                code: '5',
+                name: "5. Antiga Escola · «MEDITERRÀNIA. FONS.»",
+                artist: 'Isi i Dibu',
+                project: 'MEDITERRÀNIA. FONS.',
+                descripcio: "«MEDITERRÀNIA. FONS.»\nUna vida. Una medusa. Un mar immens. Fràgil, com tantes vides que el Mediterrani ha engolit. Per alguns, el mar és frontera. Per d'altres, l'última esperança.\n\nInstal·lació immersiva creada pels artistes DABU + isi · @dabuproject.",
+                lat: 42.071863,
+                lng: 2.953760,
                 ordre: 6
             },
             {
@@ -896,32 +895,112 @@
             }
         ];
 
-        // Mapeig de fitxers de so marítims per ID o índex canònic
-        const AUDIO_MAP = {
-            'lum_start': 'sons/00_inici_cami_espelmes.mp3',
-            'lum_octubre': 'sons/01_placa_octubre_jardi_meduses.mp3',
-            'lum_baix': 'sons/02_carrer_baix_onades_olimpiques.mp3',
-            'lum_tarongeta': 'sons/03_carrer_tarongeta_tunel_blau.mp3',
-            'lum_clos_garriga': 'sons/04_clos_garriga_profunditats_residuals.mp3',
-            'lum_escola': 'sons/05_escola_punt_de_llum.mp3',
-            'lum_esglesia': 'sons/06_esglesia_abisme_fum.mp3',
-            'lum_generalitat': 'sons/07_generalitat_corrents_marines.mp3',
-            'lum_diposit': 'sons/08_diposit_reina_del_mar.mp3',
-            'lum_airearte': 'sons/09_airearte_mostra_artistes.mp3'
-        };
+        // --- MOTOR DE VEU EN CATALÀ (WEB SPEECH API) ---
+        let catalanVoice = null;
+        let currentUtterance = null;
+        let isSpeaking = false;
+        let isPaused = false;
+        let isAudioMuted = false;
 
-        const AUDIO_INDEX_FALLBACK = [
-            'sons/00_inici_cami_espelmes.mp3',
-            'sons/01_placa_octubre_jardi_meduses.mp3',
-            'sons/02_carrer_baix_onades_olimpiques.mp3',
-            'sons/03_carrer_tarongeta_tunel_blau.mp3',
-            'sons/04_clos_garriga_profunditats_residuals.mp3',
-            'sons/05_escola_punt_de_llum.mp3',
-            'sons/06_esglesia_abisme_fum.mp3',
-            'sons/07_generalitat_corrents_marines.mp3',
-            'sons/08_diposit_reina_del_mar.mp3',
-            'sons/09_airearte_mostra_artistes.mp3'
-        ];
+        function initSpeechEngine() {
+            if (!('speechSynthesis' in window)) {
+                console.warn('SpeechSynthesis no està suportat en aquest navegador.');
+                return;
+            }
+
+            function selectCatalanVoice() {
+                const voices = window.speechSynthesis.getVoices();
+                if (!voices || voices.length === 0) return;
+
+                // 1. Codi de llengua catalana 'ca-ES' o 'ca'
+                let voice = voices.find(v => v.lang && (v.lang.toLowerCase() === 'ca-es' || v.lang.toLowerCase() === 'ca'));
+
+                // 2. Nom de la veu que contingui 'catalan' o 'català'
+                if (!voice) {
+                    voice = voices.find(v => v.name && (/catalan|català/i.test(v.name)));
+                }
+
+                // 3. Veus catalanes habituals en sistemes operatius (Jordi, Montserrat, Pau, Joana, Carme, etc.)
+                if (!voice) {
+                    voice = voices.find(v => /jordi|montserrat|joana|pau|carme/i.test(v.name));
+                }
+
+                // 4. Si no hi ha veu catalana explícita instal·lada al dispositiu, usar veu espanyola de qualitat (es-ES) per a la fonètica romànica
+                if (!voice) {
+                    voice = voices.find(v => v.lang && (v.lang.toLowerCase() === 'es-es' || v.lang.toLowerCase().startsWith('es')));
+                }
+
+                catalanVoice = voice || voices[0] || null;
+                if (catalanVoice) {
+                    console.log('🗣️ Veu seleccionada per a l\'audioguia:', catalanVoice.name, `(${catalanVoice.lang})`);
+                }
+            }
+
+            selectCatalanVoice();
+            if (typeof window.speechSynthesis.onvoiceschanged !== 'undefined') {
+                window.speechSynthesis.onvoiceschanged = selectCatalanVoice;
+            }
+        }
+
+        function getSpotSpeechText(spot) {
+            if (!spot) return '';
+            const name = spot.name || '';
+            const artist = spot.artist || '';
+            const desc = spot.desc || spot.descripcio || '';
+
+            // 1. Títol net sense prefix numèric ni cometes
+            let cleanTitle = name.replace(/^[0-9]+\.\s*/, '').replace(/[«»"]/g, '');
+            cleanTitle = cleanTitle.replace(/\s+·\s+/g, ', ').trim();
+
+            const parts = [];
+            if (cleanTitle) {
+                parts.push(cleanTitle.endsWith('.') ? cleanTitle : cleanTitle + '.');
+            }
+
+            // 2. Autoria / Artistes
+            if (artist && artist.trim() && !['Organització', 'Art Lumínic 2026'].includes(artist.trim())) {
+                let cleanArt = artist.replace(/&/g, ' i ').replace(/\+/g, ' i ');
+                cleanArt = cleanArt.replace(/\s+·\s+/g, ', ').trim();
+                parts.push(`Obra de ${cleanArt}.`);
+            }
+
+            // 3. Descripció de la instal·lació o espai
+            if (desc && desc.trim()) {
+                let cleanDesc = desc;
+                // Netejar mencions i parèntesis sobrants
+                cleanDesc = cleanDesc.replace(/@[a-zA-Z0-9_\.]+/g, '');
+                cleanDesc = cleanDesc.replace(/\(\s*(?:DABU\s*\+?\s*isi|isi\s*\+?\s*DABU)\s*[·, ]*\)/gi, '');
+                cleanDesc = cleanDesc.replace(/[«»"]/g, '');
+
+                // Evitar repetir el títol si apareix al principi del text
+                const candidates = [name, cleanTitle, 'MEDITERRÀNIA. FONS.', 'MEDITERRÀNIA. FONS', 'El jardí de les meduses'];
+                for (const cand of candidates) {
+                    const cClean = cand.replace(/[«»"]/g, '').trim();
+                    if (cleanDesc.trim().startsWith(cClean)) {
+                        cleanDesc = cleanDesc.trim().substring(cClean.length).trim();
+                    }
+                }
+
+                // Substitucions fonètiques amables
+                cleanDesc = cleanDesc.replace(/&/g, ' i ').replace(/\+/g, ' i ');
+                cleanDesc = cleanDesc.replace(/\s+·\s+/g, ', ');
+                cleanDesc = cleanDesc.replace(/\n+/g, '. ');
+                cleanDesc = cleanDesc.replace(/\s+/g, ' ').trim();
+                cleanDesc = cleanDesc.replace(/[\s\.,;:]+$/, '');
+                cleanDesc = cleanDesc.replace(/\.+/g, '.');
+                cleanDesc = cleanDesc.replace(/^[.\s,;:]+/, '');
+
+                if (cleanDesc) {
+                    parts.push(cleanDesc + '.');
+                }
+            }
+
+            let fullText = parts.join(' ');
+            fullText = fullText.replace(/\s+/g, ' ');
+            fullText = fullText.replace(/\.\.+/g, '.');
+            fullText = fullText.replace(/,\./g, '.');
+            return fullText;
+        }
 
         let DEFAULT_ROUTE_POINTS = [
             [42.07255, 2.95380],
@@ -957,8 +1036,6 @@
         let isAudioUnlocked = false;
         let isSimulating = false;
         let watchPositionId = null;
-
-        const audioElement = document.getElementById('main-audio');
 
         // --- CÀRREGA DE DADES DE SUPABASE I LOCALSTORAGE (COM A MAPA3.HTML) ---
         async function loadSupabaseData() {
@@ -1096,8 +1173,7 @@
                     }
                 }
 
-                // Assignar fitxer d'àudio per ID o per posició a l'itinerari
-                const audioFile = AUDIO_MAP[item.id] || AUDIO_INDEX_FALLBACK[idx % AUDIO_INDEX_FALLBACK.length];
+                const speechText = getSpotSpeechText(item);
 
                 return {
                     id: item.id,
@@ -1108,7 +1184,7 @@
                     artist: item.artist || item.project || 'Art Lumínic 2026',
                     project: item.project || '',
                     desc: item.descripcio || '',
-                    audioFile: audioFile,
+                    speechText: speechText,
                     lat: actualLat,
                     lng: actualLng,
                     radius: 10, // radi de detecció geofence exacte a 10 metres
@@ -1161,15 +1237,16 @@
             });
 
             // 1. Capa Oficial OpenStreetMap
-            baseLayers['osm'] = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            baseLayers['osm'] = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                attribution: '&copy; OpenStreetMap contributors'
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             });
 
-            // 2. Capa Satèl·lit Esri
-            baseLayers['satellit'] = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                maxZoom: 19,
-                attribution: 'Tiles &copy; Esri'
+            // 2. Capa Satèl·lit (Google Hybrid)
+            baseLayers['satellit'] = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                subdomains: ['0', '1', '2', '3'],
+                maxZoom: 20,
+                attribution: '&copy; Google Maps'
             });
 
             // Afegir OpenStreetMap per defecte
@@ -1278,13 +1355,24 @@
             });
         }
 
-        // --- SISTEMA D'AUDIO & MEDIA SESSION ---
+        // --- SISTEMA DE VEU I MEDIA SESSION ---
         function unlockAudioAndStart() {
             isAudioUnlocked = true;
             document.getElementById('unlock-overlay').classList.add('hidden');
             
+            initSpeechEngine();
+
+            // Priming de SpeechSynthesis amb gest d'usuari per a compatibilitat mòbil (iOS Safari / Android Chrome)
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const primeUtterance = new SpeechSynthesisUtterance(' ');
+                primeUtterance.volume = 0.01;
+                primeUtterance.lang = 'ca-ES';
+                window.speechSynthesis.speak(primeUtterance);
+            }
+
             if (spots.length > 0) {
-                playSpotAudio(spots[currentTargetIndex]);
+                playSpotSpeech(spots[currentTargetIndex]);
             }
             startGpsTracking();
             
@@ -1293,19 +1381,65 @@
             }
         }
 
-        function playSpotAudio(spot, userInitiated = false) {
-            if (!spot || !spot.audioFile) return;
+        function playSpotSpeech(spot, userInitiated = false) {
+            if (!spot) return;
             currentPlayingSpotId = spot.id;
 
-            audioElement.src = spot.audioFile;
-            audioElement.currentTime = 0;
-            audioElement.play().then(() => {
+            if (!('speechSynthesis' in window)) {
+                console.warn('SpeechSynthesis no està disponible en aquest navegador.');
+                updatePlayerUI(spot, false);
+                return;
+            }
+
+            // Aturar qualsevol locució en curs per evitar encavalcaments
+            window.speechSynthesis.cancel();
+
+            if (isAudioMuted) {
+                updatePlayerUI(spot, false);
+                return;
+            }
+
+            const textToSpeak = spot.speechText || getSpotSpeechText(spot);
+            if (!textToSpeak) {
+                updatePlayerUI(spot, false);
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'ca-ES';
+            if (catalanVoice) {
+                utterance.voice = catalanVoice;
+            }
+            utterance.rate = 0.95; // Ritme relaxat i agradable
+            utterance.pitch = 1.0;
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                isPaused = false;
                 updatePlayerUI(spot, true);
                 setupMediaSession(spot);
-            }).catch(e => {
-                console.warn('Audio play prevented:', e);
+            };
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                isPaused = false;
+                currentUtterance = null;
                 updatePlayerUI(spot, false);
-            });
+            };
+
+            utterance.onerror = (e) => {
+                console.warn('SpeechSynthesis error:', e);
+                isSpeaking = false;
+                isPaused = false;
+                currentUtterance = null;
+                updatePlayerUI(spot, false);
+            };
+
+            // Emmagatzemar referència per evitar que el garbage collector de Chrome/Safari aturi la veu
+            currentUtterance = utterance;
+            window._activeUtterance = utterance;
+
+            window.speechSynthesis.speak(utterance);
 
             // Destacar marcador visualment
             document.querySelectorAll('.spot-marker-circle').forEach(el => el.classList.remove('is-playing'));
@@ -1314,30 +1448,48 @@
         }
 
         function toggleAudioPlayback() {
-            if (audioElement.paused) {
-                if (currentPlayingSpotId) {
-                    audioElement.play();
-                    const spot = spots.find(s => s.id === currentPlayingSpotId) || spots[currentTargetIndex];
+            if (!('speechSynthesis' in window)) return;
+            const spot = spots.find(s => s.id === currentPlayingSpotId) || spots[currentTargetIndex];
+            if (!spot) return;
+
+            if (window.speechSynthesis.speaking) {
+                if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                    isPaused = false;
+                    isSpeaking = true;
                     updatePlayerUI(spot, true);
                 } else {
-                    playSpotAudio(spots[currentTargetIndex], true);
+                    window.speechSynthesis.pause();
+                    isPaused = true;
+                    isSpeaking = false;
+                    updatePlayerUI(spot, false);
                 }
             } else {
-                audioElement.pause();
-                const spot = spots.find(s => s.id === currentPlayingSpotId) || spots[currentTargetIndex];
-                updatePlayerUI(spot, false);
+                playSpotSpeech(spot, true);
             }
         }
 
         function toggleAudioMute() {
-            audioElement.muted = !audioElement.muted;
+            isAudioMuted = !isAudioMuted;
             const btnMute = document.getElementById('btn-mute');
-            if (audioElement.muted) {
+            const spot = spots.find(s => s.id === currentPlayingSpotId) || spots[currentTargetIndex];
+
+            if (isAudioMuted) {
                 btnMute.innerText = '🔇';
                 btnMute.classList.add('mute-active');
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    isSpeaking = false;
+                    isPaused = false;
+                    currentUtterance = null;
+                    if (spot) updatePlayerUI(spot, false);
+                }
             } else {
                 btnMute.innerText = '🔊';
                 btnMute.classList.remove('mute-active');
+                if (spot) {
+                    playSpotSpeech(spot, true);
+                }
             }
         }
 
@@ -1357,8 +1509,8 @@
                 playText.innerText = 'Pausar';
             } else {
                 eq.classList.remove('playing');
-                playIcon.innerText = '▶️';
-                playText.innerText = 'Escoltar';
+                playIcon.innerText = '🗣️';
+                playText.innerText = 'Llegir';
             }
         }
 
@@ -1367,7 +1519,7 @@
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: spot.name,
                     artist: spot.artist,
-                    album: "Mar Mediterrània · Art Lumínic 2026",
+                    album: "Audioguia en Català · Art Lumínic 2026",
                     artwork: [
                         { src: 'img/logo.jpg', sizes: '512x512', type: 'image/jpeg' }
                     ]
@@ -1456,10 +1608,10 @@
                 const spot = spots[i];
                 const dist = getDistanceMeters(userLat, userLng, spot.lat, spot.lng);
 
-                // Si l'usuari entra dins del radi de la instal·lació (ex: 28m)
+                // Si l'usuari entra dins del radi de la instal·lació (ex: 10m)
                 if (dist <= spot.radius) {
                     if (currentPlayingSpotId !== spot.id) {
-                        console.log(`📍 Has arribat a: ${spot.name} (${dist}m) -> Activant àudio!`);
+                        console.log(`📍 Has arribat a: ${spot.name} (${dist}m) -> Llegint fitxa en català!`);
                         
                         if (navigator.vibrate) {
                             navigator.vibrate([120, 80, 120]);
@@ -1467,7 +1619,7 @@
                         
                         currentTargetIndex = spot.index;
                         updateTargetUI();
-                        playSpotAudio(spot);
+                        playSpotSpeech(spot);
                     }
                     break;
                 }
@@ -1507,7 +1659,7 @@
             }
 
             if (playImmediate && isAudioUnlocked) {
-                playSpotAudio(spot, true);
+                playSpotSpeech(spot, true);
             }
 
             if (map && spot) {
@@ -1578,7 +1730,7 @@
             const btn = document.getElementById('btn-toggle-sim');
             if (isSimulating) {
                 btn.classList.add('active');
-                alert("🧪 Mode Simulador Actiu: Toca qualsevol carrer o punt del mapa per moure la teva posició virtual i provar com s'activen els àudios automàticament!");
+                alert("🧪 Mode Simulador Actiu: Toca qualsevol carrer o punt del mapa per moure la teva posició virtual i provar com la veu en català llegeix cada fitxa automàticament!");
                 if (!currentUserCoords) {
                     activateSimulatorDefault();
                 }
@@ -1633,6 +1785,7 @@
 
         // Inicialitzar quan carregui el DOM
         window.addEventListener('DOMContentLoaded', () => {
+            initSpeechEngine();
             initMap();
         });
     </script>

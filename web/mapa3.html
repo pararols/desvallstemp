@@ -1512,13 +1512,13 @@
             {
                 id: 'lum_escola',
                 type: 'lum',
-                code: '🏛️',
-                name: "5. Antiga Escola · «Punt de Llum»",
-                artist: 'Intervenció Patrimonial',
-                project: 'Ressalt Arquitectònic i Espai de Pau',
-                descripcio: "Espai de pau i ressalt arquitectònic on la il·luminació puntual posa en valor la història de l'edifici escolar.",
-                lat: 42.07075,
-                lng: 2.95360,
+                code: '5',
+                name: "5. Antiga Escola · «MEDITERRÀNIA. FONS.»",
+                artist: 'Isi i Dibu',
+                project: 'MEDITERRÀNIA. FONS.',
+                descripcio: "«MEDITERRÀNIA. FONS.»\nUna vida. Una medusa. Un mar immens. Fràgil, com tantes vides que el Mediterrani ha engolit. Per alguns, el mar és frontera. Per d'altres, l'última esperança.\n\nInstal·lació immersiva creada pels artistes DABU + isi · @dabuproject.",
+                lat: 42.071863,
+                lng: 2.953760,
                 ordre: 6
             },
             {
@@ -1739,13 +1739,16 @@
                 wheelPxPerZoomLevel: 80  // Roda del ratolí més suau
             });
 
-            // Capes base
-            baseTileLayers.osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 20
+            // Capes base: OpenStreetMap Oficial i Google Satèl·lit
+            baseTileLayers.osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             });
 
-            baseTileLayers.googleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-                maxZoom: 20
+            baseTileLayers.googleHybrid = L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                subdomains: ['0', '1', '2', '3'],
+                maxZoom: 20,
+                attribution: '&copy; Google Maps'
             });
 
             baseTileLayers.osm.addTo(map);
