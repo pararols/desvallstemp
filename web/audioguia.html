@@ -667,9 +667,6 @@
             <button type="button" class="btn-fab" id="btn-toggle-layer" onclick="toggleMapLayer()" title="Canviar Capa Mapa (OSM / Satèl·lit)">
                 🗺️
             </button>
-            <button type="button" class="btn-fab" id="btn-toggle-sim" onclick="toggleSimulatorMode()" title="Mode Simulador / Prova">
-                🧪
-            </button>
             <button type="button" class="btn-fab" id="btn-guide-target" onclick="centerOnTarget()" title="Centrar al punt d'objectiu">
                 🚩
             </button>
@@ -1313,13 +1310,6 @@
                 dashArray: '5, 8'
             }).addTo(map);
 
-            // Clic sobre el mapa en mode simulador
-            map.on('click', (e) => {
-                if (isSimulating) {
-                    updateUserPosition(e.latlng.lat, e.latlng.lng, 5);
-                }
-            });
-
             renderTracklistDrawer();
             updateTargetUI();
         }
@@ -1713,10 +1703,7 @@
                 (err) => {
                     console.warn('Geolocation watch error:', err);
                     gpsBadge.classList.remove('active');
-                    gpsText.innerText = 'Mode Prova / Simulador';
-                    if (!currentUserCoords) {
-                        activateSimulatorDefault();
-                    }
+                    gpsText.innerText = 'Esperant senyal GPS...';
                 },
                 {
                     enableHighAccuracy: true,
@@ -1857,7 +1844,7 @@
             if (currentUserCoords && map) {
                 map.flyTo(currentUserCoords, 18, { duration: 0.8 });
             } else {
-                activateSimulatorDefault();
+                console.info("Obtenint posició GPS de l'usuari...");
             }
         }
 
@@ -1869,30 +1856,9 @@
             }
         }
 
-        // --- MODE SIMULADOR PER A PROVES ---
-        function activateSimulatorDefault() {
-            isSimulating = true;
-            document.getElementById('btn-toggle-sim').classList.add('active');
-            const simStart = spots.length > 0 ? [spots[0].lat + 0.0001, spots[0].lng + 0.0001] : [42.07265, 2.95388];
-            updateUserPosition(simStart[0], simStart[1], 5);
-            if (map) {
-                map.flyTo(simStart, 18);
-            }
-        }
-
-        function toggleSimulatorMode() {
-            isSimulating = !isSimulating;
-            const btn = document.getElementById('btn-toggle-sim');
-            if (isSimulating) {
-                btn.classList.add('active');
-                alert("🧪 Mode Simulador Actiu: Toca qualsevol carrer o punt del mapa per moure la teva posició virtual i provar com la veu en català llegeix cada fitxa automàticament!");
-                if (!currentUserCoords) {
-                    activateSimulatorDefault();
-                }
-            } else {
-                btn.classList.remove('active');
-            }
-        }
+        // Mode simulador deshabilitat a la versió pública
+        function activateSimulatorDefault() { return; }
+        function toggleSimulatorMode() { return; }
 
         // --- DRAWER DE LA LLISTA D'ESTACIONS ---
         function renderTracklistDrawer() {
