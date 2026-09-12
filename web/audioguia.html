@@ -942,8 +942,54 @@
             }
         }
 
-        function getSpotSpeechText(spot) {
+        const OFFICIAL_SPOT_TEXTS = {
+            '0': "Molt bé, aquest és el Punt d'Inici del Circuit d'Art Lumínic. És el Punt de partida recomanat per iniciar l'itinerari de les 9 instal·lacions lumíniques nocturnes seguint el camí d'espelmes.",
+            '1': "Estàs a la Plaça 1 d'Octubre, El jardí de les meduses. La plaça s'omple de vida marina amb la primera gran Medusa inflable gegant.",
+            '2': "Carrer de Baix, Onades Olímpiques. Instal·lació inspirada en el moviment de les onades i l'esperit del disseny dels Jocs Olímpics amb un joc de formes i llums visuals.",
+            '3': "Carrer Tarongeta, El túnel blau. Passatge envoltat de teles i atmosferes de llum blava. Inclou una Medusa gegant al final de la inmersió submarina.",
+            '4': "Plaça Clos Garriga, Profunditats residuals. Composició immersiva amb teles, tirants, raig làser i punts de llum simulant els raigs de sol penetrant en les aigües profundes.",
+            '5': "Antiga Escola, obra titulada: MEDITERRÀNIA. FONS. Una vida. Una medusa. Un mar immens. Fràgil, com tantes vides que el Mediterrani ha engolit. Per alguns, el mar és frontera. Per d'altres, l'última esperança. Instal·lació immersiva creada pels artistes DABU i isi.",
+            '6': "Església, L'abisme i el fum. Instal·lació d'estil industrial basada en tubs de llum i efectes de fum que simulen fumaroles i corrents de fosses marines.",
+            '7': "Avinguda Generalitat, Corrents marines. Artèria transformada amb un conjunt de meduses flotants i filtres cromàtics jugant amb perspectives i altures.",
+            '8': "Dipòsit de l'Aigua, La Reina del Festival. Serp gegant inflable viva amb focus de gran potència i ventilació contínua, governant i presidint el festival des de les altures.",
+            '9': "Airearte, Punt final amb una medusa lumínica i la gran exposició col·lectiva dels artistes locals del Festival Pluja d'Art."
+        };
+
+        const OFFICIAL_SPOT_TEXTS_BY_ID = {
+            '00_inici': OFFICIAL_SPOT_TEXTS['0'],
+            'lum_start': OFFICIAL_SPOT_TEXTS['0'],
+            '01_placa_octubre': OFFICIAL_SPOT_TEXTS['1'],
+            'lum_octubre': OFFICIAL_SPOT_TEXTS['1'],
+            '02_carrer_baix': OFFICIAL_SPOT_TEXTS['2'],
+            'lum_baix': OFFICIAL_SPOT_TEXTS['2'],
+            '03_carrer_tarongeta': OFFICIAL_SPOT_TEXTS['3'],
+            'lum_tarongeta': OFFICIAL_SPOT_TEXTS['3'],
+            '04_clos_garriga': OFFICIAL_SPOT_TEXTS['4'],
+            'lum_clos_garriga': OFFICIAL_SPOT_TEXTS['4'],
+            '05_antiga_escola': OFFICIAL_SPOT_TEXTS['5'],
+            'lum_escola': OFFICIAL_SPOT_TEXTS['5'],
+            '06_esglesia': OFFICIAL_SPOT_TEXTS['6'],
+            'lum_esglesia': OFFICIAL_SPOT_TEXTS['6'],
+            '07_generalitat': OFFICIAL_SPOT_TEXTS['7'],
+            'lum_generalitat': OFFICIAL_SPOT_TEXTS['7'],
+            '08_diposit': OFFICIAL_SPOT_TEXTS['8'],
+            'lum_diposit': OFFICIAL_SPOT_TEXTS['8'],
+            '09_airearte': OFFICIAL_SPOT_TEXTS['9'],
+            'lum_airearte': OFFICIAL_SPOT_TEXTS['9']
+        };
+
+        function getSpotSpeechText(spot, idx) {
             if (!spot) return '';
+            if (spot.id && OFFICIAL_SPOT_TEXTS_BY_ID[spot.id]) {
+                return OFFICIAL_SPOT_TEXTS_BY_ID[spot.id];
+            }
+            if (idx !== undefined && OFFICIAL_SPOT_TEXTS[String(idx)]) {
+                return OFFICIAL_SPOT_TEXTS[String(idx)];
+            }
+            if (spot.index !== undefined && OFFICIAL_SPOT_TEXTS[String(spot.index)]) {
+                return OFFICIAL_SPOT_TEXTS[String(spot.index)];
+            }
+
             const name = spot.name || '';
             const artist = spot.artist || '';
             const desc = spot.desc || spot.descripcio || '';
@@ -967,12 +1013,10 @@
             // 3. Descripció de la instal·lació o espai
             if (desc && desc.trim()) {
                 let cleanDesc = desc;
-                // Netejar mencions i parèntesis sobrants
                 cleanDesc = cleanDesc.replace(/@[a-zA-Z0-9_\.]+/g, '');
                 cleanDesc = cleanDesc.replace(/\(\s*(?:DABU\s*\+?\s*isi|isi\s*\+?\s*DABU)\s*[·, ]*\)/gi, '');
                 cleanDesc = cleanDesc.replace(/[«»"]/g, '');
 
-                // Evitar repetir el títol si apareix al principi del text
                 const candidates = [name, cleanTitle, 'MEDITERRÀNIA. FONS.', 'MEDITERRÀNIA. FONS', 'El jardí de les meduses'];
                 for (const cand of candidates) {
                     const cClean = cand.replace(/[«»"]/g, '').trim();
@@ -981,7 +1025,6 @@
                     }
                 }
 
-                // Substitucions fonètiques amables
                 cleanDesc = cleanDesc.replace(/&/g, ' i ').replace(/\+/g, ' i ');
                 cleanDesc = cleanDesc.replace(/\s+·\s+/g, ', ');
                 cleanDesc = cleanDesc.replace(/\n+/g, '. ');
@@ -1355,24 +1398,86 @@
             });
         }
 
-        // --- SISTEMA DE VEU I MEDIA SESSION ---
+        // --- SISTEMA D'ÀUDIO AMB VEU OFICIAL (JOANA NEURAL) I FALLBACK ---
+        let currentAudio = null;
+        let isAudioPlaying = false;
+
+        const JOANA_AUDIO_BY_ID = {
+            '00_inici': 'sons/joana/00_inici.mp3',
+            'lum_start': 'sons/joana/00_inici.mp3',
+            '01_placa_octubre': 'sons/joana/01_placa_octubre.mp3',
+            'lum_octubre': 'sons/joana/01_placa_octubre.mp3',
+            '02_carrer_baix': 'sons/joana/02_carrer_baix.mp3',
+            'lum_baix': 'sons/joana/02_carrer_baix.mp3',
+            '03_carrer_tarongeta': 'sons/joana/03_carrer_tarongeta.mp3',
+            'lum_tarongeta': 'sons/joana/03_carrer_tarongeta.mp3',
+            '04_clos_garriga': 'sons/joana/04_clos_garriga.mp3',
+            'lum_clos_garriga': 'sons/joana/04_clos_garriga.mp3',
+            '05_antiga_escola': 'sons/joana/05_antiga_escola.mp3',
+            'lum_escola': 'sons/joana/05_antiga_escola.mp3',
+            '06_esglesia': 'sons/joana/06_esglesia.mp3',
+            'lum_esglesia': 'sons/joana/06_esglesia.mp3',
+            '07_generalitat': 'sons/joana/07_generalitat.mp3',
+            'lum_generalitat': 'sons/joana/07_generalitat.mp3',
+            '08_diposit': 'sons/joana/08_diposit.mp3',
+            'lum_diposit': 'sons/joana/08_diposit.mp3',
+            '09_airearte': 'sons/joana/09_airearte.mp3',
+            'lum_airearte': 'sons/joana/09_airearte.mp3'
+        };
+
+        const JOANA_AUDIO_BY_INDEX = [
+            'sons/joana/00_inici.mp3',
+            'sons/joana/01_placa_octubre.mp3',
+            'sons/joana/02_carrer_baix.mp3',
+            'sons/joana/03_carrer_tarongeta.mp3',
+            'sons/joana/04_clos_garriga.mp3',
+            'sons/joana/05_antiga_escola.mp3',
+            'sons/joana/06_esglesia.mp3',
+            'sons/joana/07_generalitat.mp3',
+            'sons/joana/08_diposit.mp3',
+            'sons/joana/09_airearte.mp3'
+        ];
+
+        function stopAllAudio() {
+            if (currentAudio) {
+                try {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                } catch(e) {}
+                currentAudio = null;
+            }
+            if ('speechSynthesis' in window) {
+                try { window.speechSynthesis.cancel(); } catch(e) {}
+            }
+            isAudioPlaying = false;
+            isSpeaking = false;
+            isPaused = false;
+        }
+
         function unlockAudioAndStart() {
             isAudioUnlocked = true;
             document.getElementById('unlock-overlay').classList.add('hidden');
             
             initSpeechEngine();
 
-            // Priming de SpeechSynthesis amb gest d'usuari per a compatibilitat mòbil (iOS Safari / Android Chrome)
+            // Priming d'àudio en gest d'usuari per a compatibilitat mòbil (iOS / Android)
+            try {
+                const primeAudio = new Audio();
+                primeAudio.play().catch(() => {});
+            } catch(e) {}
+
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const primeUtterance = new SpeechSynthesisUtterance(' ');
-                primeUtterance.volume = 0.01;
-                primeUtterance.lang = 'ca-ES';
-                window.speechSynthesis.speak(primeUtterance);
+                try {
+                    window.speechSynthesis.cancel();
+                    const primeUtterance = new SpeechSynthesisUtterance(' ');
+                    primeUtterance.volume = 0.01;
+                    primeUtterance.lang = 'ca-ES';
+                    window.speechSynthesis.speak(primeUtterance);
+                } catch(e) {}
             }
 
             if (spots.length > 0) {
-                playSpotSpeech(spots[currentTargetIndex]);
+                playSpotSpeech(spots[currentTargetIndex], true);
             }
             startGpsTracking();
             
@@ -1385,20 +1490,70 @@
             if (!spot) return;
             currentPlayingSpotId = spot.id;
 
-            if (!('speechSynthesis' in window)) {
-                console.warn('SpeechSynthesis no està disponible en aquest navegador.');
-                updatePlayerUI(spot, false);
-                return;
-            }
-
-            // Aturar qualsevol locució en curs per evitar encavalcaments
-            window.speechSynthesis.cancel();
+            stopAllAudio();
 
             if (isAudioMuted) {
                 updatePlayerUI(spot, false);
                 return;
             }
 
+            // 1. Cercar fitxer MP3 amb la veu de Joana
+            const audioSrc = JOANA_AUDIO_BY_ID[spot.id] || (spot.index !== undefined ? JOANA_AUDIO_BY_INDEX[spot.index] : null);
+
+            if (audioSrc) {
+                const audio = new Audio(audioSrc);
+                currentAudio = audio;
+
+                audio.onplay = () => {
+                    isAudioPlaying = true;
+                    updatePlayerUI(spot, true);
+                    setupMediaSession(spot);
+                };
+
+                audio.onpause = () => {
+                    isAudioPlaying = false;
+                    updatePlayerUI(spot, false);
+                };
+
+                audio.onended = () => {
+                    isAudioPlaying = false;
+                    currentAudio = null;
+                    updatePlayerUI(spot, false);
+                };
+
+                audio.onerror = (e) => {
+                    console.warn('Fallback a SpeechSynthesis perquè el fitxer d\'àudio no ha respost:', audioSrc, e);
+                    fallbackSpeechSynthesis(spot);
+                };
+
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(err => {
+                        console.warn('Reproducció automàtica bloquejada pel navegador:', err);
+                        if (userInitiated) {
+                            fallbackSpeechSynthesis(spot);
+                        } else {
+                            updatePlayerUI(spot, false);
+                        }
+                    });
+                }
+            } else {
+                fallbackSpeechSynthesis(spot);
+            }
+
+            // Destacar marcador visualment
+            document.querySelectorAll('.spot-marker-circle').forEach(el => el.classList.remove('is-playing'));
+            const markerEl = document.getElementById(`spot-marker-${spot.id}`);
+            if (markerEl) markerEl.classList.add('is-playing');
+        }
+
+        function fallbackSpeechSynthesis(spot) {
+            if (!('speechSynthesis' in window)) {
+                updatePlayerUI(spot, false);
+                return;
+            }
+
+            window.speechSynthesis.cancel();
             const textToSpeak = spot.speechText || getSpotSpeechText(spot);
             if (!textToSpeak) {
                 updatePlayerUI(spot, false);
@@ -1407,15 +1562,14 @@
 
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
             utterance.lang = 'ca-ES';
-            if (catalanVoice) {
-                utterance.voice = catalanVoice;
-            }
-            utterance.rate = 0.95; // Ritme relaxat i agradable
+            if (catalanVoice) utterance.voice = catalanVoice;
+            utterance.rate = 0.95;
             utterance.pitch = 1.0;
 
             utterance.onstart = () => {
                 isSpeaking = true;
                 isPaused = false;
+                isAudioPlaying = true;
                 updatePlayerUI(spot, true);
                 setupMediaSession(spot);
             };
@@ -1423,45 +1577,51 @@
             utterance.onend = () => {
                 isSpeaking = false;
                 isPaused = false;
+                isAudioPlaying = false;
                 currentUtterance = null;
                 updatePlayerUI(spot, false);
             };
 
-            utterance.onerror = (e) => {
-                console.warn('SpeechSynthesis error:', e);
+            utterance.onerror = () => {
                 isSpeaking = false;
                 isPaused = false;
+                isAudioPlaying = false;
                 currentUtterance = null;
                 updatePlayerUI(spot, false);
             };
 
-            // Emmagatzemar referència per evitar que el garbage collector de Chrome/Safari aturi la veu
             currentUtterance = utterance;
             window._activeUtterance = utterance;
-
             window.speechSynthesis.speak(utterance);
-
-            // Destacar marcador visualment
-            document.querySelectorAll('.spot-marker-circle').forEach(el => el.classList.remove('is-playing'));
-            const markerEl = document.getElementById(`spot-marker-${spot.id}`);
-            if (markerEl) markerEl.classList.add('is-playing');
         }
 
         function toggleAudioPlayback() {
-            if (!('speechSynthesis' in window)) return;
             const spot = spots.find(s => s.id === currentPlayingSpotId) || spots[currentTargetIndex];
             if (!spot) return;
 
-            if (window.speechSynthesis.speaking) {
+            if (currentAudio) {
+                if (!currentAudio.paused) {
+                    currentAudio.pause();
+                    isAudioPlaying = false;
+                    updatePlayerUI(spot, false);
+                } else {
+                    currentAudio.play().then(() => {
+                        isAudioPlaying = true;
+                        updatePlayerUI(spot, true);
+                    }).catch(e => {
+                        playSpotSpeech(spot, true);
+                    });
+                }
+            } else if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
                 if (window.speechSynthesis.paused) {
                     window.speechSynthesis.resume();
-                    isPaused = false;
                     isSpeaking = true;
+                    isAudioPlaying = true;
                     updatePlayerUI(spot, true);
                 } else {
                     window.speechSynthesis.pause();
-                    isPaused = true;
                     isSpeaking = false;
+                    isAudioPlaying = false;
                     updatePlayerUI(spot, false);
                 }
             } else {
@@ -1477,13 +1637,8 @@
             if (isAudioMuted) {
                 btnMute.innerText = '🔇';
                 btnMute.classList.add('mute-active');
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                    isSpeaking = false;
-                    isPaused = false;
-                    currentUtterance = null;
-                    if (spot) updatePlayerUI(spot, false);
-                }
+                stopAllAudio();
+                if (spot) updatePlayerUI(spot, false);
             } else {
                 btnMute.innerText = '🔊';
                 btnMute.classList.remove('mute-active');

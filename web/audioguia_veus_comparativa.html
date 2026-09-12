@@ -71,6 +71,8 @@
         .voice-card.joana {
             border-color: var(--joana-color);
             background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border-width: 2.5px;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.35);
         }
         .voice-card h2 {
             font-size: 1.35rem;
@@ -96,7 +98,7 @@
             text-transform: uppercase;
         }
         .voice-card.ona .tag { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; }
-        .voice-card.joana .tag { background: rgba(6, 182, 212, 0.2); color: #67e8f9; }
+        .voice-card.joana .tag { background: rgba(6, 182, 212, 0.25); color: #67e8f9; font-weight: 800; }
 
         .spot-card {
             background: rgba(15, 23, 42, 0.9);
@@ -139,412 +141,434 @@
             border-left: 3px solid #38bdf8;
             padding: 0.85rem 1rem;
             border-radius: 0 10px 10px 0;
-            color: #94a3b8;
-            font-size: 0.93rem;
+            color: #cbd5e1;
+            font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 1.25rem;
-            font-style: italic;
         }
         .player-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1.25rem;
         }
-        @media (max-width: 650px) {
+        @media (max-width: 640px) {
             .player-row { grid-template-columns: 1fr; }
         }
         .player-box {
-            padding: 1rem 1.15rem;
+            background: rgba(2, 6, 23, 0.8);
             border-radius: 14px;
-            border: 1.5px solid;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             flex-direction: column;
-            gap: 0.65rem;
+            gap: 0.75rem;
         }
-        .player-box.ona {
-            background: rgba(168, 85, 247, 0.08);
-            border-color: rgba(168, 85, 247, 0.35);
-        }
-        .player-box.joana {
-            background: rgba(6, 182, 212, 0.08);
-            border-color: rgba(6, 182, 212, 0.35);
-        }
-        .player-label {
-            font-size: 0.88rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .player-box.ona .player-label { color: #d8b4fe; }
-        .player-box.joana .player-label { color: #67e8f9; }
-        audio {
-            width: 100%;
-            height: 38px;
-            outline: none;
-            border-radius: 20px;
-        }
-        .back-nav {
-            text-align: center;
-            margin-top: 3.5rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        .btn-link {
-            display: inline-block;
-            background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
-            color: white;
-            text-decoration: none;
-            padding: 0.85rem 1.8rem;
-            border-radius: 30px;
+        .player-box.ona { border-color: rgba(168, 85, 247, 0.3); }
+        .player-box.joana { border-color: rgba(6, 182, 212, 0.45); background: rgba(6, 182, 212, 0.04); }
+        .player-box-title {
             font-weight: 700;
             font-size: 0.95rem;
-            margin: 0.5rem;
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.35);
-            transition: transform 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .btn-link:hover {
-            transform: scale(1.03);
+        .player-box.ona .player-box-title { color: #c084fc; }
+        .player-box.joana .player-box-title { color: #38bdf8; }
+        audio {
+            width: 100%;
+            height: 40px;
+            outline: none;
+            border-radius: 8px;
+        }
+        .nav-links {
+            text-align: center;
+            margin-top: 3rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: 600;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            transition: all 0.2s;
+        }
+        .nav-links a:hover {
+            background: rgba(56, 189, 248, 0.2);
+            border-color: #38bdf8;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <span class="badge">🎧 Banc de Proves de Veus en Català</span>
-            <h1>Tria la Veu de l'Audioguia</h1>
+            <span class="badge">🎙️ Audioguia Art Lumínic 2026</span>
+            <h1>Locucions en Català de l'Audioguia</h1>
             <p class="subtitle">
-                Hem generat els 10 àudios oficials de les instal·lacions amb les dues millors veus d'IA en català. Escolta-les i tria quina prefereixes per acompanyar els visitants pel circuit.
+                Textos oficials de les 9 instal·lacions lumíniques i el Punt d'Inici gravats amb la veu seleccionada de <strong>Joana</strong> (i Ona com a referència).
             </p>
         </header>
 
         <div class="voices-info-box">
-            <div class="voice-card ona">
-                <h2>🟣 Veu Ona (Piper TTS)</h2>
-                <p>
-                    <strong>Model VITS Open Source del Projecte Aina / BSC (Barcelona Supercomputing Center).</strong><br>
-                    Veu càlida, expressiva, amb to proper i humà, ideal per a l'atmosfera poètica i d'art submarí del festival.
-                </p>
-                <span class="tag">Open Source · Projecte Aina</span>
-            </div>
             <div class="voice-card joana">
-                <h2>🔵 Veu Joana (Neural)</h2>
-                <p>
-                    <strong>Model Neuronal d'alta definició.</strong><br>
-                    Veu clara, lluminosa i amb una dicció molt nítida d'estudi de ràdio o documental cultural, perfectament audible fins i tot al carrer amb soroll ambiental.
-                </p>
-                <span class="tag">Dicció Nítida · Ràdio / Docu</span>
+                <h2><span>✨</span> Veu Escollida: Joana</h2>
+                <p>Veu neuronal d'alta claredat, expressió càlida i excel·lent dicció catalana. S'integra per defecte a tota l'audioguia.</p>
+                <span class="tag">VEU OFICIAL DE L'AUDIOGUIA</span>
+            </div>
+            <div class="voice-card ona">
+                <h2><span>🟣</span> Veu Alternativa: Ona</h2>
+                <p>Desenvolupada pel Barcelona Supercomputing Center (Projecte Aina / BSC). Model obert en català central.</p>
+                <span class="tag">PROJECTE AINA · BSC</span>
             </div>
         </div>
 
         <div class="spots-list">
 
-            <div class="spot-card" id="spot-00_inici">
+            <!-- Punt d'Inici · Circuit d'Art Lumínic -->
+            <div class="spot-card">
                 <div class="spot-header">
                     <div class="spot-badge">🚩</div>
                     <div class="spot-title">Punt d'Inici · Circuit d'Art Lumínic</div>
                 </div>
-                <div class="spot-text">«Punt d'Inici, Circuit d'Art Lumínic. Punt de partida recomanat per iniciar l'itinerari de les 9 instal·lacions lumíniques nocturnes seguint el camí d'espelmes.»</div>
+                <div class="spot-text">
+                    "Molt bé, aquest és el Punt d'Inici del Circuit d'Art Lumínic. És el Punt de partida recomanat per iniciar l'itinerari de les 9 instal·lacions lumíniques nocturnes seguint el camí d'espelmes."
+                </div>
                 <div class="player-row">
-                    <div class="player-box ona">
-                        <div class="player-label">
-                            <span>🟣 ONA (Piper TTS)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/ona/00_inici.mp3</span>
-                        </div>
-                        <audio controls preload="none">
-                            <source src="sons/ona/00_inici.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
-                        </audio>
-                    </div>
                     <div class="player-box joana">
-                        <div class="player-label">
-                            <span>🔵 JOANA (Neural)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/joana/00_inici.mp3</span>
+                        <div class="player-box-title">
+                            <span>✨ Joana (Oficial)</span>
+                            <span style="font-size: 0.75rem; color: #67e8f9;">MP3</span>
                         </div>
                         <audio controls preload="none">
                             <source src="sons/joana/00_inici.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
+                            El teu navegador no suporta l'element d'àudio.
+                        </audio>
+                    </div>
+                    <div class="player-box ona">
+                        <div class="player-box-title">
+                            <span>🟣 Ona (Aina)</span>
+                            <span style="font-size: 0.75rem; color: #c084fc;">MP3</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="sons/ona/00_inici.mp3" type="audio/mpeg">
+                            El teu navegador no suporta l'element d'àudio.
                         </audio>
                     </div>
                 </div>
             </div>
-    
-            <div class="spot-card" id="spot-01_placa_octubre">
+
+            <!-- 1. Plaça 1 d'Octubre · «El jardí de les meduses» -->
+            <div class="spot-card">
                 <div class="spot-header">
                     <div class="spot-badge">🪼1</div>
                     <div class="spot-title">1. Plaça 1 d'Octubre · «El jardí de les meduses»</div>
                 </div>
-                <div class="spot-text">«Plaça 1 d'Octubre, El jardí de les meduses. Obra de Gran Medusa 1, mathr i netz. La plaça s'omple de vida marina amb la primera gran Medusa inflable gegant. Espectacle inaugural i actuació audiovisual Ommatidia.»</div>
+                <div class="spot-text">
+                    "Estàs a la Plaça 1 d'Octubre, El jardí de les meduses. La plaça s'omple de vida marina amb la primera gran Medusa inflable gegant."
+                </div>
                 <div class="player-row">
-                    <div class="player-box ona">
-                        <div class="player-label">
-                            <span>🟣 ONA (Piper TTS)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/ona/01_placa_octubre.mp3</span>
-                        </div>
-                        <audio controls preload="none">
-                            <source src="sons/ona/01_placa_octubre.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
-                        </audio>
-                    </div>
                     <div class="player-box joana">
-                        <div class="player-label">
-                            <span>🔵 JOANA (Neural)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/joana/01_placa_octubre.mp3</span>
+                        <div class="player-box-title">
+                            <span>✨ Joana (Oficial)</span>
+                            <span style="font-size: 0.75rem; color: #67e8f9;">MP3</span>
                         </div>
                         <audio controls preload="none">
                             <source src="sons/joana/01_placa_octubre.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
+                            El teu navegador no suporta l'element d'àudio.
+                        </audio>
+                    </div>
+                    <div class="player-box ona">
+                        <div class="player-box-title">
+                            <span>🟣 Ona (Aina)</span>
+                            <span style="font-size: 0.75rem; color: #c084fc;">MP3</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="sons/ona/01_placa_octubre.mp3" type="audio/mpeg">
+                            El teu navegador no suporta l'element d'àudio.
                         </audio>
                     </div>
                 </div>
             </div>
-    
-            <div class="spot-card" id="spot-02_carrer_baix">
+
+            <!-- 2. Carrer de Baix · «Onades Olímpiques» -->
+            <div class="spot-card">
                 <div class="spot-header">
                     <div class="spot-badge">🌊</div>
                     <div class="spot-title">2. Carrer de Baix · «Onades Olímpiques»</div>
                 </div>
-                <div class="spot-text">«Carrer de Baix, Onades Olímpiques. Instal·lació inspirada en el moviment de les onades i l'esperit del disseny dels Jocs Olímpics amb un joc de formes i llums visuals.»</div>
+                <div class="spot-text">
+                    "Carrer de Baix, Onades Olímpiques. Instal·lació inspirada en el moviment de les onades i l'esperit del disseny dels Jocs Olímpics amb un joc de formes i llums visuals."
+                </div>
                 <div class="player-row">
-                    <div class="player-box ona">
-                        <div class="player-label">
-                            <span>🟣 ONA (Piper TTS)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/ona/02_carrer_baix.mp3</span>
-                        </div>
-                        <audio controls preload="none">
-                            <source src="sons/ona/02_carrer_baix.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
-                        </audio>
-                    </div>
                     <div class="player-box joana">
-                        <div class="player-label">
-                            <span>🔵 JOANA (Neural)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/joana/02_carrer_baix.mp3</span>
+                        <div class="player-box-title">
+                            <span>✨ Joana (Oficial)</span>
+                            <span style="font-size: 0.75rem; color: #67e8f9;">MP3</span>
                         </div>
                         <audio controls preload="none">
                             <source src="sons/joana/02_carrer_baix.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
+                            El teu navegador no suporta l'element d'àudio.
+                        </audio>
+                    </div>
+                    <div class="player-box ona">
+                        <div class="player-box-title">
+                            <span>🟣 Ona (Aina)</span>
+                            <span style="font-size: 0.75rem; color: #c084fc;">MP3</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="sons/ona/02_carrer_baix.mp3" type="audio/mpeg">
+                            El teu navegador no suporta l'element d'àudio.
                         </audio>
                     </div>
                 </div>
             </div>
-    
-            <div class="spot-card" id="spot-03_carrer_tarongeta">
+
+            <!-- 3. Carrer Tarongeta · «El túnel blau» -->
+            <div class="spot-card">
                 <div class="spot-header">
                     <div class="spot-badge">🪼2</div>
                     <div class="spot-title">3. Carrer Tarongeta · «El túnel blau»</div>
                 </div>
-                <div class="spot-text">«Carrer Tarongeta, El túnel blau. Obra de Passatge Immersiu i Medusa 2. Passatge envoltat de teles i atmosferes de llum blava. Inclou la Medusa 2 en un punt d'il·luminació ambiental submarina.»</div>
+                <div class="spot-text">
+                    "Carrer Tarongeta, El túnel blau. Passatge envoltat de teles i atmosferes de llum blava. Inclou una Medusa gegant al final de la inmersió submarina."
+                </div>
                 <div class="player-row">
-                    <div class="player-box ona">
-                        <div class="player-label">
-                            <span>🟣 ONA (Piper TTS)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/ona/03_carrer_tarongeta.mp3</span>
-                        </div>
-                        <audio controls preload="none">
-                            <source src="sons/ona/03_carrer_tarongeta.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
-                        </audio>
-                    </div>
                     <div class="player-box joana">
-                        <div class="player-label">
-                            <span>🔵 JOANA (Neural)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/joana/03_carrer_tarongeta.mp3</span>
+                        <div class="player-box-title">
+                            <span>✨ Joana (Oficial)</span>
+                            <span style="font-size: 0.75rem; color: #67e8f9;">MP3</span>
                         </div>
                         <audio controls preload="none">
                             <source src="sons/joana/03_carrer_tarongeta.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
+                            El teu navegador no suporta l'element d'àudio.
+                        </audio>
+                    </div>
+                    <div class="player-box ona">
+                        <div class="player-box-title">
+                            <span>🟣 Ona (Aina)</span>
+                            <span style="font-size: 0.75rem; color: #c084fc;">MP3</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="sons/ona/03_carrer_tarongeta.mp3" type="audio/mpeg">
+                            El teu navegador no suporta l'element d'àudio.
                         </audio>
                     </div>
                 </div>
             </div>
-    
-            <div class="spot-card" id="spot-04_clos_garriga">
+
+            <!-- 4. Plaça Clos Garriga · «Profunditats residuals» -->
+            <div class="spot-card">
                 <div class="spot-header">
                     <div class="spot-badge">⚡</div>
                     <div class="spot-title">4. Plaça Clos Garriga · «Profunditats residuals»</div>
                 </div>
-                <div class="spot-text">«Plaça Clos Garriga, Profunditats residuals. Obra de Art Lumínic i Làser. Composició immersiva amb teles, tirants, raig làser i punts de llum simulant els raigs de sol penetrant aigües profundes.»</div>
+                <div class="spot-text">
+                    "Plaça Clos Garriga, Profunditats residuals. Composició immersiva amb teles, tirants, raig làser i punts de llum simulant els raigs de sol penetrant en les aigües profundes."
+                </div>
                 <div class="player-row">
-                    <div class="player-box ona">
-                        <div class="player-label">
-                            <span>🟣 ONA (Piper TTS)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/ona/04_clos_garriga.mp3</span>
-                        </div>
-                        <audio controls preload="none">
-                            <source src="sons/ona/04_clos_garriga.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
-                        </audio>
-                    </div>
                     <div class="player-box joana">
-                        <div class="player-label">
-                            <span>🔵 JOANA (Neural)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/joana/04_clos_garriga.mp3</span>
+                        <div class="player-box-title">
+                            <span>✨ Joana (Oficial)</span>
+                            <span style="font-size: 0.75rem; color: #67e8f9;">MP3</span>
                         </div>
                         <audio controls preload="none">
                             <source src="sons/joana/04_clos_garriga.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
+                            El teu navegador no suporta l'element d'àudio.
+                        </audio>
+                    </div>
+                    <div class="player-box ona">
+                        <div class="player-box-title">
+                            <span>🟣 Ona (Aina)</span>
+                            <span style="font-size: 0.75rem; color: #c084fc;">MP3</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="sons/ona/04_clos_garriga.mp3" type="audio/mpeg">
+                            El teu navegador no suporta l'element d'àudio.
                         </audio>
                     </div>
                 </div>
             </div>
-    
-            <div class="spot-card" id="spot-05_antiga_escola">
+
+            <!-- 5. Antiga Escola · «MEDITERRÀNIA. FONS.» -->
+            <div class="spot-card">
                 <div class="spot-header">
                     <div class="spot-badge">5</div>
                     <div class="spot-title">5. Antiga Escola · «MEDITERRÀNIA. FONS.»</div>
                 </div>
-                <div class="spot-text">«Antiga Escola, MEDITERRÀNIA. FONS. Obra de Isi i Dibu. Una vida. Una medusa. Un mar immens. Fràgil, com tantes vides que el Mediterrani ha engolit. Per alguns, el mar és frontera. Per d'altres, l'última esperança. Instal·lació immersiva creada pels artistes DABU i isi.»</div>
+                <div class="spot-text">
+                    "Antiga Escola, obra titulada: MEDITERRÀNIA. FONS. Una vida. Una medusa. Un mar immens. Fràgil, com tantes vides que el Mediterrani ha engolit. Per alguns, el mar és frontera. Per d'altres, l'última esperança. Instal·lació immersiva creada pels artistes DABU i isi."
+                </div>
                 <div class="player-row">
-                    <div class="player-box ona">
-                        <div class="player-label">
-                            <span>🟣 ONA (Piper TTS)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/ona/05_antiga_escola.mp3</span>
-                        </div>
-                        <audio controls preload="none">
-                            <source src="sons/ona/05_antiga_escola.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
-                        </audio>
-                    </div>
                     <div class="player-box joana">
-                        <div class="player-label">
-                            <span>🔵 JOANA (Neural)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/joana/05_antiga_escola.mp3</span>
+                        <div class="player-box-title">
+                            <span>✨ Joana (Oficial)</span>
+                            <span style="font-size: 0.75rem; color: #67e8f9;">MP3</span>
                         </div>
                         <audio controls preload="none">
                             <source src="sons/joana/05_antiga_escola.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
+                            El teu navegador no suporta l'element d'àudio.
+                        </audio>
+                    </div>
+                    <div class="player-box ona">
+                        <div class="player-box-title">
+                            <span>🟣 Ona (Aina)</span>
+                            <span style="font-size: 0.75rem; color: #c084fc;">MP3</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="sons/ona/05_antiga_escola.mp3" type="audio/mpeg">
+                            El teu navegador no suporta l'element d'àudio.
                         </audio>
                     </div>
                 </div>
             </div>
-    
-            <div class="spot-card" id="spot-06_esglesia">
+
+            <!-- 6. Església · «L'abisme i el fum» -->
+            <div class="spot-card">
                 <div class="spot-header">
                     <div class="spot-badge">🌋</div>
                     <div class="spot-title">6. Església · «L'abisme i el fum»</div>
                 </div>
-                <div class="spot-text">«Església, L'abisme i el fum. Obra de Instal·lació Atmosfèrica Industrial. Instal·lació d'estil industrial basada en tubs de llum i efectes de fum que simulen fumaroles i corrents de fosses marines.»</div>
+                <div class="spot-text">
+                    "Església, L'abisme i el fum. Instal·lació d'estil industrial basada en tubs de llum i efectes de fum que simulen fumaroles i corrents de fosses marines."
+                </div>
                 <div class="player-row">
-                    <div class="player-box ona">
-                        <div class="player-label">
-                            <span>🟣 ONA (Piper TTS)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/ona/06_esglesia.mp3</span>
-                        </div>
-                        <audio controls preload="none">
-                            <source src="sons/ona/06_esglesia.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
-                        </audio>
-                    </div>
                     <div class="player-box joana">
-                        <div class="player-label">
-                            <span>🔵 JOANA (Neural)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/joana/06_esglesia.mp3</span>
+                        <div class="player-box-title">
+                            <span>✨ Joana (Oficial)</span>
+                            <span style="font-size: 0.75rem; color: #67e8f9;">MP3</span>
                         </div>
                         <audio controls preload="none">
                             <source src="sons/joana/06_esglesia.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
+                            El teu navegador no suporta l'element d'àudio.
+                        </audio>
+                    </div>
+                    <div class="player-box ona">
+                        <div class="player-box-title">
+                            <span>🟣 Ona (Aina)</span>
+                            <span style="font-size: 0.75rem; color: #c084fc;">MP3</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="sons/ona/06_esglesia.mp3" type="audio/mpeg">
+                            El teu navegador no suporta l'element d'àudio.
                         </audio>
                     </div>
                 </div>
             </div>
-    
-            <div class="spot-card" id="spot-07_generalitat">
+
+            <!-- 7. Avinguda Generalitat · «Corrents marines» -->
+            <div class="spot-card">
                 <div class="spot-header">
                     <div class="spot-badge">🪼3</div>
                     <div class="spot-title">7. Avinguda Generalitat · «Corrents marines»</div>
                 </div>
-                <div class="spot-text">«Avinguda Generalitat, Corrents marines. Obra de Meduses Flotants. Artèria transformada amb un conjunt de meduses flotants i filtres cromàtics jugant amb perspectives i altures.»</div>
+                <div class="spot-text">
+                    "Avinguda Generalitat, Corrents marines. Artèria transformada amb un conjunt de meduses flotants i filtres cromàtics jugant amb perspectives i altures."
+                </div>
                 <div class="player-row">
-                    <div class="player-box ona">
-                        <div class="player-label">
-                            <span>🟣 ONA (Piper TTS)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/ona/07_generalitat.mp3</span>
-                        </div>
-                        <audio controls preload="none">
-                            <source src="sons/ona/07_generalitat.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
-                        </audio>
-                    </div>
                     <div class="player-box joana">
-                        <div class="player-label">
-                            <span>🔵 JOANA (Neural)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/joana/07_generalitat.mp3</span>
+                        <div class="player-box-title">
+                            <span>✨ Joana (Oficial)</span>
+                            <span style="font-size: 0.75rem; color: #67e8f9;">MP3</span>
                         </div>
                         <audio controls preload="none">
                             <source src="sons/joana/07_generalitat.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
+                            El teu navegador no suporta l'element d'àudio.
+                        </audio>
+                    </div>
+                    <div class="player-box ona">
+                        <div class="player-box-title">
+                            <span>🟣 Ona (Aina)</span>
+                            <span style="font-size: 0.75rem; color: #c084fc;">MP3</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="sons/ona/07_generalitat.mp3" type="audio/mpeg">
+                            El teu navegador no suporta l'element d'àudio.
                         </audio>
                     </div>
                 </div>
             </div>
-    
-            <div class="spot-card" id="spot-08_diposit">
+
+            <!-- 8. Dipòsit de l'Aigua · «La Reina del Festival» -->
+            <div class="spot-card">
                 <div class="spot-header">
                     <div class="spot-badge">👑</div>
                     <div class="spot-title">8. Dipòsit de l'Aigua · «La Reina del Festival»</div>
                 </div>
-                <div class="spot-text">«Dipòsit de l'Aigua, La Reina del Festival. Serp gegant inflable viva amb focus de gran potència i ventilació contínua, governant i presidint el festival des de les altures.»</div>
+                <div class="spot-text">
+                    "Dipòsit de l'Aigua, La Reina del Festival. Serp gegant inflable viva amb focus de gran potència i ventilació contínua, governant i presidint el festival des de les altures."
+                </div>
                 <div class="player-row">
-                    <div class="player-box ona">
-                        <div class="player-label">
-                            <span>🟣 ONA (Piper TTS)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/ona/08_diposit.mp3</span>
-                        </div>
-                        <audio controls preload="none">
-                            <source src="sons/ona/08_diposit.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
-                        </audio>
-                    </div>
                     <div class="player-box joana">
-                        <div class="player-label">
-                            <span>🔵 JOANA (Neural)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/joana/08_diposit.mp3</span>
+                        <div class="player-box-title">
+                            <span>✨ Joana (Oficial)</span>
+                            <span style="font-size: 0.75rem; color: #67e8f9;">MP3</span>
                         </div>
                         <audio controls preload="none">
                             <source src="sons/joana/08_diposit.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
+                            El teu navegador no suporta l'element d'àudio.
+                        </audio>
+                    </div>
+                    <div class="player-box ona">
+                        <div class="player-box-title">
+                            <span>🟣 Ona (Aina)</span>
+                            <span style="font-size: 0.75rem; color: #c084fc;">MP3</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="sons/ona/08_diposit.mp3" type="audio/mpeg">
+                            El teu navegador no suporta l'element d'àudio.
                         </audio>
                     </div>
                 </div>
             </div>
-    
-            <div class="spot-card" id="spot-09_airearte">
+
+            <!-- 9. Airearte · «Medusa & Mostra Col·lectiva Local» -->
+            <div class="spot-card">
                 <div class="spot-header">
                     <div class="spot-badge">🎨</div>
                     <div class="spot-title">9. Airearte · «Medusa & Mostra Col·lectiva Local»</div>
                 </div>
-                <div class="spot-text">«Airearte, Medusa & Mostra Col·lectiva Local. Obra de Artistes Locals i Airearte. Punt final amb una medusa lumínica i la gran exposició col·lectiva dels artistes locals del Festival Pluja d'Art.»</div>
+                <div class="spot-text">
+                    "Airearte, Punt final amb una medusa lumínica i la gran exposició col·lectiva dels artistes locals del Festival Pluja d'Art."
+                </div>
                 <div class="player-row">
-                    <div class="player-box ona">
-                        <div class="player-label">
-                            <span>🟣 ONA (Piper TTS)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/ona/09_airearte.mp3</span>
-                        </div>
-                        <audio controls preload="none">
-                            <source src="sons/ona/09_airearte.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
-                        </audio>
-                    </div>
                     <div class="player-box joana">
-                        <div class="player-label">
-                            <span>🔵 JOANA (Neural)</span>
-                            <span style="font-size: 0.75rem; opacity: 0.7;">sons/joana/09_airearte.mp3</span>
+                        <div class="player-box-title">
+                            <span>✨ Joana (Oficial)</span>
+                            <span style="font-size: 0.75rem; color: #67e8f9;">MP3</span>
                         </div>
                         <audio controls preload="none">
                             <source src="sons/joana/09_airearte.mp3" type="audio/mpeg">
-                            El teu navegador no suporta l'àudio.
+                            El teu navegador no suporta l'element d'àudio.
+                        </audio>
+                    </div>
+                    <div class="player-box ona">
+                        <div class="player-box-title">
+                            <span>🟣 Ona (Aina)</span>
+                            <span style="font-size: 0.75rem; color: #c084fc;">MP3</span>
+                        </div>
+                        <audio controls preload="none">
+                            <source src="sons/ona/09_airearte.mp3" type="audio/mpeg">
+                            El teu navegador no suporta l'element d'àudio.
                         </audio>
                     </div>
                 </div>
             </div>
-    
+
         </div>
 
-        <div class="back-nav">
-            <a href="audioguia.html" class="btn-link">🎧 Anar a l'Audioguia GPS</a>
-            <a href="mapa3.html" class="btn-link" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);">🗺️ Veure Mapa Lumínic</a>
-            <a href="art-luminic-2026.html" class="btn-link" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);">✨ Pàgina Art Lumínic</a>
+        <div class="nav-links">
+            <a href="audioguia.html"><span>🎧</span> Anar a l'Audioguia Interactiva amb Mapa</a>
+            <a href="mapa3.html"><span>🗺️</span> Anar al Mapa d'Art Lumínic</a>
+            <a href="art-luminic-2026.html"><span>💡</span> Pàgina d'Art Lumínic 2026</a>
         </div>
     </div>
 </body>
