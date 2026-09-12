@@ -929,9 +929,9 @@
     </div>
 
     <!-- Botó de So Ambient Oceànic (Web Audio API) -->
-    <button type="button" class="audio-toggle-btn" id="audioToggleBtn" onclick="toggleOceanAudio()" title="Activar/Desactivar atmosfera sonora de fons marí">
-        <span id="audioIcon">🔇</span>
-        <span id="audioText">So Submarí</span>
+    <button type="button" class="audio-toggle-btn active" id="audioToggleBtn" onclick="toggleOceanAudio()" title="Activar/Desactivar atmosfera sonora de fons marí">
+        <span id="audioIcon">🔊</span>
+        <span id="audioText">Atmosfera Activa</span>
     </button>
 
     <!-- Header & Navegació Superior -->
@@ -2522,21 +2522,25 @@
             }, randomDelay);
         }
 
-        function toggleOceanAudio() {
+        let userDisabledAudio = false;
+
+        function startOceanAudio() {
+            if (isAudioPlaying || userDisabledAudio) return;
+
             const btn = document.getElementById('audioToggleBtn');
             const icon = document.getElementById('audioIcon');
             const text = document.getElementById('audioText');
 
-            if (!audioCtx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext();
-            }
+            try {
+                if (!audioCtx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
+                }
 
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
 
-            if (!isAudioPlaying) {
                 // Síntesi d'ambient marí profund (soroll rosa filtrat suau)
                 const bufferSize = audioCtx.sampleRate * 4;
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -2568,9 +2572,9 @@
                 noise.start();
 
                 isAudioPlaying = true;
-                btn.classList.add('active');
-                icon.innerText = '🔊';
-                text.innerText = 'Atmosfera Activa';
+                if (btn) btn.classList.add('active');
+                if (icon) icon.innerText = '🔊';
+                if (text) text.innerText = 'Atmosfera Activa';
 
                 // Programar el primer ping i la seqüència aleatòria espaiada
                 if (sonarTimer) clearTimeout(sonarTimer);
@@ -2579,22 +2583,67 @@
                     scheduleNextSonarPing();
                 }, 2500);
 
-            } else {
-                if (oceanGain) {
+            } catch (err) {
+                console.warn('Avís en iniciar àudio ambient:', err);
+            }
+        }
+
+        function stopOceanAudio() {
+            const btn = document.getElementById('audioToggleBtn');
+            const icon = document.getElementById('audioIcon');
+            const text = document.getElementById('audioText');
+
+            if (oceanGain && audioCtx) {
+                try {
                     oceanGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
                     setTimeout(() => {
-                        if (audioCtx) audioCtx.suspend();
+                        if (audioCtx && !isAudioPlaying) audioCtx.suspend();
                     }, 900);
-                }
-                if (sonarTimer) {
-                    clearTimeout(sonarTimer);
-                    sonarTimer = null;
-                }
-                isAudioPlaying = false;
-                btn.classList.remove('active');
-                icon.innerText = '🔇';
-                text.innerText = 'So Submarí';
+                } catch(e) {}
             }
+            if (sonarTimer) {
+                clearTimeout(sonarTimer);
+                sonarTimer = null;
+            }
+            isAudioPlaying = false;
+            if (btn) btn.classList.remove('active');
+            if (icon) icon.innerText = '🔇';
+            if (text) text.innerText = 'So Submarí';
+        }
+
+        function toggleOceanAudio() {
+            if (!isAudioPlaying) {
+                userDisabledAudio = false;
+                startOceanAudio();
+            } else {
+                userDisabledAudio = true;
+                stopOceanAudio();
+            }
+        }
+
+        // Iniciar per defecte el so ambient (activació immediata o al primer toc/scroll si el navegador té política d'autoplay)
+        function initDefaultAudio() {
+            startOceanAudio();
+
+            const unlockOnInteraction = () => {
+                if (!isAudioPlaying && !userDisabledAudio) {
+                    startOceanAudio();
+                } else if (audioCtx && audioCtx.state === 'suspended' && !userDisabledAudio) {
+                    audioCtx.resume();
+                }
+            };
+
+            window.addEventListener('click', unlockOnInteraction, { passive: true });
+            window.addEventListener('touchstart', unlockOnInteraction, { passive: true });
+            window.addEventListener('scroll', unlockOnInteraction, { passive: true, once: true });
+            window.addEventListener('keydown', unlockOnInteraction, { passive: true, once: true });
+        }
+
+        // Executar en carregar el document
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDefaultAudio);
+        } else {
+            initDefaultAudio();
         }
 
         // Clic al mesurador de profunditat per provar el sonar immediatament
