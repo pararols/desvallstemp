@@ -13,4 +13,5 @@ scratch_fonts/
 test_joana.mp3
 *.wav
 esborranys_i_propostes/
+.env
 
