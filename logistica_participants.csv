@@ -1,10 +1,10 @@
-﻿;;;;;;;;;;;;;;;;;limit;50;km;limit;50;km;;;;;;
+;;;;;;;;;;;;;;;;;limit;50;km;limit;50;km;;;;;;
 Categoria;Companyia;Nom;DNI;Email;Telèfon;Municipi;Distància (km);Ruta Google Maps;;;;;;;;;;km a pagar;eur a pagar;;km a pagar;eur a pagar;;;;;;
 Arts Vives;Els Braves;Aleix;41645308J;agazquezverdaguer@gmail.com;675809849;Quart;22,4;https://www.google.com/maps/dir/?api=1&origin=Sant+Jordi+Desvalls&destination=Quart;;;;;;;;;;0; -   € ;;0;0,00 €;;;;;;
 Arts Vives;QUIM CASTELLA TURON;QUIM CASTELLA TURON;387850067Z;pamboliteatre@gmail.com;669203640;MATARO;87,4;https://www.google.com/maps/dir/?api=1&origin=Sant+Jordi+Desvalls&destination=MATARO;;;;;;;;;;74,8;18,70 €;;87,4;43,70 €;;;;;;
 Arts Vives;Djammal;Jose Miguel Martins Semedo;X8561939M;clownonpopping@gmail.com;600031910;La Bisbal d'Empordà;16,6;https://www.google.com/maps/dir/?api=1&origin=Sant+Jordi+Desvalls&destination=La%20Bisbal%20d%27Empord%C3%A0;;;;;;;;;;0; -   € ;;0;0,00 €;;;;;;
 Arts Vives;Barret's Garden;Santi Cos Giner;38846985A;barretsgarden@gmail.com;656335924;Cervià de Ter;3,8;https://www.google.com/maps/dir/?api=1&origin=Sant+Jordi+Desvalls&destination=Cervi%C3%A0%20de%20Ter;;;;;;;;;;0; -   € ;;0;0,00 €;;;;;;
-Arts Vives;Duo Belarc;Laura Almiñana;21774253S;duobelarc@gmail.com;640350763;Barcelona;119,7;https://www.google.com/maps/dir/?api=1&origin=Sant+Jordi+Desvalls&destination=Barcelona;;;;;;;;;;139,4;34,85 €;;119,7;59,85 €;;;;;;
+Arts Vives;Duo Belarc;Laura Almiñana i Marina Piedrahita;21774253S;duobelarc@gmail.com;640350763;Barcelona;119,7;https://www.google.com/maps/dir/?api=1&origin=Sant+Jordi+Desvalls&destination=Barcelona;;;;;;;;;;139,4;34,85 €;;119,7;59,85 €;;;;;;
 Arts Vives;Rumbesia;Jose Manuel Panzano Sancho;46624948s;jose.panzano@gmail.com;660656698;Sant Cugat del Vallès;113,2;https://www.google.com/maps/dir/?api=1&origin=Sant+Jordi+Desvalls&destination=Sant%20Cugat%20del%20Vall%C3%A8s;;;;;;;;;;126,4;31,60 €;;113,2;56,60 €;;;;;;
 Arts Vives;Martademarte & Cia;Marta Ribas;43674067B;martademarte@martademarte.com;630626707;Blanes -Girona;60,1;https://www.google.com/maps/dir/?api=1&origin=Sant+Jordi+Desvalls&destination=Blanes%20-Girona;;;;;;;;;;20,2;5,05 €;;60,1;30,05 €;;;;;;
 Arts Vives;OMMATIDIA;Laura Netz;46973248a;laura@netzzz.net;662093243;Colera;54,8;https://www.google.com/maps/dir/?api=1&origin=Sant+Jordi+Desvalls&destination=Colera;;;;;;;;;;9,6;2,40 €;;54,8;27,40 €;;;;;;
