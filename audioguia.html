@@ -7,12 +7,12 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <title>🎧 Audioguia GPS Interactiva · Mar Mediterrània (Art Lumínic 2026)</title>
-    <meta name="description" content="Audioguia interactiva amb navegació GPS en viu pel Festival d'Art Lumínic «Mar Mediterrània» 2026 a Sant Jordi Desvalls. Música i disseny sonor marítim automàtic a cada punt sincronitzat amb Supabase.">
+    <title>🎧 Audioguia Poètica GPS · Mar Mediterrània (Art Lumínic 2026)</title>
+    <meta name="description" content="Audioguia poètica interactiva amb navegació GPS pel Festival d'Art Lumínic «Mar Mediterrània» 2026 a Sant Jordi Desvalls. Veu de Margarida Codina, versos de poesia catalana i música a cada punt.">
     
     <!-- OpenGraph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="🎧 Audioguia GPS Interactiva · Festival d'Art Lumínic 2026">
+    <meta property="og:title" content="🎧 Audioguia Poètica GPS · Veu: Margarida Codina · Mar Mediterrània 2026">
     <meta property="og:description" content="Navega pel circuit d'art lumínic amb OpenStreetMap i GPS. La música de cada instal·lació s'activa automàticament en acostar-t'hi!">
     <meta property="og:image" content="https://images.unsplash.com/photo-1544552866-d3ed42536cfd?auto=format&fit=crop&w=1200&q=80">
     
@@ -637,7 +637,10 @@
     <header class="app-header">
         <a href="art-luminic-2026.html" class="header-brand">
             <span>🌊</span>
-            <span>Mar <span class="highlight">Mediterrània</span></span>
+            <div>
+                <div style="line-height: 1.1;">Mar <span class="highlight">Mediterrània</span></div>
+                <div style="font-size: 0.68rem; color: #94a3b8; font-weight: 600;">Audioguia Poètica GPS</div>
+            </div>
         </a>
 
         <div class="gps-status-badge" id="gps-badge">
@@ -730,14 +733,19 @@
     <div class="audio-unlock-overlay" id="unlock-overlay">
         <div class="unlock-card">
             <div class="unlock-icon">🗣️✨</div>
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #ffffff; margin-bottom: 0.6rem;">
-                Audioguia amb Veu en Català
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #ffffff; margin-bottom: 0.4rem;">
+                Audioguia Poètica amb Veu en Català
             </h2>
-            <p style="font-size: 0.9rem; color: #94a3b8; line-height: 1.5; margin-bottom: 0.5rem;">
-                Posa't els auriculars i recorre el circuit! Quan arribis a <strong>menys de 10 metres</strong> de cada instal·lació o espai, una veu agradable en català et llegirà automàticament la fitxa explicativa.
+            <div style="display: flex; justify-content: center; gap: 0.6rem; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 0.8rem; flex-wrap: wrap;">
+                <span>Veu: <strong style="color: #38bdf8;">Margarida Codina</strong></span>
+                <span style="opacity: 0.4;">•</span>
+                <span>Versos: <strong style="color: #f472b6;">Poesia catalana</strong></span>
+            </div>
+            <p style="font-size: 0.9rem; color: #94a3b8; line-height: 1.5; margin-bottom: 0.8rem;">
+                Posa't els auriculars i recorre el circuit! A mesura que t'acostis a cada instal·lació o espai, la veu de l'escriptora <strong>Margarida Codina</strong> us acompanyarà automàticament en aquest diàleg íntim entre les arts lumíniques i els versos de la poesia catalana.
             </p>
             <button type="button" class="btn-start-tour" onclick="unlockAudioAndStart()">
-                <span>🎧</span> Iniciar Audioguia amb Veu
+                <span>🎧</span> Iniciar Audioguia Poètica
             </button>
         </div>
     </div>
