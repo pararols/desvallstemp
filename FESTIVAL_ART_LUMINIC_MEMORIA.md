@@ -36,7 +36,7 @@ Quan vulguis fer pública la pàgina del Festival d'Art Lumínic i que els boton
 
 | # | Espai | Títol Artístic | Contingut i Descripció | Imatge / Actiu |
 |---|---|---|---|---|
-| **1** | **Plaça 1 d'Octubre** | *El jardí de les meduses* | Gran Medusa 1 inflable gegant. Espectacle Inaugural «Vida i Mort» (21:30h) i Live AV «Ommatidia» (21:45h) de mathr & netz. | Imatge d'1 gran medusa única flotant en la foscor. |
+| **1** | **Plaça 1 d'Octubre** | *El jardí de les meduses* | Gran Medusa 1 inflable gegant. Espectacle Inaugural «Vida i Mort» (21:30h) i Live AV «Ommatidia» (22:00h) de mathr & netz. | Imatge d'1 gran medusa única flotant en la foscor. |
 | **2** | **Carrer de Baix** | *Onades Olímpiques* | Instal·lació dinàmica inspirada en el moviment continu de les onades marines i disseny olímpic. | Imatge d'onades en moviment i llum rítmica. |
 | **3** | **Carrer Tarongeta** | *El túnel blau* | Passatge de teles lleugeres i llum blava. Inclou la **Medusa 2** (segona medusa ambiental). | Imatge de túnel i atmosfera blau intens. |
 | **4** | **Plaça Clos Garriga** | *Profunditats residuals* | Teles suspeses, tirants, raigs de **llum làser** i sol penetrant praderies de **posidònia**. | Fons marí de praderies de posidònia amb feixos de llum. |
