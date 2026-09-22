@@ -156,28 +156,19 @@
             box-shadow: 0 4px 15px rgba(244, 63, 94, 0.35);
         }
 
-        /* Targetes d'Espectacles - Graella Compacta estil Exposicions */
-        .shows-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 2.5rem;
-            text-align: left;
-        }
-
+        /* Targetes d'Espectacles */
         .show-card {
             background: #0f172a;
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            padding: 1.25rem;
-            margin-bottom: 0;
+            padding: 1.75rem;
+            margin-bottom: 1.5rem;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
         .show-card:hover {
@@ -189,18 +180,18 @@
         .show-card-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
         .show-time-badge {
             background: rgba(244, 63, 94, 0.15);
             color: #fda4af;
             border: 1px solid rgba(244, 63, 94, 0.3);
-            padding: 0.25rem 0.65rem;
+            padding: 0.35rem 0.85rem;
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 1.1rem;
             font-weight: 800;
             font-family: var(--font-sans);
         }
@@ -209,21 +200,21 @@
             background: rgba(255, 255, 255, 0.08);
             color: #e2e8f0;
             border: 1px solid rgba(255, 255, 255, 0.16);
-            padding: 0.25rem 0.55rem;
+            padding: 0.35rem 0.75rem;
             border-radius: 8px;
-            font-size: 0.8rem;
+            font-size: 0.88rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
-            gap: 0.25rem;
+            gap: 0.3rem;
         }
 
         .show-genre-badge {
             background: rgba(255, 255, 255, 0.06);
             color: #cbd5e1;
-            padding: 0.25rem 0.6rem;
+            padding: 0.3rem 0.75rem;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.04em;
@@ -231,25 +222,23 @@
 
         .show-title {
             color: #ffffff;
-            font-size: 1.15rem;
+            font-size: 1.4rem;
             font-weight: 800;
-            margin: 0.2rem 0;
+            margin: 0.25rem 0;
             font-family: var(--font-sans);
-            line-height: 1.3;
         }
 
         .show-company {
             color: #38bdf8;
             font-weight: 700;
-            font-size: 0.92rem;
+            font-size: 1rem;
         }
 
         .show-synopsis {
             color: #cbd5e1;
-            font-size: 0.9rem;
-            line-height: 1.55;
+            font-size: 0.98rem;
+            line-height: 1.6;
             margin: 0;
-            flex-grow: 1;
         }
 
         .show-footer {
@@ -257,19 +246,18 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 0.6rem;
-            padding-top: 0.85rem;
-            margin-top: 0.5rem;
+            gap: 1rem;
+            padding-top: 1rem;
             border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .show-loc {
             color: #fbbf24;
             font-weight: 700;
-            font-size: 0.88rem;
+            font-size: 0.95rem;
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
+            gap: 0.4rem;
         }
 
         .show-links {
@@ -416,242 +404,6 @@
             color: #94a3b8;
             font-size: 0.85rem;
         }
-    
-        /* ==============================================================
-           ESTILS PROPOSTA NOVA EDICIÓ 2026 - MULTIMÈDIA I RESUM INTEGRAT
-           ============================================================== */
-        .hero-art {
-            min-height: 75vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            text-align: center;
-            padding: 8.5rem 1.5rem 5rem;
-            background: linear-gradient(180deg, rgba(9, 13, 22, 0.78) 0%, rgba(9, 13, 22, 0.96) 100%),
-                        url('img/edicio2026/fotos/dron_005.jpg') center/cover no-repeat;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        /* Bento Stats Grid */
-        .bento-stats {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 1.15rem;
-            max-width: 1100px;
-            margin: 2.75rem auto 1rem;
-        }
-
-        @media (max-width: 992px) {
-            .bento-stats { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (max-width: 600px) {
-            .bento-stats { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        .bento-stat-card {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 16px;
-            padding: 1.35rem 0.85rem;
-            text-align: center;
-            transition: transform 0.25s ease, border-color 0.25s ease;
-        }
-
-        .bento-stat-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(244, 63, 94, 0.5);
-            box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.25);
-        }
-
-        .stat-number {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: #ffffff;
-            font-family: var(--font-sans);
-            line-height: 1;
-            margin-bottom: 0.35rem;
-            background: linear-gradient(135deg, #fda4af 0%, #f43f5e 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-
-        /* Gran Resum de l'Edició: Dues Ànimes */
-        .dual-souls-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 2rem;
-            margin: 3rem 0;
-        }
-
-        .soul-card {
-            border-radius: 20px;
-            padding: 2.5rem;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .soul-card.day-soul {
-            background: linear-gradient(145deg, #1e1b4b 0%, #0f172a 100%);
-            border-left: 5px solid #f43f5e;
-        }
-
-        .soul-card.night-soul {
-            background: linear-gradient(145deg, #082f49 0%, #030712 100%);
-            border-left: 5px solid #38bdf8;
-            box-shadow: 0 15px 40px rgba(56, 189, 248, 0.15);
-        }
-
-        .soul-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 0.95rem;
-            border-radius: 9999px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 1.25rem;
-            width: fit-content;
-        }
-
-        .soul-title {
-            font-size: 1.9rem;
-            font-family: var(--font-serif);
-            color: #ffffff;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .soul-text {
-            color: #cbd5e1;
-            font-size: 1.05rem;
-            line-height: 1.7;
-            margin-bottom: 1.5rem;
-        }
-
-        .soul-img-preview {
-            width: 100%;
-            height: 240px;
-            border-radius: 12px;
-            object-fit: cover;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        /* Galeria de Vídeos Reels */
-        .video-reels-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.75rem;
-            margin-top: 2.5rem;
-        }
-
-        .video-reel-card {
-            background: #0f172a;
-            border-radius: 18px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.25s, border-color 0.25s;
-        }
-
-        .video-reel-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(56, 189, 248, 0.5);
-        }
-
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            height: 380px;
-            background: #000;
-        }
-
-        .video-wrapper video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .video-info {
-            padding: 1.25rem;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .video-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 0.4rem;
-        }
-
-        .video-meta {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            line-height: 1.5;
-        }
-
-        /* Secció Art Lumínic & Audioguia */
-        .luminic-featured-banner {
-            background: radial-gradient(circle at top left, #0369a1 0%, #020617 80%);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 24px;
-            padding: 3.5rem 2.5rem;
-            margin: 2rem 0;
-            box-shadow: 0 20px 50px rgba(2, 132, 199, 0.2);
-        }
-
-        /* Residència & Tallers Gallery */
-        .residencia-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.25rem;
-            margin: 2rem 0;
-        }
-
-        .residencia-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            overflow: hidden;
-            transition: transform 0.2s;
-        }
-
-        .residencia-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(168, 85, 247, 0.4);
-        }
-
-        .residencia-card img {
-            width: 100%;
-            height: 190px;
-            object-fit: cover;
-        }
-
-        .residencia-card-body {
-            padding: 1rem;
-        }
-
     </style>
 </head>
 <body>
@@ -683,115 +435,27 @@
     <section class="hero-art dark-section">
         <div class="container hero-content" style="position: relative; z-index: 2;">
             <div class="hero-badge-pill">
-                <span>🎨✨</span> 5a Fira d'Art i Espectacles & Festival d'Art Lumínic 2026
+                <span>🎨</span> 5a Fira d'Art i Espectacles al Carrer
             </div>
             <h1 class="hero-art-title">PLUJA D'ART 2026</h1>
             <div class="hero-art-dates">
                 <span>📅</span> 18, 19 i 20 de setembre de 2026 · Sant Jordi Desvalls
             </div>
-            <p style="color: #e2e8f0; max-width: 800px; margin: 0 auto 2rem; font-size: 1.2rem; line-height: 1.8; text-shadow: 0 2px 10px rgba(0,0,0,0.85);">
-                Sant Jordi Desvalls transformat en un gran museu viu d'art popular i art contemporani, espectacles de teatre, dansa, música en directe, 10 instal·lacions lumíniques nocturnes i 21 espais patrimonials oberts de bat a bat.
+            <p style="color: #e2e8f0; max-width: 720px; margin: 0 auto 2rem; font-size: 1.15rem; line-height: 1.7;">
+                Durant tres dies, els carrers, places, patis i cases històriques de Sant Jordi Desvalls es transformen en un gran escenari viu d'art contemporani, espectacles de teatre, dansa, concerts i creació popular.
             </p>
 
             <!-- Menú de salt ràpid a seccions -->
             <div class="hub-nav">
-                <a href="#resum-2026" class="hub-nav-btn active" style="background: rgba(244, 63, 94, 0.25); border-color: #f43f5e; color: #fff;">📊 Resum Edició 2026</a>
-                <a href="#espectacles" class="hub-nav-btn">🎭 Espectacles i Música</a>
-                <a href="#art-luminic-focus" class="hub-nav-btn" style="background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%); border-color: #38bdf8; color: #ffffff; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);">✨ Art Lumínic & Audioguia</a>
-                <a href="#galeria-videos" class="hub-nav-btn" style="background: rgba(56, 189, 248, 0.15); border-color: #38bdf8; color: #7dd3fc;">🎬 Vídeos Reels</a>
-                <a href="#residencia" class="hub-nav-btn" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.4); color: #e9d5ff;">🧵 1ª Residència</a>
-                <a href="#exposicions" class="hub-nav-btn">🖼️ Els 21 Espais d'Art</a>
-                <a href="mapa.html" class="hub-nav-btn" style="background: rgba(45, 212, 191, 0.15); border-color: #2dd4bf; color: #5eead4;">🗺️ Mapa Geolocalitzat</a>
-            </div>
-
-            <!-- Bento Stats de l'Edició 2026 -->
-            <div class="bento-stats">
-                <div class="bento-stat-card">
-                    <div class="stat-number">3</div>
-                    <div class="stat-label">Dies de Festival Cultural</div>
-                </div>
-                <div class="bento-stat-card">
-                    <div class="stat-number">21</div>
-                    <div class="stat-label">Espais d'Exposició d'Art</div>
-                </div>
-                <div class="bento-stat-card">
-                    <div class="stat-number" style="background: linear-gradient(135deg, #7dd3fc 0%, #0284c7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">10</div>
-                    <div class="stat-label">Punts d'Art Lumínic</div>
-                </div>
-                <div class="bento-stat-card">
-                    <div class="stat-number">12</div>
-                    <div class="stat-label">Espectacles i Concerts</div>
-                </div>
-                <div class="bento-stat-card">
-                    <div class="stat-number" style="background: linear-gradient(135deg, #c084fc 0%, #9333ea 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">1ª</div>
-                    <div class="stat-label">Residència Artística</div>
-                </div>
-                <div class="bento-stat-card">
-                    <div class="stat-number" style="background: linear-gradient(135deg, #5eead4 0%, #0d9488 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">+ de 50</div>
-                    <div class="stat-label">Voluntaris Implicats</div>
-                </div>
+                <a href="#espectacles" class="hub-nav-btn active">🎭 Espectacles i Música</a>
+                <a href="#residencia" class="hub-nav-btn" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.4); color: #e9d5ff;">🧵 1ª Residència · Flassada Col·lectiva</a>
+                <a href="art-luminic-2026.html" class="hub-nav-btn" style="background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%); border-color: #38bdf8; color: #ffffff; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);">✨ Festival Art Lumínic</a>
+                <a href="#exposicions" class="hub-nav-btn">🖼️ Exposicions d'Art</a>
+                <a href="#gastronomia" class="hub-nav-btn">🍔 Foodtrucks & Festa</a>
+                <a href="#com-arribar" class="hub-nav-btn">📍 Com Arribar-hi & Plànol</a>
             </div>
         </div>
     </section>
-
-    
-    <!-- ==========================================
-         SECCIÓ: EL GRAN RESUM DE L'EDICIÓ 2026
-         ========================================== -->
-    <section id="resum-2026" class="section dark-section" style="background: #090d16; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 5rem 0;">
-        <div class="container">
-            <div class="text-center" style="max-width: 820px; margin: 0 auto 3rem;">
-                <span style="background: rgba(244, 63, 94, 0.15); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.3); padding: 0.35rem 0.9rem; border-radius: 2rem; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 1rem;">
-                    Balanç & Crònica 2026
-                </span>
-                <h2 class="section-title text-light" style="font-size: 2.6rem; margin-bottom: 1rem;">
-                    Dues Vivències Inoblidables, Un Sol Poble
-                </h2>
-                <p style="color: #94a3b8; font-size: 1.15rem; line-height: 1.8;">
-                    La 5a edició de Pluja d'Art ha marcat un abans i un després unint de forma indissociable la vitalitat diürna de les arts plàstiques i escèniques amb la màgia bioluminescent i immersiva de la nit.
-                </p>
-            </div>
-
-            <div class="dual-souls-grid">
-                <!-- Pluja d'Art de Dia -->
-                <div class="soul-card day-soul">
-                    <div>
-                        <div class="soul-badge" style="background: rgba(244, 63, 94, 0.2); color: #fca5a5; border: 1px solid rgba(244, 63, 94, 0.4);">
-                            ☀️ De Dia · Pluja d'Art als Carrers
-                        </div>
-                        <h3 class="soul-title">L'Art Viu als Patis i Places Històriques</h3>
-                        <img src="img/edicio2026/fotos/art_patis_places_2026.jpg" alt="L'Art Viu als Patis i Places Històriques · Edició 2026" class="soul-img-preview">
-                        <p class="soul-text">
-                            Més de 10 patis, porxos i cases antigues de la vila van obrir portes de bat a bat per acollir mostres d'escultura, pintura a l'oli, il·lustració, ceràmica i fotografia contemporània. Simultàniament, la Plaça Major, la Plaça 1 d'Octubre i la Sala Nova van acollir teatre, clown, concerts acústics, dansa i la 1ª Residència Artística veïnal.
-                        </p>
-                    </div>
-                    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
-                        <a href="#espectacles" class="btn-primary" style="background: #f43f5e; border-color: #f43f5e; color: #ffffff; font-size: 0.95rem; font-weight: 700; padding: 0.65rem 1.3rem;">🎭 Veure els 12 Espectacles</a>
-                        <a href="#exposicions" class="btn-secondary" style="border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #ffffff; font-size: 0.95rem; font-weight: 700; padding: 0.65rem 1.3rem;">🖼️ Veure els 21 Espais</a>
-                    </div>
-                </div>
-
-                <!-- Art Lumínic de Nit -->
-                <div class="soul-card night-soul">
-                    <div>
-                        <div class="soul-badge" style="background: rgba(56, 189, 248, 0.2); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.4);">
-                            🌙 De Nit · Festival d'Art Lumínic
-                        </div>
-                        <h3 class="soul-title">Bioluminescència i Atmosfera Subterrània</h3>
-                        <img src="img/edicio2026/fotos/medusa_nit_2026.jpg" alt="Medusa d'Art Lumínic de Nit · AireArte" class="soul-img-preview">
-                        <p class="soul-text">
-                            En caure la nit, Sant Jordi Desvalls va apagar el seu enllumenat convencional per revelar un itinerari marí guiat per espelmes amb 10 instal·lacions lumíniques immersives. Des de les monumentals Medusa d'AireArte flotant sobre els carrers, fins a la serp marina  enfilada al dipòsit d'aigua, passant per la reinterpretació de l'esglèsia i les 10 pistes sonores narratives de l'Audioguia interactiva.
-                        </p>
-                    </div>
-                    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
-                        <a href="art-luminic-2026.html" class="btn-primary" style="background: #0284c7; border-color: #38bdf8; color: #ffffff; font-size: 0.95rem; font-weight: 700; padding: 0.65rem 1.3rem;">✨ Monogràfic Art Lumínic</a>
-                        <a href="audioguia.html" class="btn-primary" style="background: linear-gradient(135deg, #0ea5e9, #06b6d4); border-color: #38bdf8; color: #ffffff; font-size: 0.95rem; font-weight: 700; padding: 0.65rem 1.3rem;">🎧 Obrir Audioguia</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
 
     <!-- SECCIÓ 1: PROGRAMACIÓ D'ESPECTACLES -->
     <section id="espectacles" class="section dark-section" style="background: #020617; padding-top: 4rem;">
@@ -809,14 +473,13 @@
                 <button type="button" class="day-btn" onclick="filterDay('diumenge', this)">Diumenge 20 Setembre</button>
             </div>
 
-            <div style="max-width: 1200px; margin: 0 auto; text-align: left;">
+            <div style="max-width: 900px; margin: 0 auto; text-align: left;">
 
                 <!-- ==================== DIVENDRES 18 ==================== -->
                 <div class="day-group day-divendres">
                     <h3 style="color: var(--art-accent); font-family: var(--font-serif); font-size: 1.8rem; margin: 2rem 0 1.5rem; border-bottom: 2px solid rgba(244,63,94,0.3); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
                         <span>🟣</span> Divendres 18 de setembre · Vespre i Nit d'Obertura
                     </h3>
-                    <div class="shows-grid">
 
                     <!-- Show 0: Acte d'Inauguració · Marc Agustí -->
                     <article class="show-card">
@@ -937,7 +600,6 @@
                             </div>
                         </div>
                     </article>
-                                    </div>
                 </div>
 
                 <!-- ==================== DISSABTE 19 ==================== -->
@@ -945,7 +607,11 @@
                     <h3 style="color: #fbbf24; font-family: var(--font-serif); font-size: 1.8rem; margin: 3rem 0 1.5rem; border-bottom: 2px solid rgba(251,191,36,0.3); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
                         <span>🟡</span> Dissabte 19 de setembre · Jornada Central
                     </h3>
-                    <div class="shows-grid">
+
+                    <!-- Matí -->
+                    <div style="background: rgba(255,255,255,0.02); padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 800; color: #94a3b8; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; margin-bottom: 1rem;">
+                        ☀️ Matí
+                    </div>
 
                     <!-- Show 5: CabraCadabra -->
                     <article class="show-card">
@@ -1071,6 +737,11 @@
                         </div>
                     </article>
 
+                    <!-- Tarda -->
+                    <div style="background: rgba(255,255,255,0.02); padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 800; color: #94a3b8; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; margin: 2rem 0 1rem;">
+                        ⛅ Tarda
+                    </div>
+
                     <!-- Show 9: Lia Alonso i Margarida Codina -->
                     <article class="show-card">
                         <div class="show-card-header">
@@ -1148,6 +819,11 @@
                         </div>
                     </article>
 
+                    <!-- Nit -->
+                    <div style="background: rgba(255,255,255,0.02); padding: 0.75rem 1.25rem; border-radius: 8px; font-weight: 800; color: #94a3b8; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; margin: 2rem 0 1rem;">
+                        🌙 Nit & Festa Gastronòmica
+                    </div>
+
                     <!-- Show Art Lumínic Inaugural -->
                     <article class="show-card">
                         <div class="show-card-header">
@@ -1197,7 +873,29 @@
                         </div>
                     </article>
 
-                    
+                    <!-- DESTACAT: MAR MEDITERRÀNIA - FESTIVAL D'ART LUMÍNIC -->
+                    <div style="background: linear-gradient(135deg, #021226 0%, #082f49 50%, #031226 100%); border: 2px solid #06b6d4; border-radius: 20px; padding: 2.25rem 2rem; margin: 2rem 0; box-shadow: 0 15px 35px rgba(6, 182, 212, 0.25); text-align: left; position: relative; overflow: hidden;">
+                        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                            <span style="background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(34, 211, 238, 0.5); padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">
+                                ✨ Festival d'Art Lumínic 2026
+                            </span>
+                            <span style="color: #fbbf24; font-weight: 700; font-size: 0.95rem;">🕯️ Recorregut amb Camí d'Espelmes</span>
+                        </div>
+                        <h3 style="color: #ffffff; font-family: var(--font-serif); font-size: 1.9rem; margin-bottom: 0.75rem; font-weight: 800;">
+                            Mar Mediterrània · L'Oceà de Llum i Art Immersiu
+                        </h3>
+                        <p style="color: #cbd5e1; font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                            Descobreix la guia completa de les <strong>9 instal·lacions lumíniques</strong>: inflables gegants, meduses bioluminescents, projeccions làser, fumaroles marines i la Reina del Mar presidint des del dipòsit de l'aigua. Segueix el camí màgic d'espelmes que connecta tots els espais del nucli històric.
+                        </p>
+                        <div style="display: flex; gap: 0.85rem; flex-wrap: wrap;">
+                            <a href="art-luminic-2026.html" class="btn-primary" style="background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%); border-color: #38bdf8; color: white; font-weight: 800; padding: 0.8rem 1.6rem; border-radius: 30px; text-decoration: none; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4); display: inline-flex; align-items: center; gap: 0.45rem;">
+                                🌊 Veure Pàgina i Guia d'Art Lumínic
+                            </a>
+                            <a href="mapa3.html" class="btn-secondary" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25); color: #e2e8f0; font-weight: 700; padding: 0.8rem 1.5rem; border-radius: 30px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.45rem;">
+                                🗺️ Plànol del Circuit
+                            </a>
+                        </div>
+                    </div>
 
                     <!-- Show 12: DJ Pipa -->
                     <article class="show-card">
@@ -1219,7 +917,6 @@
                             </div>
                         </div>
                     </article>
-                                    </div>
                 </div>
 
                 <!-- ==================== DIUMENGE 20 ==================== -->
@@ -1227,7 +924,6 @@
                     <h3 style="color: #10b981; font-family: var(--font-serif); font-size: 1.8rem; margin: 3rem 0 1.5rem; border-bottom: 2px solid rgba(16,185,129,0.3); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
                         <span>🟢</span> Diumenge 20 de setembre · Matí i Cloenda
                     </h3>
-                    <div class="shows-grid">
 
                     <!-- Show 13: Gegants -->
                     <article class="show-card">
@@ -1322,112 +1018,18 @@
                             </div>
                         </div>
                     </article>
-                                    </div>
                 </div>
 
             </div>
         </div>
     </section>
-
-    
-    <!-- ==============================================================
-         BLOC DESTACAT: FESTIVAL D'ART LUMÍNIC & AUDIOGUIA OFICIAL
-         ============================================================== -->
-    <section id="art-luminic-focus" class="section dark-section" style="background: #020617; padding: 5rem 0; border-top: 1px solid rgba(56, 189, 248, 0.2); border-bottom: 1px solid rgba(56, 189, 248, 0.2);">
-        <div class="container">
-            <div class="luminic-featured-banner">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2.5rem;">
-                    <div style="flex: 1 1 450px;">
-                        <span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 0.35rem 0.9rem; border-radius: 2rem; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 1rem;">
-                            ✨ Itinerari Nocturn Immersiu
-                        </span>
-                        <h2 style="font-family: var(--font-serif); font-size: 2.5rem; color: #ffffff; margin-bottom: 1rem; line-height: 1.2;">
-                            Festival d'Art Lumínic: 10 Punts Màgics i Audioguia
-                        </h2>
-                        <p style="color: #cbd5e1; font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem;">
-                            Un viatge sensorial pels abismes marins i la bioluminescència mediterrània. Descobreix les obres de gran format com la <strong>Medusa gegant (AireArte)</strong>, la <strong>Serp Marina al Dipòsit Subterrani d'Aigua</strong> i escolta cadascun dels capítols narratius locutats i ambientats amb música original.
-                        </p>
-                        
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
-                            <a href="audioguia.html" class="btn-primary" style="background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%); border-color: #38bdf8; color: #ffffff; font-size: 1.05rem; padding: 0.8rem 1.6rem; font-weight: 700; box-shadow: 0 4px 15px rgba(56,189,248,0.4);">
-                                🎧 Obrir l'Audioguia Oficial (10 Punts)
-                            </a>
-                            <a href="mapa3.html" class="btn-secondary" style="border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; background: rgba(56, 189, 248, 0.08); font-size: 1.05rem; padding: 0.8rem 1.5rem; font-weight: 700;">
-                                🗺️ Plànol Lumínic Nocturn
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Vídeo d'Art Lumínic Integrat -->
-                    <div style="flex: 1 1 380px; max-width: 480px;">
-                        <div style="background: #000; border-radius: 18px; overflow: hidden; border: 2px solid rgba(56, 189, 248, 0.4); box-shadow: 0 15px 35px rgba(0,0,0,0.6);">
-                            <video src="img/edicio2026/videos/video_01_art_luminic_nit.mp4" controls playsinline style="width: 100%; height: auto; max-height: 480px; display: block;"></video>
-                            <div style="padding: 1rem; background: rgba(15, 23, 42, 0.9); display: flex; justify-content: space-between; align-items: center;">
-                                <span style="color: #7dd3fc; font-weight: 700; font-size: 0.95rem;">🎥 L'encesa del festival de nit</span>
-                                <span style="color: #94a3b8; font-size: 0.85rem;">⏱️ 53s</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Galeria de les Instal·lacions Estel·lars -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
-                    <!-- Card 1: Medusa (Harmonitzada) -->
-                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s ease, border-color 0.3s ease;">
-                        <div style="aspect-ratio: 16/10; width: 100%; overflow: hidden; background: #030712;">
-                            <img src="img/edicio2026/fotos/medusa_nit_2026.jpg" alt="Punt 9 - Medusa d'Art Lumínic de Nit" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; transition: transform 0.4s ease;">
-                        </div>
-                        <div style="padding: 1.25rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <span style="color: #38bdf8; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Punt 9 · Escultura de Gran Format</span>
-                                <h4 style="color: #fff; font-size: 1.2rem; margin: 0.35rem 0 0.5rem; font-weight: 800;">La Gran Medusa d'AireArte</h4>
-                                <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.55; margin: 0;">Escultura inflable i bioluminescent flotant sobre els carrers medievals guiats pel camí d'espelmes.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 2: Onades Olímpiques (Fundació Bassat / AireArte) -->
-                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s ease, border-color 0.3s ease;">
-                        <div style="aspect-ratio: 16/10; width: 100%; overflow: hidden; background: #030712;">
-                            <img src="img/edicio2026/fotos/onades_olimpiques_nit.jpg" alt="Onades Olímpiques al Carrer de Baix" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; transition: transform 0.4s ease;">
-                        </div>
-                        <div style="padding: 1.25rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <span style="color: #38bdf8; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Carrer de Baix · Memòria & Llum</span>
-                                <h4 style="color: #fff; font-size: 1.2rem; margin: 0.35rem 0 0.5rem; font-weight: 800;">Les Onades Olímpiques</h4>
-                                <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.55; margin: 0;">Monumentals onades escultòriques dels Jocs de Barcelona '92 cedides per la <strong>Fundació Bassat</strong> i creades per <strong>AireArte</strong>, revifades en llum i reflexos.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 3: Mapa d'Art Lumínic -->
-                    <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s ease, border-color 0.3s ease;">
-                        <div style="aspect-ratio: 16/10; width: 100%; overflow: hidden; background: #030712;">
-                            <img src="img/edicio2026/fotos/mapa_art_luminic.png" alt="Plànol del Circuit d'Art Lumínic" style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; transition: transform 0.4s ease;">
-                        </div>
-                        <div style="padding: 1.25rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 1rem;">
-                            <div>
-                                <span style="color: #38bdf8; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;">Circulació Lliure · 10 Punts</span>
-                                <h4 style="color: #fff; font-size: 1.2rem; margin: 0.35rem 0 0.5rem; font-weight: 800;">El Circuit del Poble Il·luminat</h4>
-                                <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.55; margin: 0;">Itinerari circular connectant les 10 instal·lacions lumíniques, el camí d'espelmes i l'audioguia interactiva.</p>
-                            </div>
-                            <a href="mapa3.html" class="btn-primary" style="background: #0284c7; border-color: #38bdf8; color: #fff; font-size: 0.88rem; font-weight: 700; padding: 0.55rem 1rem; border-radius: 8px; text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);">
-                                🗺️ Obrir Plànol del Festival
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
 
     <!-- SECCIÓ: 1ª RESIDÈNCIA ARTÍSTICA PLUJA D'ART -->
     <section id="residencia" class="section dark-section" style="background-color: #090514 !important; background: #090514 radial-gradient(circle at 50% 10%, #290e44 0%, #090514 75%) !important; border-top: 2px solid #8b5cf6; border-bottom: 2px solid rgba(139, 92, 246, 0.3); padding: 5.5rem 0 4.5rem; color: #ffffff !important;">
         <div class="container">
             <div class="text-center" style="max-width: 860px; margin: 0 auto 3rem;">
                 <span style="display: inline-flex; align-items: center; gap: 0.5rem; background: #2e1065; color: #f3e8ff; border: 1.5px solid #a855f7; padding: 0.55rem 1.4rem; border-radius: 9999px; font-size: 0.9rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1.25rem; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.35);">
-                    🧵 1ª Residència Artística Pluja d'Art 2026
+                    🧵 1ª Residència Artística Pluja d'Art 2026 · En curs
                 </span>
                 <h2 style="font-family: var(--font-serif); font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 800; color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; margin-top: 0.5rem; margin-bottom: 0.6rem; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.95); line-height: 1.2;">
                     Una flassada col·lectiva
@@ -1439,7 +1041,7 @@
                     «Una flassada per a un llit tan gran com un poble»
                 </div>
                 <p style="color: #f8fafc !important; font-size: 1.15rem; line-height: 1.8; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9); max-width: 800px; margin: 0 auto;">
-                    Obra d'art comunitària creant durant la preparació del Festival, en el marc de la <strong style="color: #38bdf8; font-weight: 800;">1ª Residència d'Art de Sant Jordi Desvalls</strong>. Un procés participatiu viu que transforma testimonis materials de dolor i malaltia en un gran amulet compartit d'aixopluc, guarició i protecció ciutadana.
+                    Obra d'art comunitària que s'està creant en aquests moments en el marc de la <strong style="color: #38bdf8; font-weight: 800;">1ª Residència d'Art de Sant Jordi Desvalls</strong>. Un procés participatiu viu que transforma testimonis materials de dolor i malaltia en un gran amulet compartit d'aixopluc, guarició i protecció ciutadana.
                 </p>
             </div>
 
@@ -1457,7 +1059,7 @@
                     <div style="background: #181330; border: 1px solid rgba(250, 204, 21, 0.35); border-radius: 14px; padding: 1.2rem 1.25rem;">
                         <div style="color: #facc15; font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem;">📅 Penjada de la peça</div>
                         <div style="color: #fde047; font-size: 1.15rem; font-weight: 800;">Dissabte 19 de setembre</div>
-                        <div style="color: #f1f5f9; font-size: 0.9rem; margin-top: 0.25rem;">Penjada al matí a la façana</div>
+                        <div style="color: #f1f5f9; font-size: 0.9rem; margin-top: 0.25rem;">Es penjarà al matí a la façana</div>
                     </div>
 
                     <div style="background: #181330; border: 1px solid rgba(52, 211, 153, 0.35); border-radius: 14px; padding: 1.2rem 1.25rem;">
@@ -1483,7 +1085,7 @@
                             <h4 style="color: #ffffff; font-size: 1.15rem; font-weight: 800; margin: 0;">1. Les radiografies i la cianotípia</h4>
                         </div>
                         <p style="color: #e2e8f0; font-size: 0.95rem; line-height: 1.7; margin: 0;">
-                            Els veïns i veïnes van aportar radiografies personals vinculades a malalties o dolors viscuts. Amb cotó fluix i acetona, es va esborrar l'emulsió de la imatge fins a obtenir un acetat transparent on es va pintar la part del cos afectada —ja guarida— per traslladar-la com a fotolit mitjançant la tècnica de la <strong style="color: #38bdf8;">cianotípia</strong> sobre retalls de tela blanca.
+                            Els veïns i veïnes estan aportant radiografies personals vinculades a malalties o dolors viscuts. Amb cotó fluix i acetona, s'esborra l'emulsió de la imatge fins a obtenir un acetat transparent on es pinta la part del cos afectada —ara guarida— per traslladar-la com a fotolit mitjançant la tècnica de la <strong style="color: #38bdf8;">cianotípia</strong> sobre retalls de tela blanca.
                         </p>
                     </div>
 
@@ -1494,7 +1096,7 @@
                             <h4 style="color: #ffffff; font-size: 1.15rem; font-weight: 800; margin: 0;">2. Tallers i costura participativa</h4>
                         </div>
                         <p style="color: #e2e8f0; font-size: 0.95rem; line-height: 1.7; margin: 0;">
-                            En espais de trobada i diàleg al poble, es van dur a terme els tallers comunitaris on cada peça de cianotípia es va cosir conjuntament amb les dels altres participants. La gran tela confeccionada va esdevenir un sudari per acomiadar el dolor viscut i, alhora, una gran flassada destinada a acotxar la ciutadania en un llit simbòlic de cura i protecció col·lectiva.
+                            En aquests moments, en espais de trobada i diàleg al poble, s'estan duent a terme els tallers comunitaris on cada peça de cianotípia es cus conjuntament amb les dels altres participants. La gran tela que s'està confeccionant esdevé un sudari per acomiadar el dolor viscut i, alhora, una gran flassada destinada a acotxar la ciutadania en un llit simbòlic de cura i protecció col·lectiva.
                         </p>
                     </div>
 
@@ -1505,7 +1107,7 @@
                             <h4 style="color: #ffffff; font-size: 1.15rem; font-weight: 800; margin: 0;">3. Penjada a la façana de l'Ajuntament</h4>
                         </div>
                         <p style="color: #e2e8f0; font-size: 0.95rem; line-height: 1.7; margin: 0;">
-                            <strong style="color: #facc15;">Dissabte 19 al matí</strong>, la gran flassada col·lectiva es va penjar solemnement a la façana de l'Ajuntament, a la Plaça U d'Octubre. La peça va romandre instal·lada al cor del poble com a símbol viu de la vulnerabilitat comuna i de la capacitat de la comunitat per sostenir-la davant la incertesa del món.
+                            <strong style="color: #facc15;">Dissabte 19 al matí</strong>, la gran flassada col·lectiva es penjarà solemnement a la façana de l'Ajuntament, a la Plaça U d'Octubre. La peça romandrà instal·lada al cor del poble com a símbol viu de la vulnerabilitat comuna i de la capacitat de la comunitat per sostenir-la davant la incertesa del món.
                         </p>
                     </div>
                 </div>
@@ -1519,44 +1121,6 @@
                 </blockquote>
 
             </div>
-
-            <!-- Galeria de Fotos Reals del Procés de Residència i Tallers -->
-            <div style="margin-top: 3.5rem;">
-                <h4 style="color: #c084fc; font-size: 1.4rem; font-family: var(--font-serif); margin-bottom: 1.5rem; text-align: center;">
-                    📸 Galeria del Procés Creatiu i Participació Veïnal
-                </h4>
-                <div class="residencia-grid">
-                    <div class="residencia-card">
-                        <img src="img/edicio2026/fotos/taller_4.jpeg" alt="1. Taller comunitari">
-                        <div class="residencia-card-body">
-                            <strong style="color: #fff; font-size: 0.95rem; display: block;">1. Taller comunitari</strong>
-                            <p style="color: #94a3b8; font-size: 0.85rem; margin: 0;">Triatge de radiografies aportades per famílies del poble.</p>
-                        </div>
-                    </div>
-                    <div class="residencia-card">
-                        <img src="img/edicio2026/fotos/flassada_final.jpeg" alt="2. Una flassada col·lectiva" style="object-position: center 20%;">
-                        <div class="residencia-card-body">
-                            <strong style="color: #fff; font-size: 0.95rem; display: block;">2. Una flassada col·lectiva</strong>
-                            <p style="color: #94a3b8; font-size: 0.85rem; margin: 0;">Exposició de la flassada a la façana de l'ajuntament</p>
-                        </div>
-                    </div>
-                    <div class="residencia-card">
-                        <img src="img/edicio2026/fotos/taller_luminic_01.jpg" alt="Taller d'Art Lumínic">
-                        <div class="residencia-card-body">
-                            <strong style="color: #fff; font-size: 0.95rem; display: block;">3. Taller d'Art Lumínic Infantil</strong>
-                            <p style="color: #94a3b8; font-size: 0.85rem; margin: 0;">Infants i joves creant les seves petites escultures de llum.</p>
-                        </div>
-                    </div>
-                    <div class="residencia-card">
-                        <img src="img/edicio2026/fotos/arterapia_01.jpg" alt="Sessió d'Arteteràpia">
-                        <div class="residencia-card-body">
-                            <strong style="color: #fff; font-size: 0.95rem; display: block;">4. Sessió d'Arteteràpia</strong>
-                            <p style="color: #94a3b8; font-size: 0.85rem; margin: 0;">Espai de benestar, creativitat i expressió emocional compartida.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </section>
 
@@ -1846,147 +1410,6 @@
             </div>
         </div>
     </section>
-
-    
-    <!-- ==============================================================
-         NOVA SECCIÓ: VÍDEOS REELS I GALERIA AUDIOVISUAL VIVA
-         ============================================================== -->
-    <section id="galeria-videos" class="section dark-section" style="background: #090d16; padding: 5rem 0; border-top: 1px solid rgba(255,255,255,0.08);">
-        <div class="container">
-            <div class="text-center" style="max-width: 800px; margin: 0 auto 3rem;">
-                <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 0.35rem 0.9rem; border-radius: 2rem; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; margin-bottom: 1rem;">
-                    🎬 Vivències en Vídeo
-                </span>
-                <h2 class="section-title text-light" style="font-size: 2.5rem; margin-bottom: 1rem;">
-                    Reviu la Fira Pluja d'Art 2026 en Vídeo
-                </h2>
-                <p style="color: #94a3b8; font-size: 1.15rem; line-height: 1.8;">
-                    Recull oficial dels millors moments capturats durant el cap de setmana: des dels artistes plàstics en ple procés creatiu fins a l'encesa màgica d'Art Lumínic i l'ambient als carrers.
-                </p>
-            </div>
-
-            <!-- Graella de 6 Vídeos Oficials -->
-            <div class="video-reels-grid">
-                <!-- Video 1 -->
-                <div class="video-reel-card">
-                    <div class="video-wrapper">
-                        <video src="img/edicio2026/videos/video_01_art_luminic_nit.mp4" controls playsinline></video>
-                    </div>
-                    <div class="video-info">
-                        <div>
-                            <div class="video-title">Tot el poble s'ha vestit de llum</div>
-                            <div class="video-meta">Impacte nocturn màxim d'Art Lumínic amb les façanes i carrers il·luminats.</div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.82rem; color: #38bdf8;">
-                            <span>✨ Art Lumínic</span>
-                            <span>⏱️ 53s</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Video 2 -->
-                <div class="video-reel-card">
-                    <div class="video-wrapper">
-                        <video src="img/edicio2026/videos/video_02_artistes_exposicions.mp4" controls playsinline></video>
-                    </div>
-                    <div class="video-info">
-                        <div>
-                            <div class="video-title">Cada racó, un artista diferent</div>
-                            <div class="video-meta">Recorregut per les 21 exposicions i diàleg directe amb els creadors.</div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.82rem; color: #f43f5e;">
-                            <span>🖼️ 21 Exposicions</span>
-                            <span>⏱️ 85s</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Video 3 -->
-                <div class="video-reel-card">
-                    <div class="video-wrapper">
-                        <video src="img/edicio2026/videos/video_03_art_pren_els_carrers.mp4" controls playsinline></video>
-                    </div>
-                    <div class="video-info">
-                        <div>
-                            <div class="video-title">L'art pren els carrers del poble</div>
-                            <div class="video-meta">L'ambient festiu diürn, visitants gaudint dels carrers i de la cultura popular.</div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.82rem; color: #f59e0b;">
-                            <span>☀️ Ambient i Fira</span>
-                            <span>⏱️ 68s</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Video 4 -->
-                <div class="video-reel-card">
-                    <div class="video-wrapper">
-                        <video src="img/edicio2026/videos/video_04_inauguracio_art_luminic.mp4" controls playsinline></video>
-                    </div>
-                    <div class="video-info">
-                        <div>
-                            <div class="video-title">Inauguració d'Art Lumínic</div>
-                            <div class="video-meta">L'acte d'encesa col·lectiva amb dansa contemporània i música en directe.</div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.82rem; color: #38bdf8;">
-                            <span>🎭 Inauguració</span>
-                            <span>⏱️ 52s</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Video 5 -->
-                <div class="video-reel-card">
-                    <div class="video-wrapper">
-                        <video src="img/edicio2026/videos/video_05_fira_plena_dartistes.mp4" controls playsinline></video>
-                    </div>
-                    <div class="video-info">
-                        <div>
-                            <div class="video-title">Fira d'Artesans i Creadors</div>
-                            <div class="video-meta">Les parades d'artesania d'autor, pintura en directe i disseny artesanal.</div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.82rem; color: #10b981;">
-                            <span>🎨 Paradetes</span>
-                            <span>⏱️ 61s</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Video 6 -->
-                <div class="video-reel-card">
-                    <div class="video-wrapper">
-                        <video src="img/edicio2026/videos/video_06_residencia_artistica.mp4" controls playsinline></video>
-                    </div>
-                    <div class="video-info">
-                        <div>
-                            <div class="video-title">1ª Residència Artística</div>
-                            <div class="video-meta">Presentació del projecte resident "Una flassada col·lectiva" de Marc Agustí.</div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.82rem; color: #a855f7;">
-                            <span>🧵 Residència</span>
-                            <span>⏱️ 32s</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Agraïment a l'Equip de Voluntaris -->
-            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 2.5rem; margin-top: 4rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2rem;">
-                <div style="flex: 1 1 400px;">
-                    <span style="color: #f43f5e; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em;">🤝 Teixit Comunitari</span>
-                    <h3 style="color: #fff; font-size: 1.8rem; font-family: var(--font-serif); margin: 0.5rem 0 1rem;">+ de 50 Voluntaris Fent Poble</h3>
-                    <p style="color: #cbd5e1; font-size: 1.05rem; line-height: 1.7; margin: 0;">
-                        L'èxit de la 5a Fira Pluja d'Art és fruit de la dedicació altruista de més de 50 veïns i veïnes que han gestionat els espais, el muntatge dels escenaris, l'atenció als visitants i la logística dels 12 espectacles.
-                    </p>
-                </div>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <img src="img/edicio2026/fotos/voluntaris_decoracio.jpeg" alt="Muntatge i decoració voluntaris" style="height: 120px; width: 160px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);">
-                    <img src="img/edicio2026/fotos/voluntaris_fideua.jpeg" alt="Fideuà de germanor" style="height: 120px; width: 160px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);">
-                </div>
-            </div>
-        </div>
-    </section>
-
 
     <!-- SECCIÓ 3: ZONA GASTRONÒMICA I FOODTRUCKS -->
     <section id="gastronomia" class="section dark-section" style="background: #020617; border-top: 1px solid rgba(255,255,255,0.06);">
