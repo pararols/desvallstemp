@@ -16,3 +16,4 @@ tmp/
 *.wav
 piper_models/
 sons/Amidaments/
+**/originals/
